@@ -5,6 +5,8 @@ import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import HananTable from "@/components/HananTable";
 import AddIncomeModal from "@/components/AddIncomeModal";
+import OutcomeTable from "@/components/OutcomeTable";
+import AddOutcomeModal from "@/components/AddOutcomeModal";
 
 function formatRupiah(amount: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -57,6 +59,17 @@ export default async function HananPage() {
 
   const payments = paymentsResult.data ?? [];
   const expenses = expensesResult.data ?? [];
+  const outcomeExpenses = expenses
+    .map((expense) => ({
+      id: expense.id,
+      amount: Number(expense.amount ?? 0),
+      expense_date: expense.expense_date,
+      reason: expense.reason ?? "",
+    }))
+    .sort(
+      (a, b) =>
+        new Date(b.expense_date).getTime() - new Date(a.expense_date).getTime(),
+    );
   const weeks = weeksResult.data ?? [];
 
   // --------------------------------
@@ -124,75 +137,152 @@ export default async function HananPage() {
 
         {/* TABS */}
 
-        <HananTabs>
-          <div className="soft-card-inset rounded-2xl p-4 sm:p-5">
-            {/* SUMMARY CARDS */}
+        <HananTabs
+          income={
+            <div className="soft-card-inset rounded-2xl p-4 sm:p-5">
+              {/* SUMMARY CARDS */}
 
-            <section className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
-              {/* TOTAL INCOME */}
+              <section className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
+                {/* TOTAL INCOME */}
 
-              <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
-                <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
-                  <span className="lg:hidden">INCOME</span>
-                  <span className="hidden lg:inline">TOTAL INCOME</span>
-                </p>
+                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                  <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                    <span className="lg:hidden">INCOME</span>
+                    <span className="hidden lg:inline">TOTAL INCOME</span>
+                  </p>
 
-                <p className="mt-1 text-sm font-bold tracking-tight text-emerald-500 sm:text-base lg:mt-3 lg:text-2xl">
-                  {formatRupiah(totalIncome)}
-                </p>
+                  <p className="mt-1 text-sm font-bold tracking-tight text-emerald-500 sm:text-base lg:mt-3 lg:text-2xl">
+                    {formatRupiah(totalIncome)}
+                  </p>
 
-                <p className="mt-1 hidden text-xs text-slate-400 sm:block">
-                  Total contributions
-                </p>
+                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                    Total contributions
+                  </p>
+                </div>
+
+                {/* TOTAL OUTCOME */}
+
+                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                  <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                    <span className="lg:hidden">OUTCOME</span>
+                    <span className="hidden lg:inline">TOTAL OUTCOME</span>
+                  </p>
+
+                  <p className="mt-1 text-sm font-bold tracking-tight text-rose-400 sm:text-base lg:mt-3 lg:text-2xl">
+                    {formatRupiah(totalExpense)}
+                  </p>
+
+                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                    Total expenses
+                  </p>
+                </div>
+
+                {/* BALANCE */}
+
+                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                  <p className="text-[9px] font-bold tracking-wide text-indigo-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                    <span className="lg:hidden">SAVINGS</span>
+                    <span className="hidden lg:inline">
+                      HANAN SAVINGS BALANCE
+                    </span>
+                  </p>
+
+                  <p className="mt-1 text-sm font-bold tracking-tight text-indigo-500 sm:text-base lg:mt-3 lg:text-2xl">
+                    {formatRupiah(hananBalance)}
+                  </p>
+
+                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                    Current shared balance
+                  </p>
+                </div>
+              </section>
+
+              {/* ACTION BAR */}
+
+              <div className="mt-5 flex justify-end">
+                <AddIncomeModal weeklyData={allWeeklyData} />
               </div>
 
-              {/* TOTAL OUTCOME */}
+              {/* INCOME TABLE */}
 
-              <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
-                <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
-                  <span className="lg:hidden">OUTCOME</span>
-                  <span className="hidden lg:inline">TOTAL OUTCOME</span>
-                </p>
-
-                <p className="mt-1 text-sm font-bold tracking-tight text-rose-400 sm:text-base lg:mt-3 lg:text-2xl">
-                  {formatRupiah(totalExpense)}
-                </p>
-
-                <p className="mt-1 hidden text-xs text-slate-400 sm:block">
-                  Total expenses
-                </p>
+              <div className="mt-5">
+                <HananTable weeklyData={weeklyData} />
               </div>
-
-              {/* BALANCE */}
-
-              <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
-                <p className="text-[9px] font-bold tracking-wide text-indigo-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
-                  <span className="lg:hidden">SAVINGS</span>
-                  <span className="hidden lg:inline">
-                    HANAN SAVINGS BALANCE
-                  </span>
-                </p>
-
-                <p className="mt-1 text-sm font-bold tracking-tight text-indigo-500 sm:text-base lg:mt-3 lg:text-2xl">
-                  {formatRupiah(hananBalance)}
-                </p>
-
-                <p className="mt-1 hidden text-xs text-slate-400 sm:block">
-                  Current shared balance
-                </p>
-              </div>
-            </section>
-
-            {/* ACTION BAR */}
-
-            <div className="mt-5 flex justify-end">
-              <AddIncomeModal weeklyData={allWeeklyData} />
             </div>
-            <div className="mt-5">
-              <HananTable weeklyData={weeklyData} />
+          }
+          outcome={
+            <div className="soft-card-inset rounded-2xl p-4 sm:p-5">
+              {/* SUMMARY */}
+
+              <section className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
+                {/* TOTAL INCOME */}
+
+                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                  <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                    <span className="lg:hidden">INCOME</span>
+                    <span className="hidden lg:inline">TOTAL INCOME</span>
+                  </p>
+
+                  <p className="mt-1 text-sm font-bold tracking-tight text-emerald-500 sm:text-base lg:mt-3 lg:text-2xl">
+                    {formatRupiah(totalIncome)}
+                  </p>
+
+                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                    Total contributions
+                  </p>
+                </div>
+
+                {/* TOTAL OUTCOME */}
+
+                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                  <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                    <span className="lg:hidden">OUTCOME</span>
+                    <span className="hidden lg:inline">TOTAL OUTCOME</span>
+                  </p>
+
+                  <p className="mt-1 text-sm font-bold tracking-tight text-rose-400 sm:text-base lg:mt-3 lg:text-2xl">
+                    {formatRupiah(totalExpense)}
+                  </p>
+
+                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                    Total expenses
+                  </p>
+                </div>
+
+                {/* BALANCE */}
+
+                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                  <p className="text-[9px] font-bold tracking-wide text-indigo-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                    <span className="lg:hidden">SAVINGS</span>
+                    <span className="hidden lg:inline">
+                      HANAN SAVINGS BALANCE
+                    </span>
+                  </p>
+
+                  <p className="mt-1 text-sm font-bold tracking-tight text-indigo-500 sm:text-base lg:mt-3 lg:text-2xl">
+                    {formatRupiah(hananBalance)}
+                  </p>
+
+                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                    Current shared balance
+                  </p>
+                </div>
+              </section>
+
+              {/* ACTION BAR */}
+
+              <div className="mt-5 flex justify-end">
+                <AddOutcomeModal />
+              </div>
+
+              {/* OUTCOME TABLE */}
+
+              <div className="mt-5">
+                <OutcomeTable expenses={outcomeExpenses} />
+              </div>
             </div>
-          </div>
-        </HananTabs>
+          }
+        />
       </div>
     </AppShell>
   );

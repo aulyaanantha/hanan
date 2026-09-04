@@ -3,18 +3,15 @@
 import { useState } from "react";
 
 type Props = {
-  children: React.ReactNode;
+  income: React.ReactNode;
+  outcome: React.ReactNode;
 };
 
-export default function HananTabs({ children }: Props) {
-  const [activeTab, setActiveTab] = useState<"income" | "outcome">(
-    "income"
-  );
+export default function HananTabs({ income, outcome }: Props) {
+  const [activeTab, setActiveTab] = useState<"income" | "outcome">("income");
 
   return (
     <div>
-      {/* TABS */}
-
       <div className="relative z-10 flex items-end gap-2 px-2">
         <button
           type="button"
@@ -41,25 +38,7 @@ export default function HananTabs({ children }: Props) {
         </button>
       </div>
 
-      {/* CONTENT */}
-
-      {activeTab === "income" ? (
-        children
-      ) : (
-        <div className="soft-card-inset min-h-[500px] p-6">
-          <div className="flex min-h-[430px] items-center justify-center">
-            <div className="text-center">
-              <p className="text-lg font-semibold text-slate-500">
-                Outcome
-              </p>
-
-              <p className="mt-2 text-sm text-slate-400">
-                HANAN expense records will appear here.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      <div>{activeTab === "income" ? income : outcome}</div>
     </div>
   );
 }
