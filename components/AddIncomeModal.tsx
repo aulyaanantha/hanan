@@ -11,24 +11,39 @@ type WeeklyData = {
   total: number;
 };
 
+type EditingPayment = {
+  id: string;
+  person: "Farhan" | "Anantha";
+  weekId: string;
+  amount: number;
+  weekNumber: number;
+  targetDate: string;
+};
+
 type Props = {
   weeklyData: WeeklyData[];
+  editingPayment?: EditingPayment | null;
+  onClose?: () => void;
 };
 
 export default function AddIncomeModal({
   weeklyData,
+  editingPayment = null,
+  onClose,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [person, setPerson] = useState<"Farhan" | "Anantha">(
-    "Anantha"
-  );
+  const [person, setPerson] = useState<
+    "Farhan" | "Anantha"
+  >("Anantha");
 
   const [weekId, setWeekId] = useState("");
 
   const [amount, setAmount] = useState("");
 
   const [isSaving, setIsSaving] = useState(false);
+
+  const isEditMode = Boolean(editingPayment);
 
   // --------------------------------
   // FIND NEXT UNPAID WEEK
@@ -53,7 +68,7 @@ export default function AddIncomeModal({
   }
 
   // --------------------------------
-  // OPEN MODAL
+  // OPEN ADD MODAL
   // --------------------------------
 
   function openModal() {
@@ -66,12 +81,31 @@ export default function AddIncomeModal({
   }
 
   // --------------------------------
+  // OPEN EDIT MODAL
+  // --------------------------------
+
+  useEffect(() => {
+    if (editingPayment) {
+      setPerson(editingPayment.person);
+      setWeekId(editingPayment.weekId);
+      setAmount(String(editingPayment.amount));
+      setIsOpen(true);
+    }
+  }, [editingPayment]);
+
+  // --------------------------------
   // CLOSE MODAL
   // --------------------------------
 
   function closeModal() {
-    if (!isSaving) {
-      setIsOpen(false);
+    if (isSaving) {
+      return;
+    }
+
+    setIsOpen(false);
+
+    if (onClose) {
+      onClose();
     }
   }
 
@@ -84,7 +118,14 @@ export default function AddIncomeModal({
   ) {
     setPerson(selectedPerson);
 
-    const nextWeek = findNextUnpaidWeek(selectedPerson);
+    // In edit mode, changing the person is allowed.
+    // The selected week stays the same.
+    if (isEditMode) {
+      return;
+    }
+
+    const nextWeek =
+      findNextUnpaidWeek(selectedPerson);
 
     setWeekId(nextWeek);
   }
@@ -112,26 +153,42 @@ export default function AddIncomeModal({
       setIsSaving(true);
 
       const response = await fetch("/api/payments", {
-        method: "POST",
+        method: isEditMode ? "PATCH" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          person,
-          weekId,
-          amount: numericAmount,
-        }),
+        body: JSON.stringify(
+          isEditMode
+            ? {
+                paymentId: editingPayment?.id,
+                person,
+                weekId,
+                amount: numericAmount,
+              }
+            : {
+                person,
+                weekId,
+                amount: numericAmount,
+              }
+        ),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
         throw new Error(
-          result.error || "Failed to save income."
+          result.error ||
+            (isEditMode
+              ? "Failed to update income."
+              : "Failed to save income.")
         );
       }
 
       setIsOpen(false);
+
+      if (onClose) {
+        onClose();
+      }
 
       window.location.href = "/hanan";
     } catch (error) {
@@ -140,7 +197,9 @@ export default function AddIncomeModal({
       alert(
         error instanceof Error
           ? error.message
-          : "Failed to save income."
+          : isEditMode
+            ? "Failed to update income."
+            : "Failed to save income."
       );
     } finally {
       setIsSaving(false);
@@ -155,36 +214,44 @@ export default function AddIncomeModal({
     (week) => week.id === weekId
   );
 
+  // --------------------------------
+  // RENDER
+  // --------------------------------
+
   return (
     <>
       {/* ADD INCOME BUTTON */}
 
-      <button
-        type="button"
-        onClick={openModal}
-        className="rounded-xl bg-indigo-400 px-5 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-indigo-500"
-      >
-        + Add Income
-      </button>
+      {!isEditMode && (
+        <button
+          type="button"
+          onClick={openModal}
+          className="rounded-xl bg-indigo-400 px-5 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-indigo-500"
+        >
+          + Add Income
+        </button>
+      )}
 
       {/* MODAL */}
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 px-4 backdrop-blur-sm">
-
           <div className="soft-card w-full max-w-md p-6">
 
             {/* HEADER */}
 
             <div className="flex items-start justify-between gap-4">
-
               <div>
                 <h2 className="text-lg font-bold text-slate-700">
-                  Add Income
+                  {isEditMode
+                    ? "Edit Income"
+                    : "Add Income"}
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-400">
-                  Record a new HANAN contribution.
+                  {isEditMode
+                    ? "Update this HANAN contribution."
+                    : "Record a new HANAN contribution."}
                 </p>
               </div>
 
@@ -196,7 +263,6 @@ export default function AddIncomeModal({
               >
                 ×
               </button>
-
             </div>
 
             {/* FORM */}
@@ -233,7 +299,7 @@ export default function AddIncomeModal({
                 </div>
               </div>
 
-              {/* AUTO WEEK */}
+              {/* WEEK */}
 
               <div>
                 <label className="text-xs font-bold tracking-wider text-slate-400">
@@ -241,7 +307,6 @@ export default function AddIncomeModal({
                 </label>
 
                 <div className="soft-card-inset mt-2 flex items-center justify-between rounded-2xl px-4 py-3">
-
                   {selectedWeek ? (
                     <>
                       <div>
@@ -269,7 +334,9 @@ export default function AddIncomeModal({
                       </div>
 
                       <span className="rounded-lg bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-500">
-                        Auto selected
+                        {isEditMode
+                          ? "Current week"
+                          : "Auto selected"}
                       </span>
                     </>
                   ) : (
@@ -283,7 +350,6 @@ export default function AddIncomeModal({
                       </p>
                     </div>
                   )}
-
                 </div>
               </div>
 
@@ -295,7 +361,6 @@ export default function AddIncomeModal({
                 </label>
 
                 <div className="soft-card-inset mt-2 flex items-center rounded-2xl px-4">
-
                   <span className="mr-2 text-sm font-semibold text-slate-400">
                     Rp
                   </span>
@@ -310,16 +375,13 @@ export default function AddIncomeModal({
                     className="w-full bg-transparent py-3 text-sm font-bold text-slate-700 outline-none"
                     placeholder="25000"
                   />
-
                 </div>
               </div>
-
             </div>
 
             {/* ACTIONS */}
 
             <div className="mt-7 flex justify-end gap-3">
-
               <button
                 type="button"
                 onClick={closeModal}
@@ -335,13 +397,16 @@ export default function AddIncomeModal({
                 disabled={isSaving || !weekId}
                 className="rounded-xl bg-indigo-400 px-5 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isSaving ? "Saving..." : "Save Income"}
+                {isSaving
+                  ? isEditMode
+                    ? "Updating..."
+                    : "Saving..."
+                  : isEditMode
+                    ? "Update Income"
+                    : "Save Income"}
               </button>
-
             </div>
-
           </div>
-
         </div>
       )}
     </>

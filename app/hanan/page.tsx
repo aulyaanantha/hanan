@@ -112,9 +112,27 @@ export default async function HananPage() {
       id: week.id,
       weekNumber: week.week_number,
       targetDate: week.target_date,
-      farhanAmount,
-      ananthaAmount,
-      total: farhanAmount + ananthaAmount,
+
+      farhanPayment: farhanPayment
+        ? {
+            id: farhanPayment.id,
+            amount: Number(farhanPayment.amount),
+          }
+        : null,
+
+      ananthaPayment: ananthaPayment
+        ? {
+            id: ananthaPayment.id,
+            amount: Number(ananthaPayment.amount),
+          }
+        : null,
+
+      farhanAmount: Number(farhanPayment?.amount ?? 0),
+      ananthaAmount: Number(ananthaPayment?.amount ?? 0),
+
+      total:
+        Number(farhanPayment?.amount ?? 0) +
+        Number(ananthaPayment?.amount ?? 0),
     };
   });
 
