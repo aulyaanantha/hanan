@@ -159,16 +159,12 @@ export default async function Home() {
 
         <header className="flex items-start justify-between gap-6">
           <div>
-            <p className="mb-2 text-xs font-bold tracking-[0.2em] text-indigo-500">
-              HANAN SAVINGS
-            </p>
-
             <h1 className="text-3xl font-bold tracking-tight text-slate-700">
               Dashboard
             </h1>
 
             <p className="mt-2 text-sm text-slate-400">
-              Pantau perjalanan tabungan HANAN dalam satu tempat.
+              Manage shared savings, contributions, and expenses.
             </p>
           </div>
 
