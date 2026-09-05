@@ -408,6 +408,9 @@ export default async function Home() {
           </div>
         </section>
       </div>
+      <p className="mt-6 text-center text-xs font-medium text-slate-400">
+        © 2026 · Made by Anantha
+      </p>
     </AppShell>
   );
 }

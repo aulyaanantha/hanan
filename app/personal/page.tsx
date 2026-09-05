@@ -86,8 +86,8 @@ export default async function PersonalSavingsPage() {
         <section className="grid grid-cols-3 gap-2 sm:gap-4">
           {/* BALANCE */}
 
-          <div className="soft-card !rounded-[8px] sm:!rounded-2xl p-3 sm:p-5">
-            <p className="text-[10px] font-semibold text-indigo-500 sm:text-xs">
+          <div className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">
+            <p className="text-[10px] font-semibold text-slate-400 sm:text-xs">
               Current Balance
             </p>
 
@@ -102,8 +102,8 @@ export default async function PersonalSavingsPage() {
 
           {/* DEPOSIT */}
 
-          <div className="soft-card !rounded-[8px] sm:!rounded-2xl p-3 sm:p-5">
-            <p className="text-[10px] font-semibold text-emerald-500 sm:text-xs">
+          <div className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">
+            <p className="text-[10px] font-semibold text-slate-400 sm:text-xs">
               Total Deposit
             </p>
 
@@ -118,8 +118,8 @@ export default async function PersonalSavingsPage() {
 
           {/* WITHDRAWAL */}
 
-          <div className="soft-card !rounded-[8px] sm:!rounded-2xl p-3 sm:p-5">
-            <p className="text-[10px] font-semibold text-rose-400 sm:text-xs">
+          <div className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">
+            <p className="text-[10px] font-semibold text-slate-400 sm:text-xs">
               Total Withdrawal
             </p>
 
@@ -155,6 +155,9 @@ export default async function PersonalSavingsPage() {
           </div>
         </section>
       </div>
+      <p className="mt-6 text-center text-xs font-medium text-slate-400">
+        © 2026 · Made by Anantha
+      </p>
     </AppShell>
   );
 }

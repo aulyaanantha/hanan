@@ -180,7 +180,7 @@ export default async function HananPage() {
               <section className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
                 {/* TOTAL INCOME */}
 
-                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
                   <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">INCOME</span>
                     <span className="hidden lg:inline">TOTAL INCOME</span>
@@ -197,7 +197,7 @@ export default async function HananPage() {
 
                 {/* TOTAL OUTCOME */}
 
-                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
                   <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">OUTCOME</span>
                     <span className="hidden lg:inline">TOTAL OUTCOME</span>
@@ -214,7 +214,7 @@ export default async function HananPage() {
 
                 {/* BALANCE */}
 
-                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
                   <p className="text-[9px] font-bold tracking-wide text-indigo-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">SAVINGS</span>
                     <span className="hidden lg:inline">
@@ -252,7 +252,7 @@ export default async function HananPage() {
               <section className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
                 {/* TOTAL INCOME */}
 
-                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
                   <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">INCOME</span>
                     <span className="hidden lg:inline">TOTAL INCOME</span>
@@ -269,7 +269,7 @@ export default async function HananPage() {
 
                 {/* TOTAL OUTCOME */}
 
-                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
                   <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">OUTCOME</span>
                     <span className="hidden lg:inline">TOTAL OUTCOME</span>
@@ -286,7 +286,7 @@ export default async function HananPage() {
 
                 {/* BALANCE */}
 
-                <div className="soft-card !rounded-[8px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
                   <p className="text-[9px] font-bold tracking-wide text-indigo-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">SAVINGS</span>
                     <span className="hidden lg:inline">
@@ -319,6 +319,9 @@ export default async function HananPage() {
           }
         />
       </div>
+      <p className="mt-6 text-center text-xs font-medium text-slate-400">
+        © 2026 · Made by Anantha
+      </p>
     </AppShell>
   );
 }
