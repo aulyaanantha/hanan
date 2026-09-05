@@ -1,11 +1,16 @@
 import { redirect } from "next/navigation";
-import { WalletCards, UserRound, Landmark, TrendingUp } from "lucide-react";
+import {
+  WalletCards,
+  UserRound,
+  Landmark,
+  TrendingUp,
+} from "lucide-react";
 
 import AppShell from "@/components/AppShell";
 import TodayInfo from "@/components/TodayInfo";
 import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import UpdateSeaBankBalance from "@/components/UpdateSeaBankBalance";
+import { calculateSeaBank } from "@/lib/seabank";
 
 function formatRupiah(value: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -13,6 +18,28 @@ function formatRupiah(value: number) {
     currency: "IDR",
     maximumFractionDigits: 0,
   }).format(value);
+}
+
+function getTodayJakarta() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+function getDaysBetween(startDate: string, endDate: string) {
+  const start = new Date(`${startDate}T00:00:00+07:00`);
+  const end = new Date(`${endDate}T00:00:00+07:00`);
+
+  return Math.max(
+    0,
+    Math.floor(
+      (end.getTime() - start.getTime()) /
+        (1000 * 60 * 60 * 24),
+    ),
+  );
 }
 
 export default async function SeaBankPage() {
@@ -24,107 +51,58 @@ export default async function SeaBankPage() {
 
   const supabase = createSupabaseServerClient();
 
-  const [paymentsResult, expensesResult, personalResult, interestResult, weeksResult] =
-    await Promise.all([
-      supabase.from("payments").select("amount"),
+  const today = getTodayJakarta();
 
-      supabase.from("hanan_expenses").select("amount"),
+  // ==========================================
+  // CURRENT WEEK
+  // ==========================================
 
-      supabase.from("personal_savings").select("amount, type"),
+  const { data: currentWeek, error: weekError } = await supabase
+    .from("weeks")
+    .select("week_number")
+    .lte("target_date", today)
+    .order("target_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-      supabase
-        .from("interest_records")
-        .select(
-          "id, interest_date, base_balance, annual_rate, interest_amount, created_at",
-        )
-        .order("interest_date", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
-
-      supabase
-        .from("weeks")
-        .select("week_number, target_date")
-        .order("target_date", { ascending: true }),
-    ]);
-
-  if (paymentsResult.error) {
-    throw new Error(paymentsResult.error.message);
+  if (weekError) {
+    throw new Error(weekError.message);
   }
 
-  if (expensesResult.error) {
-    throw new Error(expensesResult.error.message);
-  }
+  // ==========================================
+  // AUTOMATIC SEABANK CALCULATION
+  // ==========================================
 
-  if (personalResult.error) {
-    throw new Error(personalResult.error.message);
-  }
+  const seaBank = await calculateSeaBank();
 
-  if (weeksResult.error) {
-    throw new Error(weeksResult.error.message);
-  }
+  const {
+    hananBalance,
+    personalBalance,
+    principalBalance,
+    interestEarned,
+    dailyInterest,
+    seaBankBalance,
+    annualRate,
+    interestStartDate,
+  } = seaBank;
 
-  const payments = paymentsResult.data ?? [];
-  const expenses = expensesResult.data ?? [];
-  const personalTransactions = personalResult.data ?? [];
-  const latestInterestRecord = interestResult.data;
+  // ==========================================
+  // INTEREST INFO
+  // ==========================================
 
-  const recordedSeaBankBalance = latestInterestRecord
-    ? Number(latestInterestRecord.base_balance)
-    : 0;
-
-  const annualRate = latestInterestRecord
-    ? Number(latestInterestRecord.annual_rate)
-    : 0.025;
-
-  const estimatedDailyInterest = (recordedSeaBankBalance * annualRate) / 365;
-
-  const estimated30DayInterest = estimatedDailyInterest * 30;
-
-  // HANAN SAVINGS
-
-  const hananIncome = payments.reduce(
-    (total, item) => total + Number(item.amount),
-    0,
+  const interestDays = getDaysBetween(
+    interestStartDate,
+    today,
   );
 
-  const hananExpense = expenses.reduce(
-    (total, item) => total + Number(item.amount),
-    0,
-  );
+  const estimatedDailyInterest = dailyInterest;
 
-  const hananBalance = hananIncome - hananExpense;
+  const estimated30DayInterest =
+    seaBankBalance * (annualRate / 365) * 30;
 
-  // PERSONAL SAVINGS
-
-  const personalBalance = personalTransactions.reduce((total, transaction) => {
-    const amount = Number(transaction.amount);
-
-    if (transaction.type === "deposit") {
-      return total + amount;
-    }
-
-    if (transaction.type === "withdrawal") {
-      return total - amount;
-    }
-
-    return total;
-  }, 0);
-
-  // OVERALL MONEY
-
-  const overallMoney = hananBalance + personalBalance;
-
-  const today = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Jakarta",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
-
-  const currentWeek =
-    (weeksResult.data ?? []).filter((week) => week.target_date <= today).at(-1)
-      ?.week_number ?? null;
+  // ==========================================
+  // RENDER
+  // ==========================================
 
   return (
     <AppShell>
@@ -138,16 +116,21 @@ export default async function SeaBankPage() {
             </h1>
 
             <p className="mt-2 text-sm text-slate-400">
-              Overview of your money across HANAN and personal savings.
+              Automatically calculated from HANAN savings, personal
+              savings, and earned interest.
             </p>
           </div>
 
-          <TodayInfo weekNumber={currentWeek} />
+          <TodayInfo
+            weekNumber={currentWeek?.week_number ?? null}
+          />
         </header>
 
         {/* BALANCE CARDS */}
 
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {/* HANAN */}
+
           <div className="soft-card flex items-center justify-between p-6">
             <div>
               <p className="text-xs font-bold tracking-wider text-slate-400">
@@ -167,6 +150,8 @@ export default async function SeaBankPage() {
               />
             </div>
           </div>
+
+          {/* PERSONAL */}
 
           <div className="soft-card flex items-center justify-between p-6">
             <div>
@@ -189,18 +174,22 @@ export default async function SeaBankPage() {
           </div>
         </section>
 
-        {/* OVERALL MONEY */}
+        {/* SEABANK BALANCE */}
 
         <section className="soft-card p-7">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-bold tracking-[0.16em] text-indigo-400">
-                OVERALL MONEY
+                SEABANK BALANCE
               </p>
 
               <h2 className="mt-2 text-xl font-bold text-slate-700">
                 Total money in SeaBank
               </h2>
+
+              <p className="mt-1 text-sm text-slate-400">
+                Automatically calculated. No manual balance update needed.
+              </p>
             </div>
 
             <div className="soft-card-inset flex h-12 w-12 items-center justify-center rounded-2xl">
@@ -213,53 +202,41 @@ export default async function SeaBankPage() {
           </div>
 
           <p className="mt-7 text-4xl font-bold tracking-tight text-slate-700">
-            {formatRupiah(overallMoney)}
+            {formatRupiah(seaBankBalance)}
           </p>
-        </section>
 
-        {/* RECORDED SEABANK BALANCE */}
+          {/* BREAKDOWN */}
 
-        <section className="soft-card p-7">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs font-bold tracking-[0.16em] text-indigo-400">
-                RECORDED SEABANK BALANCE
+          <div className="mt-7 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="soft-card-inset rounded-2xl p-5">
+              <p className="text-xs font-bold tracking-wider text-slate-400">
+                HANAN
               </p>
 
-              <h2 className="mt-2 text-xl font-bold text-slate-700">
-                Current recorded balance
-              </h2>
+              <p className="mt-2 text-lg font-bold text-slate-700">
+                {formatRupiah(hananBalance)}
+              </p>
             </div>
 
-            <div className="soft-card-inset flex h-12 w-12 items-center justify-center rounded-2xl">
-              <Landmark
-                size={21}
-                strokeWidth={1.8}
-                className="text-indigo-400"
-              />
-            </div>
-          </div>
-
-          <div className="mt-7 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-4xl font-bold tracking-tight text-slate-700">
-                {formatRupiah(recordedSeaBankBalance)}
+            <div className="soft-card-inset rounded-2xl p-5">
+              <p className="text-xs font-bold tracking-wider text-slate-400">
+                PERSONAL
               </p>
 
-              {latestInterestRecord && (
-                <p className="mt-2 text-xs text-slate-400">
-                  Last recorded on {latestInterestRecord.interest_date}
-                </p>
-              )}
-
-              {!latestInterestRecord && (
-                <p className="mt-2 text-xs text-slate-400">
-                  No SeaBank balance recorded yet.
-                </p>
-              )}
+              <p className="mt-2 text-lg font-bold text-slate-700">
+                {formatRupiah(personalBalance)}
+              </p>
             </div>
 
-            <UpdateSeaBankBalance currentBalance={recordedSeaBankBalance} />
+            <div className="soft-card-inset rounded-2xl p-5">
+              <p className="text-xs font-bold tracking-wider text-slate-400">
+                INTEREST
+              </p>
+
+              <p className="mt-2 text-lg font-bold text-emerald-500">
+                {formatRupiah(interestEarned)}
+              </p>
+            </div>
           </div>
         </section>
 
@@ -269,12 +246,16 @@ export default async function SeaBankPage() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-bold tracking-[0.16em] text-indigo-400">
-                ESTIMATED INTEREST
+                INTEREST
               </p>
 
               <h2 className="mt-2 text-xl font-bold text-slate-700">
-                Estimated SeaBank interest
+                Interest earned
               </h2>
+
+              <p className="mt-1 text-sm text-slate-400">
+                Interest grows automatically every day.
+              </p>
             </div>
 
             <div className="soft-card-inset flex h-12 w-12 items-center justify-center rounded-2xl">
@@ -286,7 +267,30 @@ export default async function SeaBankPage() {
             </div>
           </div>
 
-          <div className="mt-7 grid grid-cols-1 gap-4 md:grid-cols-2">
+          {/* CURRENT INTEREST */}
+
+          <div className="mt-7">
+            <div className="soft-card-inset rounded-2xl p-6">
+              <p className="text-xs font-bold tracking-wider text-slate-400">
+                INTEREST EARNED SO FAR
+              </p>
+
+              <p className="mt-3 text-3xl font-bold text-emerald-500">
+                {formatRupiah(interestEarned)}
+              </p>
+
+              <p className="mt-2 text-xs text-slate-400">
+                Starting from {formatRupiah(13510)} on{" "}
+                {interestStartDate}. Automatically accumulated for{" "}
+                {interestDays}{" "}
+                {interestDays === 1 ? "day" : "days"}.
+              </p>
+            </div>
+          </div>
+
+          {/* DAILY + 30 DAYS */}
+
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="soft-card-inset rounded-2xl p-5">
               <p className="text-xs font-bold tracking-wider text-slate-400">
                 ESTIMATED / DAY
@@ -309,7 +313,7 @@ export default async function SeaBankPage() {
           </div>
 
           <p className="mt-5 text-xs text-slate-400">
-            Estimated using an annual interest rate of{" "}
+            Based on an annual interest rate of{" "}
             {(annualRate * 100).toFixed(2)}%.
           </p>
         </section>
