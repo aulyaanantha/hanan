@@ -7,9 +7,15 @@ type Props = {
 };
 
 export default function TodayInfo({ weekNumber }: Props) {
-  const [now, setNow] = useState(new Date());
+  const [mounted, setMounted] = useState(false);
+  const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
+    const currentTime = new Date();
+
+    setNow(currentTime);
+    setMounted(true);
+
     const timer = setInterval(() => {
       setNow(new Date());
     }, 1000);
@@ -17,19 +23,23 @@ export default function TodayInfo({ weekNumber }: Props) {
     return () => clearInterval(timer);
   }, []);
 
-  const date = now.toLocaleDateString("en-US", {
-    timeZone: "Asia/Jakarta",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const date = mounted && now
+    ? now.toLocaleDateString("en-US", {
+        timeZone: "Asia/Jakarta",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : "—";
 
-  const time = now.toLocaleTimeString("en-GB", {
-    timeZone: "Asia/Jakarta",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
+  const time = mounted && now
+    ? now.toLocaleTimeString("en-GB", {
+        timeZone: "Asia/Jakarta",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+    : "--:--:--";
 
   return (
     <div className="shrink-0 rounded-2xl px-4 py-3 text-right">
