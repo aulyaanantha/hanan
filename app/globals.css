@@ -76,7 +76,10 @@ body {
 
 .sidebar {
   width: 250px;
-  min-height: 100vh;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
   padding: 28px 18px;
   background: #e8edf3;
   box-shadow:
@@ -93,18 +96,18 @@ body {
 }
 
 .brand-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
+  width: 49px;
+  height: 49px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  color: white;
-  background: linear-gradient(145deg, #7182f5, #586bea);
+  border-radius: 50%;
+  background: #e8edf3;
+  padding: 4px;
+  flex-shrink: 0;
   box-shadow:
-    5px 5px 10px rgba(174, 184, 196, 0.45),
-    -5px -5px 10px rgba(255, 255, 255, 0.85);
+    6px 6px 14px rgba(174, 184, 196, 0.35),
+    -6px -6px 14px rgba(255, 255, 255, 0.9);
 }
 
 .brand-title {
@@ -193,18 +196,75 @@ body {
   }
 
   .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+
     width: 100%;
+    height: auto;
     min-height: auto;
-    padding: 18px;
+
+    padding: 16px 18px;
+
+    box-shadow:
+      0 8px 20px rgba(174, 184, 196, 0.18);
+  }
+
+  .sidebar-brand {
+    padding: 2px 0;
+  }
+
+  .brand-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .mobile-menu-button {
+    margin-left: auto;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 14px;
+
+    color: #6577f3;
+    background: #e8edf3;
+
+    box-shadow:
+      5px 5px 10px rgba(174, 184, 196, 0.45),
+      -5px -5px 10px rgba(255, 255, 255, 0.85);
+
+    cursor: pointer;
+  }
+
+  .mobile-menu-button:active {
+    box-shadow:
+      inset 4px 4px 8px rgba(174, 184, 196, 0.4),
+      inset -4px -4px 8px rgba(255, 255, 255, 0.8);
   }
 
   .sidebar-nav {
+    display: none;
+    margin-top: 18px;
     flex-direction: row;
+    gap: 8px;
     overflow-x: auto;
+    padding: 4px 2px 6px;
+  }
+
+  .sidebar-nav.mobile-menu-open {
+    display: flex;
   }
 
   .sidebar-link {
+    flex-shrink: 0;
     white-space: nowrap;
+    padding: 11px 13px;
   }
 
   .sidebar-footer {

@@ -16,6 +16,7 @@ type EditingPayment = {
   person: "Farhan" | "Anantha";
   weekId: string;
   amount: number;
+  paymentDate: string | null;
   weekNumber: number;
   targetDate: string;
 };
@@ -25,6 +26,15 @@ type Props = {
   editingPayment?: EditingPayment | null;
   onClose?: () => void;
 };
+
+function getTodayJakarta() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
 
 export default function AddIncomeModal({
   weeklyData,
@@ -38,6 +48,10 @@ export default function AddIncomeModal({
   >("Anantha");
 
   const [weekId, setWeekId] = useState("");
+
+  const [paymentDate, setPaymentDate] = useState(
+    getTodayJakarta()
+  );
 
   const [amount, setAmount] = useState("");
 
@@ -76,6 +90,7 @@ export default function AddIncomeModal({
 
     setPerson(firstPerson);
     setWeekId(findNextUnpaidWeek(firstPerson));
+    setPaymentDate(getTodayJakarta());
     setAmount("");
     setIsOpen(true);
   }
@@ -88,6 +103,9 @@ export default function AddIncomeModal({
     if (editingPayment) {
       setPerson(editingPayment.person);
       setWeekId(editingPayment.weekId);
+      setPaymentDate(
+        editingPayment.paymentDate || getTodayJakarta()
+      );
       setAmount(String(editingPayment.amount));
       setIsOpen(true);
     }
@@ -118,8 +136,6 @@ export default function AddIncomeModal({
   ) {
     setPerson(selectedPerson);
 
-    // In edit mode, changing the person is allowed.
-    // The selected week stays the same.
     if (isEditMode) {
       return;
     }
@@ -144,6 +160,11 @@ export default function AddIncomeModal({
       return;
     }
 
+    if (!paymentDate) {
+      alert("Please select a payment date.");
+      return;
+    }
+
     if (!numericAmount || numericAmount <= 0) {
       alert("Please enter a valid amount.");
       return;
@@ -164,11 +185,13 @@ export default function AddIncomeModal({
                 person,
                 weekId,
                 amount: numericAmount,
+                paymentDate,
               }
             : {
                 person,
                 weekId,
                 amount: numericAmount,
+                paymentDate,
               }
         ),
       });
@@ -227,7 +250,7 @@ export default function AddIncomeModal({
           type="button"
           onClick={openModal}
           className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-indigo-500 transition hover:text-indigo-600"
-      >
+        >
           + Add Income
         </button>
       )}
@@ -350,6 +373,25 @@ export default function AddIncomeModal({
                       </p>
                     </div>
                   )}
+                </div>
+              </div>
+
+              {/* PAYMENT DATE */}
+
+              <div>
+                <label className="text-xs font-bold tracking-wider text-slate-400">
+                  PAYMENT DATE
+                </label>
+
+                <div className="soft-card-inset mt-2 rounded-2xl px-4">
+                  <input
+                    type="date"
+                    value={paymentDate}
+                    onChange={(event) =>
+                      setPaymentDate(event.target.value)
+                    }
+                    className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
+                  />
                 </div>
               </div>
 

@@ -7,6 +7,7 @@ import HananTable from "@/components/HananTable";
 import AddIncomeModal from "@/components/AddIncomeModal";
 import OutcomeTable from "@/components/OutcomeTable";
 import AddOutcomeModal from "@/components/AddOutcomeModal";
+import TodayInfo from "@/components/TodayInfo";
 
 function formatRupiah(amount: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -71,6 +72,16 @@ export default async function HananPage() {
         new Date(b.expense_date).getTime() - new Date(a.expense_date).getTime(),
     );
   const weeks = weeksResult.data ?? [];
+  const today = new Date();
+
+  const currentWeek =
+    [...weeks]
+      .sort(
+        (a, b) =>
+          new Date(a.target_date).getTime() - new Date(b.target_date).getTime(),
+      )
+      .find((week) => new Date(`${week.target_date}T00:00:00+07:00`) >= today)
+      ?.week_number ?? null;
 
   // --------------------------------
   // TOTALS
@@ -117,6 +128,7 @@ export default async function HananPage() {
         ? {
             id: farhanPayment.id,
             amount: Number(farhanPayment.amount),
+            paymentDate: farhanPayment.payment_date,
           }
         : null,
 
@@ -124,6 +136,7 @@ export default async function HananPage() {
         ? {
             id: ananthaPayment.id,
             amount: Number(ananthaPayment.amount),
+            paymentDate: ananthaPayment.payment_date,
           }
         : null,
 
@@ -143,14 +156,18 @@ export default async function HananPage() {
       <div className="mx-auto max-w-6xl">
         {/* HEADER */}
 
-        <div className="mb-7">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-700">
-            HANAN Savings
-          </h1>
+        <div className="mb-7 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-700">
+              HANAN Savings
+            </h1>
 
-          <p className="mt-2 text-sm text-slate-400">
-            Manage shared savings, contributions, and expenses.
-          </p>
+            <p className="mt-2 text-sm text-slate-400">
+              Manage shared savings, contributions, and expenses.
+            </p>
+          </div>
+
+          <TodayInfo weekNumber={currentWeek} />
         </div>
 
         {/* TABS */}

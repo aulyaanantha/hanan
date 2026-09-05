@@ -7,6 +7,7 @@ import AddIncomeModal from "@/components/AddIncomeModal";
 type Payment = {
   id: string;
   amount: number;
+  paymentDate: string | null;
 };
 
 type WeeklyData = {
@@ -27,6 +28,7 @@ type EditingPayment = {
   person: "Farhan" | "Anantha";
   weekId: string;
   amount: number;
+  paymentDate: string | null;
   weekNumber: number;
   targetDate: string;
 };
@@ -38,8 +40,9 @@ export default function HananTable({
 }) {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [editingPayment, setEditingPayment] =
-    useState<EditingPayment | null>(null);
+  const [editingPayment, setEditingPayment] = useState<EditingPayment | null>(
+    null,
+  );
 
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -50,25 +53,28 @@ export default function HananTable({
 
   const itemsPerPage = 6;
 
-  const totalPages = Math.ceil(
-    weeklyData.length / itemsPerPage
-  );
+  const totalPages = Math.ceil(weeklyData.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
 
-  const currentData = weeklyData.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const currentData = weeklyData.slice(startIndex, startIndex + itemsPerPage);
 
-  function handleEdit(
-    week: WeeklyData,
-    person: "Farhan" | "Anantha"
-  ) {
+  function formatPaymentDate(paymentDate: string | null) {
+    if (!paymentDate) {
+      return "—";
+    }
+
+    return new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Jakarta",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }).format(new Date(`${paymentDate}T00:00:00`));
+  }
+
+  function handleEdit(week: WeeklyData, person: "Farhan" | "Anantha") {
     const payment =
-      person === "Farhan"
-        ? week.farhanPayment
-        : week.ananthaPayment;
+      person === "Farhan" ? week.farhanPayment : week.ananthaPayment;
 
     if (!payment) {
       return;
@@ -81,6 +87,7 @@ export default function HananTable({
       person,
       weekId: week.id,
       amount: payment.amount,
+      paymentDate: payment.paymentDate,
       weekNumber: week.weekNumber,
       targetDate: week.targetDate,
     });
@@ -89,10 +96,10 @@ export default function HananTable({
   async function handleDelete(
     payment: Payment,
     person: "Farhan" | "Anantha",
-    weekNumber: number
+    weekNumber: number,
   ) {
     const confirmed = window.confirm(
-      `Delete ${person}'s contribution for M${weekNumber}?`
+      `Delete ${person}'s contribution for M${weekNumber}?`,
     );
 
     if (!confirmed) {
@@ -116,9 +123,7 @@ export default function HananTable({
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          result.error || "Failed to delete contribution."
-        );
+        throw new Error(result.error || "Failed to delete contribution.");
       }
 
       window.location.href = "/hanan";
@@ -128,21 +133,15 @@ export default function HananTable({
       alert(
         error instanceof Error
           ? error.message
-          : "Failed to delete contribution."
+          : "Failed to delete contribution.",
       );
     } finally {
       setIsDeleting(false);
     }
   }
 
-  function toggleMenu(
-    type: "edit" | "delete",
-    weekId: string
-  ) {
-    if (
-      openMenu?.type === type &&
-      openMenu.weekId === weekId
-    ) {
+  function toggleMenu(type: "edit" | "delete", weekId: string) {
+    if (openMenu?.type === type && openMenu.weekId === weekId) {
       setOpenMenu(null);
       return;
     }
@@ -157,7 +156,7 @@ export default function HananTable({
     <div>
       <div className="overflow-hidden rounded-2xl bg-white/60 shadow-[inset_2px_2px_5px_rgba(174,184,196,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[920px]">
+          <table className="w-full table-fixed">
             <thead>
               <tr className="border-b border-slate-200/70">
                 <th className="px-5 py-4 text-left text-xs font-semibold text-slate-400">
@@ -176,12 +175,12 @@ export default function HananTable({
                   Anantha
                 </th>
 
-                <th className="px-5 py-4 text-right text-xs font-semibold text-slate-400">
-                  Total
+                <th className="px-5 py-4 text-left text-xs font-semibold text-slate-400">
+                  Payment Date
                 </th>
 
                 <th className="px-5 py-4 text-right text-xs font-semibold text-slate-400">
-                  Action
+                  Total
                 </th>
               </tr>
             </thead>
@@ -215,7 +214,7 @@ export default function HananTable({
                         <span className="text-sm font-semibold text-emerald-500">
                           Rp{" "}
                           {new Intl.NumberFormat("id-ID").format(
-                            week.farhanAmount
+                            week.farhanAmount,
                           )}
                         </span>
                       ) : (
@@ -232,7 +231,7 @@ export default function HananTable({
                         <span className="text-sm font-semibold text-emerald-500">
                           Rp{" "}
                           {new Intl.NumberFormat("id-ID").format(
-                            week.ananthaAmount
+                            week.ananthaAmount,
                           )}
                         </span>
                       ) : (
@@ -242,14 +241,41 @@ export default function HananTable({
                       )}
                     </td>
 
+                    {/* PAYMENT DATE */}
+
+                    <td className="px-5 py-4">
+                      <div className="space-y-1">
+                        {/* FARHAN DATE */}
+
+                        <div className="text-xs font-semibold text-blue-400">
+                          <span className="mr-2 text-[10px] font-bold text-blue-300">
+                            F
+                          </span>
+
+                          {week.farhanPayment
+                            ? formatPaymentDate(week.farhanPayment.paymentDate)
+                            : "—"}
+                        </div>
+
+                        {/* ANANTHA DATE */}
+
+                        <div className="text-xs font-semibold text-pink-400">
+                          <span className="mr-2 text-[10px] font-bold text-pink-300">
+                            A
+                          </span>
+
+                          {week.ananthaPayment
+                            ? formatPaymentDate(week.ananthaPayment.paymentDate)
+                            : "—"}
+                        </div>
+                      </div>
+                    </td>
+
                     {/* TOTAL */}
 
                     <td className="px-5 py-4 text-right">
                       <span className="text-sm font-semibold text-slate-600">
-                        Rp{" "}
-                        {new Intl.NumberFormat("id-ID").format(
-                          week.total
-                        )}
+                        Rp {new Intl.NumberFormat("id-ID").format(week.total)}
                       </span>
                     </td>
 
@@ -257,41 +283,30 @@ export default function HananTable({
 
                     <td className="px-5 py-4">
                       <div className="relative flex items-center justify-end gap-2">
-
                         {/* EDIT */}
 
                         <button
                           type="button"
-                          onClick={() =>
-                            toggleMenu("edit", week.id)
-                          }
+                          onClick={() => toggleMenu("edit", week.id)}
                           disabled={isDeleting}
                           aria-label={`Edit M${week.weekNumber}`}
                           title="Edit contribution"
                           className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:text-indigo-400 disabled:opacity-50"
                         >
-                          <Pencil
-                            size={15}
-                            strokeWidth={2}
-                          />
+                          <Pencil size={15} strokeWidth={2} />
                         </button>
 
                         {/* DELETE */}
 
                         <button
                           type="button"
-                          onClick={() =>
-                            toggleMenu("delete", week.id)
-                          }
+                          onClick={() => toggleMenu("delete", week.id)}
                           disabled={isDeleting}
                           aria-label={`Delete M${week.weekNumber}`}
                           title="Delete contribution"
                           className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:text-rose-400 disabled:opacity-50"
                         >
-                          <Trash2
-                            size={15}
-                            strokeWidth={2}
-                          />
+                          <Trash2 size={15} strokeWidth={2} />
                         </button>
 
                         {/* EDIT MENU */}
@@ -306,12 +321,7 @@ export default function HananTable({
                               {week.farhanPayment && (
                                 <button
                                   type="button"
-                                  onClick={() =>
-                                    handleEdit(
-                                      week,
-                                      "Farhan"
-                                    )
-                                  }
+                                  onClick={() => handleEdit(week, "Farhan")}
                                   className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-100"
                                 >
                                   Farhan
@@ -321,12 +331,7 @@ export default function HananTable({
                               {week.ananthaPayment && (
                                 <button
                                   type="button"
-                                  onClick={() =>
-                                    handleEdit(
-                                      week,
-                                      "Anantha"
-                                    )
-                                  }
+                                  onClick={() => handleEdit(week, "Anantha")}
                                   className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-100"
                                 >
                                   Anantha
@@ -351,7 +356,7 @@ export default function HananTable({
                                     handleDelete(
                                       week.farhanPayment!,
                                       "Farhan",
-                                      week.weekNumber
+                                      week.weekNumber,
                                     )
                                   }
                                   className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-rose-50 hover:text-rose-500"
@@ -367,7 +372,7 @@ export default function HananTable({
                                     handleDelete(
                                       week.ananthaPayment!,
                                       "Anantha",
-                                      week.weekNumber
+                                      week.weekNumber,
                                     )
                                   }
                                   className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-rose-50 hover:text-rose-500"
@@ -383,7 +388,7 @@ export default function HananTable({
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6}>
+                  <td colSpan={7}>
                     <div className="flex min-h-[360px] items-center justify-center">
                       <div className="text-center">
                         <p className="text-sm font-semibold text-slate-500">
@@ -409,11 +414,7 @@ export default function HananTable({
         <div className="mt-4 flex items-center justify-between">
           <button
             type="button"
-            onClick={() =>
-              setCurrentPage((page) =>
-                Math.max(page - 1, 1)
-              )
-            }
+            onClick={() => setCurrentPage((page) => Math.max(page - 1, 1))}
             disabled={currentPage === 1}
             className="soft-button rounded-xl px-4 py-2 text-xs font-semibold text-slate-500 disabled:cursor-not-allowed disabled:opacity-40"
           >
@@ -427,9 +428,7 @@ export default function HananTable({
           <button
             type="button"
             onClick={() =>
-              setCurrentPage((page) =>
-                Math.min(page + 1, totalPages)
-              )
+              setCurrentPage((page) => Math.min(page + 1, totalPages))
             }
             disabled={currentPage === totalPages}
             className="soft-button rounded-xl px-4 py-2 text-xs font-semibold text-slate-500 disabled:cursor-not-allowed disabled:opacity-40"

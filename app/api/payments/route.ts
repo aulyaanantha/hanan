@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+function isValidDate(value: unknown) {
+  return (
+    typeof value === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+  );
+}
+
 export async function POST(request: Request) {
   try {
     const authenticated = await isAuthenticated();
@@ -9,7 +16,7 @@ export async function POST(request: Request) {
     if (!authenticated) {
       return NextResponse.json(
         { error: "Unauthorized." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -18,25 +25,33 @@ export async function POST(request: Request) {
     const person = body.person;
     const weekId = body.weekId;
     const amount = Number(body.amount);
+    const paymentDate = body.paymentDate;
 
     if (person !== "Farhan" && person !== "Anantha") {
       return NextResponse.json(
         { error: "Invalid person." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!weekId) {
       return NextResponse.json(
         { error: "Week is required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!amount || amount <= 0) {
       return NextResponse.json(
         { error: "Invalid amount." },
-        { status: 400 }
+        { status: 400 },
+      );
+    }
+
+    if (!isValidDate(paymentDate)) {
+      return NextResponse.json(
+        { error: "Payment date is required." },
+        { status: 400 },
       );
     }
 
@@ -54,7 +69,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         { error: "Selected week does not exist." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -72,7 +87,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         { error: "Could not check existing contribution." },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -81,7 +96,7 @@ export async function POST(request: Request) {
         {
           error: `${person} already has a contribution for this week.`,
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -92,6 +107,7 @@ export async function POST(request: Request) {
         person,
         week_id: weekId,
         amount,
+        payment_date: paymentDate,
       });
 
     if (insertError) {
@@ -99,7 +115,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         { error: "Could not save contribution." },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -111,7 +127,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       { error: "Something went wrong." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -123,7 +139,7 @@ export async function PATCH(request: Request) {
     if (!authenticated) {
       return NextResponse.json(
         { error: "Unauthorized." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -133,32 +149,40 @@ export async function PATCH(request: Request) {
     const person = body.person;
     const weekId = body.weekId;
     const amount = Number(body.amount);
+    const paymentDate = body.paymentDate;
 
     if (!paymentId) {
       return NextResponse.json(
         { error: "Payment ID is required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (person !== "Farhan" && person !== "Anantha") {
       return NextResponse.json(
         { error: "Invalid person." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!weekId) {
       return NextResponse.json(
         { error: "Week is required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!amount || amount <= 0) {
       return NextResponse.json(
         { error: "Invalid amount." },
-        { status: 400 }
+        { status: 400 },
+      );
+    }
+
+    if (!isValidDate(paymentDate)) {
+      return NextResponse.json(
+        { error: "Payment date is required." },
+        { status: 400 },
       );
     }
 
@@ -176,7 +200,7 @@ export async function PATCH(request: Request) {
 
       return NextResponse.json(
         { error: "Selected week does not exist." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -193,12 +217,11 @@ export async function PATCH(request: Request) {
 
       return NextResponse.json(
         { error: "Contribution not found." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
-    // Prevent this payment from being moved onto
-    // another contribution belonging to the same person and week.
+    // Prevent duplicate contribution for the same person and week.
     const { data: duplicatePayment, error: duplicateError } =
       await supabase
         .from("payments")
@@ -213,7 +236,7 @@ export async function PATCH(request: Request) {
 
       return NextResponse.json(
         { error: "Could not check existing contribution." },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -222,7 +245,7 @@ export async function PATCH(request: Request) {
         {
           error: `${person} already has a contribution for this week.`,
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -233,6 +256,7 @@ export async function PATCH(request: Request) {
         person,
         week_id: weekId,
         amount,
+        payment_date: paymentDate,
       })
       .eq("id", paymentId);
 
@@ -241,7 +265,7 @@ export async function PATCH(request: Request) {
 
       return NextResponse.json(
         { error: "Could not update contribution." },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -253,7 +277,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json(
       { error: "Something went wrong." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -265,7 +289,7 @@ export async function DELETE(request: Request) {
     if (!authenticated) {
       return NextResponse.json(
         { error: "Unauthorized." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -276,7 +300,7 @@ export async function DELETE(request: Request) {
     if (!paymentId) {
       return NextResponse.json(
         { error: "Payment ID is required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -295,7 +319,7 @@ export async function DELETE(request: Request) {
 
       return NextResponse.json(
         { error: "Contribution not found." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -310,7 +334,7 @@ export async function DELETE(request: Request) {
 
       return NextResponse.json(
         { error: "Could not delete contribution." },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -322,7 +346,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json(
       { error: "Something went wrong." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

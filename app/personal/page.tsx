@@ -4,6 +4,7 @@ import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import PersonalTransactionButton from "@/components/PersonalTransactionButton";
 import PersonalSavingsTable from "@/components/PersonalSavingsTable";
+import TodayInfo from "@/components/TodayInfo";
 
 function formatRupiah(amount: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -47,20 +48,37 @@ export default async function PersonalSavingsPage() {
     .reduce((sum, transaction) => sum + Number(transaction.amount ?? 0), 0);
 
   const currentBalance = totalDeposit - totalWithdrawal;
+  const { data: weeks } = await supabase
+    .from("weeks")
+    .select("week_number, target_date")
+    .order("target_date", {
+      ascending: true,
+    });
+
+  const today = new Date();
+
+  const currentWeek =
+    (weeks ?? []).find(
+      (week) => new Date(`${week.target_date}T00:00:00+07:00`) >= today,
+    )?.week_number ?? null;
 
   return (
     <AppShell>
       <div className="mx-auto max-w-6xl">
         {/* PAGE HEADER */}
 
-        <div className="mb-7">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-700">
-            Personal Savings
-          </h1>
+        <div className="mb-7 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-700">
+              Personal Savings
+            </h1>
 
-          <p className="mt-2 text-sm text-slate-400">
-            Manage your personal savings and transactions.
-          </p>
+            <p className="mt-2 text-sm text-slate-400">
+              Manage your personal savings and transactions.
+            </p>
+          </div>
+
+          <TodayInfo weekNumber={currentWeek} />
         </div>
 
         {/* SUMMARY */}

@@ -116,8 +116,7 @@ export default async function SeaBankPage() {
             </h1>
 
             <p className="mt-2 text-sm text-slate-400">
-              Automatically calculated from HANAN savings, personal
-              savings, and earned interest.
+              Automatically calculated.
             </p>
           </div>
 
