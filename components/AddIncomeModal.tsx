@@ -226,8 +226,8 @@ export default function AddIncomeModal({
         <button
           type="button"
           onClick={openModal}
-          className="rounded-xl bg-indigo-400 px-5 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-indigo-500"
-        >
+          className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-indigo-500 transition hover:text-indigo-600"
+      >
           + Add Income
         </button>
       )}

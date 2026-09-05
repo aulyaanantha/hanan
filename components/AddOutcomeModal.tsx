@@ -139,8 +139,8 @@ export default function AddOutcomeModal({
         <button
           type="button"
           onClick={openModal}
-          className="rounded-xl bg-rose-400 px-5 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-rose-500"
-        >
+          className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-rose-400 transition hover:text-rose-500"
+      >
           + Add Outcome
         </button>
       )}
