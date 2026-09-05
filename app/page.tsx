@@ -164,7 +164,7 @@ export default async function Home() {
             </h1>
 
             <p className="mt-2 text-sm text-slate-400">
-              Manage shared savings, contributions, and expenses.
+              Track shared savings, contributions, and expenses.
             </p>
           </div>
 
@@ -322,20 +322,28 @@ export default async function Home() {
               <p className="text-xs font-bold tracking-[0.16em] text-indigo-400">
                 LAST CONTRIBUTION
               </p>
-
-              <h2 className="mt-2 text-xl font-bold text-slate-700">
-                Kontribusi terakhir
-              </h2>
             </div>
 
             <div className="mt-7 space-y-4">
               <div className="soft-card-inset flex items-center justify-between rounded-2xl px-5 py-4">
-                <div>
-                  <p className="text-sm font-semibold text-slate-600">Farhan</p>
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 shrink-0 rounded-full bg-[#e8edf3] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
+                    <img
+                      src="/images/farhan.jpg"
+                      alt="Farhan"
+                      className="h-full w-full rounded-full object-cover"
+                    />
+                  </div>
 
-                  <p className="mt-1 text-xs text-slate-400">
-                    Minggu terakhir setor
-                  </p>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-600">
+                      Farhan
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-400">
+                      Last Contribution Week
+                    </p>
+                  </div>
                 </div>
 
                 <span className="text-lg font-bold text-indigo-500">
@@ -344,14 +352,24 @@ export default async function Home() {
               </div>
 
               <div className="soft-card-inset flex items-center justify-between rounded-2xl px-5 py-4">
-                <div>
-                  <p className="text-sm font-semibold text-slate-600">
-                    Anantha
-                  </p>
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 shrink-0 rounded-full bg-[#e8edf3] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
+                    <img
+                      src="/images/anantha.jpg"
+                      alt="Anantha"
+                      className="h-full w-full rounded-full object-cover"
+                    />
+                  </div>
 
-                  <p className="mt-1 text-xs text-slate-400">
-                    Minggu terakhir setor
-                  </p>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-600">
+                      Anantha
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-400">
+                      Last Contribution Week
+                    </p>
+                  </div>
                 </div>
 
                 <span className="text-lg font-bold text-indigo-500">
@@ -368,20 +386,28 @@ export default async function Home() {
               <p className="text-xs font-bold tracking-[0.16em] text-indigo-400">
                 TOTAL CONTRIBUTION
               </p>
-
-              <h2 className="mt-2 text-xl font-bold text-slate-700">
-                Total kontribusi
-              </h2>
             </div>
 
             <div className="mt-7 space-y-4">
               <div className="soft-card-inset flex items-center justify-between rounded-2xl px-5 py-4">
-                <div>
-                  <p className="text-sm font-semibold text-slate-600">Farhan</p>
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 shrink-0 rounded-full bg-[#e8edf3] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
+                    <img
+                      src="/images/farhan.jpg"
+                      alt="Farhan"
+                      className="h-full w-full rounded-full object-cover"
+                    />
+                  </div>
 
-                  <p className="mt-1 text-xs text-slate-400">
-                    Total seluruh kontribusi
-                  </p>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-600">
+                      Farhan
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-400">
+                      Total contribution
+                    </p>
+                  </div>
                 </div>
 
                 <span className="text-lg font-bold text-slate-700">
@@ -390,14 +416,24 @@ export default async function Home() {
               </div>
 
               <div className="soft-card-inset flex items-center justify-between rounded-2xl px-5 py-4">
-                <div>
-                  <p className="text-sm font-semibold text-slate-600">
-                    Anantha
-                  </p>
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 shrink-0 rounded-full bg-[#e8edf3] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
+                    <img
+                      src="/images/anantha.jpg"
+                      alt="Anantha"
+                      className="h-full w-full rounded-full object-cover"
+                    />
+                  </div>
 
-                  <p className="mt-1 text-xs text-slate-400">
-                    Total seluruh kontribusi
-                  </p>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-600">
+                      Anantha
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-400">
+                      Total contribution
+                    </p>
+                  </div>
                 </div>
 
                 <span className="text-lg font-bold text-slate-700">

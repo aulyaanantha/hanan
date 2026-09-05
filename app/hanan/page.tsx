@@ -163,7 +163,7 @@ export default async function HananPage() {
             </h1>
 
             <p className="mt-2 text-sm text-slate-400">
-              Manage shared savings, contributions, and expenses.
+              Record our income and expenses.
             </p>
           </div>
 
