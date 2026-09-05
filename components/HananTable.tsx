@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import AddIncomeModal from "@/components/AddIncomeModal";
 
@@ -50,6 +50,24 @@ export default function HananTable({
     type: "edit" | "delete";
     weekId: string;
   } | null>(null);
+
+  useEffect(() => {
+    if (!openMenu) return;
+
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+
+      if (!target.closest("[data-contribution-menu]")) {
+        setOpenMenu(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openMenu]);
 
   const itemsPerPage = 6;
 
@@ -155,8 +173,8 @@ export default function HananTable({
   return (
     <div>
       <div className="overflow-hidden rounded-2xl bg-white/60 shadow-[inset_2px_2px_5px_rgba(174,184,196,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]">
-        <div className="overflow-x-auto">
-          <table className="w-full table-fixed">
+        <div className="w-full overflow-x-auto overscroll-x-contain">
+          <table className="w-full min-w-[900px] table-fixed">
             <thead>
               <tr className="border-b border-slate-200/70">
                 <th className="px-5 py-4 text-left text-xs font-semibold text-slate-400">
@@ -282,7 +300,10 @@ export default function HananTable({
                     {/* ACTION */}
 
                     <td className="px-5 py-4">
-                      <div className="relative flex items-center justify-end gap-2">
+                      <div
+                        data-contribution-menu
+                        className="relative flex items-center justify-end gap-2"
+                      >
                         {/* EDIT */}
 
                         <button

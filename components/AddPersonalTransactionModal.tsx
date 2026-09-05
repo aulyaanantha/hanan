@@ -25,30 +25,24 @@ export default function AddPersonalTransactionModal({
   const isEditing = Boolean(editingTransaction);
 
   const [type, setType] = useState<TransactionType>(
-    editingTransaction?.type ?? "deposit"
+    editingTransaction?.type ?? "deposit",
   );
 
   const [amount, setAmount] = useState(
-    editingTransaction
-      ? String(editingTransaction.amount)
-      : ""
+    editingTransaction ? String(editingTransaction.amount) : "",
   );
 
   const [date, setDate] = useState(
     editingTransaction?.transaction_date ??
-      new Date().toISOString().split("T")[0]
+      new Date().toISOString().split("T")[0],
   );
 
-  const [note, setNote] = useState(
-    editingTransaction?.note ?? ""
-  );
+  const [note, setNote] = useState(editingTransaction?.note ?? "");
 
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
 
-  function handleAmountChange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
+  function handleAmountChange(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.value.replace(/\D/g, "");
     setAmount(value);
   }
@@ -58,14 +52,10 @@ export default function AddPersonalTransactionModal({
       return "";
     }
 
-    return new Intl.NumberFormat("id-ID").format(
-      Number(value)
-    );
+    return new Intl.NumberFormat("id-ID").format(Number(value));
   }
 
-  async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setError("");
@@ -85,41 +75,35 @@ export default function AddPersonalTransactionModal({
     try {
       setIsSaving(true);
 
-      const response = await fetch(
-        "/api/personal-savings",
-        {
-          method: isEditing ? "PATCH" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(
-            isEditing
-              ? {
-                  transactionId:
-                    editingTransaction?.id,
-                  type,
-                  amount: numericAmount,
-                  transactionDate: date,
-                  note: note.trim(),
-                }
-              : {
-                  type,
-                  amount: numericAmount,
-                  transactionDate: date,
-                  note: note.trim(),
-                }
-          ),
-        }
-      );
+      const response = await fetch("/api/personal-savings", {
+        method: isEditing ? "PATCH" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(
+          isEditing
+            ? {
+                transactionId: editingTransaction?.id,
+                type,
+                amount: numericAmount,
+                transactionDate: date,
+                note: note.trim(),
+              }
+            : {
+                type,
+                amount: numericAmount,
+                transactionDate: date,
+                note: note.trim(),
+              },
+        ),
+      });
 
       const result = await response.json();
 
       if (!response.ok) {
         throw new Error(
           result.error ||
-            `Failed to ${
-              isEditing ? "update" : "save"
-            } transaction.`
+            `Failed to ${isEditing ? "update" : "save"} transaction.`,
         );
       }
 
@@ -130,9 +114,7 @@ export default function AddPersonalTransactionModal({
       setError(
         error instanceof Error
           ? error.message
-          : `Failed to ${
-              isEditing ? "update" : "save"
-            } transaction.`
+          : `Failed to ${isEditing ? "update" : "save"} transaction.`,
       );
     } finally {
       setIsSaving(false);
@@ -140,16 +122,21 @@ export default function AddPersonalTransactionModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/20 p-4 backdrop-blur-sm">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/20 p-4 backdrop-blur-sm"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget && !isSaving) {
+          onClose();
+        }
+      }}
+    >
       <div className="w-full max-w-md rounded-3xl bg-[#e8edf3] p-5 shadow-[8px_8px_24px_rgba(174,184,196,0.35),-8px_-8px_24px_rgba(255,255,255,0.9)] sm:p-6">
         {/* HEADER */}
 
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold text-slate-700">
-              {isEditing
-                ? "Edit Transaction"
-                : "Add Transaction"}
+              {isEditing ? "Edit Transaction" : "Add Transaction"}
             </h2>
 
             <p className="mt-1 text-xs text-slate-400">
@@ -169,10 +156,7 @@ export default function AddPersonalTransactionModal({
           </button>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* TYPE */}
 
           <div>
@@ -195,9 +179,7 @@ export default function AddPersonalTransactionModal({
 
               <button
                 type="button"
-                onClick={() =>
-                  setType("withdrawal")
-                }
+                onClick={() => setType("withdrawal")}
                 className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${
                   type === "withdrawal"
                     ? "bg-white text-rose-400 shadow-[inset_2px_2px_5px_rgba(174,184,196,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]"
@@ -250,9 +232,7 @@ export default function AddPersonalTransactionModal({
               id="personal-date"
               type="date"
               value={date}
-              onChange={(event) =>
-                setDate(event.target.value)
-              }
+              onChange={(event) => setDate(event.target.value)}
               className="w-full rounded-xl border-0 bg-[#e8edf3] px-4 py-3 text-sm font-semibold text-slate-600 outline-none shadow-[inset_3px_3px_7px_rgba(174,184,196,0.35),inset_-3px_-3px_7px_rgba(255,255,255,0.9)]"
             />
           </div>
@@ -271,9 +251,7 @@ export default function AddPersonalTransactionModal({
               id="personal-note"
               type="text"
               value={note}
-              onChange={(event) =>
-                setNote(event.target.value)
-              }
+              onChange={(event) => setNote(event.target.value)}
               placeholder="Optional"
               className="w-full rounded-xl border-0 bg-[#e8edf3] px-4 py-3 text-sm font-semibold text-slate-600 outline-none shadow-[inset_3px_3px_7px_rgba(174,184,196,0.35),inset_-3px_-3px_7px_rgba(255,255,255,0.9)] placeholder:text-slate-300"
             />
@@ -307,8 +285,8 @@ export default function AddPersonalTransactionModal({
               {isSaving
                 ? "Saving..."
                 : isEditing
-                ? "Save Changes"
-                : "Save Transaction"}
+                  ? "Save Changes"
+                  : "Save Transaction"}
             </button>
           </div>
         </form>

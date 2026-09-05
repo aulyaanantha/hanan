@@ -180,6 +180,10 @@ body {
    RESPONSIVE
 ================================ */
 
+.mobile-menu-button {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .sidebar {
     width: 210px;

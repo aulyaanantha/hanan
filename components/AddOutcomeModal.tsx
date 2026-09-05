@@ -14,10 +14,7 @@ type Props = {
   onClose?: () => void;
 };
 
-export default function AddOutcomeModal({
-  expense = null,
-  onClose,
-}: Props) {
+export default function AddOutcomeModal({ expense = null, onClose }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   const [expenseDate, setExpenseDate] = useState("");
@@ -108,9 +105,7 @@ export default function AddOutcomeModal({
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          result.error || "Failed to save outcome."
-        );
+        throw new Error(result.error || "Failed to save outcome.");
       }
 
       setIsOpen(false);
@@ -121,11 +116,7 @@ export default function AddOutcomeModal({
     } catch (error) {
       console.error(error);
 
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Failed to save outcome."
-      );
+      alert(error instanceof Error ? error.message : "Failed to save outcome.");
     } finally {
       setIsSaving(false);
     }
@@ -140,7 +131,7 @@ export default function AddOutcomeModal({
           type="button"
           onClick={openModal}
           className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-rose-400 transition hover:text-rose-500"
-      >
+        >
           + Add Outcome
         </button>
       )}
@@ -148,19 +139,24 @@ export default function AddOutcomeModal({
       {/* MODAL */}
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 px-4 backdrop-blur-sm">
-
-          <div className="soft-card w-full max-w-md p-6">
-
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 px-4 backdrop-blur-sm"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeModal();
+            }
+          }}
+        >
+          <div
+            className="soft-card w-full max-w-md p-6"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
             {/* HEADER */}
 
             <div className="flex items-start justify-between gap-4">
-
               <div>
                 <h2 className="text-lg font-bold text-slate-700">
-                  {isEditing
-                    ? "Edit Outcome"
-                    : "Add Outcome"}
+                  {isEditing ? "Edit Outcome" : "Add Outcome"}
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-400">
@@ -178,13 +174,11 @@ export default function AddOutcomeModal({
               >
                 ×
               </button>
-
             </div>
 
             {/* FORM */}
 
             <div className="mt-6 space-y-5">
-
               {/* DATE */}
 
               <div>
@@ -196,9 +190,7 @@ export default function AddOutcomeModal({
                   <input
                     type="date"
                     value={expenseDate}
-                    onChange={(event) =>
-                      setExpenseDate(event.target.value)
-                    }
+                    onChange={(event) => setExpenseDate(event.target.value)}
                     className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
                   />
                 </div>
@@ -215,9 +207,7 @@ export default function AddOutcomeModal({
                   <input
                     type="text"
                     value={reason}
-                    onChange={(event) =>
-                      setReason(event.target.value)
-                    }
+                    onChange={(event) => setReason(event.target.value)}
                     placeholder="e.g. Richeese"
                     className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
                   />
@@ -232,7 +222,6 @@ export default function AddOutcomeModal({
                 </label>
 
                 <div className="soft-card-inset mt-2 flex items-center rounded-2xl px-4">
-
                   <span className="mr-2 text-sm font-semibold text-slate-400">
                     Rp
                   </span>
@@ -241,22 +230,17 @@ export default function AddOutcomeModal({
                     type="number"
                     min="1"
                     value={amount}
-                    onChange={(event) =>
-                      setAmount(event.target.value)
-                    }
+                    onChange={(event) => setAmount(event.target.value)}
                     className="w-full bg-transparent py-3 text-sm font-bold text-slate-700 outline-none"
                     placeholder="50000"
                   />
-
                 </div>
               </div>
-
             </div>
 
             {/* ACTIONS */}
 
             <div className="mt-7 flex justify-end gap-3">
-
               <button
                 type="button"
                 onClick={closeModal}
@@ -278,11 +262,8 @@ export default function AddOutcomeModal({
                     ? "Save Changes"
                     : "Save Outcome"}
               </button>
-
             </div>
-
           </div>
-
         </div>
       )}
     </>

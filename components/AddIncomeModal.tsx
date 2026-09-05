@@ -43,15 +43,11 @@ export default function AddIncomeModal({
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [person, setPerson] = useState<
-    "Farhan" | "Anantha"
-  >("Anantha");
+  const [person, setPerson] = useState<"Farhan" | "Anantha">("Anantha");
 
   const [weekId, setWeekId] = useState("");
 
-  const [paymentDate, setPaymentDate] = useState(
-    getTodayJakarta()
-  );
+  const [paymentDate, setPaymentDate] = useState(getTodayJakarta());
 
   const [amount, setAmount] = useState("");
 
@@ -63,11 +59,9 @@ export default function AddIncomeModal({
   // FIND NEXT UNPAID WEEK
   // --------------------------------
 
-  function findNextUnpaidWeek(
-    selectedPerson: "Farhan" | "Anantha"
-  ) {
+  function findNextUnpaidWeek(selectedPerson: "Farhan" | "Anantha") {
     const sortedWeeks = [...weeklyData].sort(
-      (a, b) => a.weekNumber - b.weekNumber
+      (a, b) => a.weekNumber - b.weekNumber,
     );
 
     const unpaidWeek = sortedWeeks.find((week) => {
@@ -103,9 +97,7 @@ export default function AddIncomeModal({
     if (editingPayment) {
       setPerson(editingPayment.person);
       setWeekId(editingPayment.weekId);
-      setPaymentDate(
-        editingPayment.paymentDate || getTodayJakarta()
-      );
+      setPaymentDate(editingPayment.paymentDate || getTodayJakarta());
       setAmount(String(editingPayment.amount));
       setIsOpen(true);
     }
@@ -131,17 +123,14 @@ export default function AddIncomeModal({
   // CHANGE PERSON
   // --------------------------------
 
-  function handlePersonChange(
-    selectedPerson: "Farhan" | "Anantha"
-  ) {
+  function handlePersonChange(selectedPerson: "Farhan" | "Anantha") {
     setPerson(selectedPerson);
 
     if (isEditMode) {
       return;
     }
 
-    const nextWeek =
-      findNextUnpaidWeek(selectedPerson);
+    const nextWeek = findNextUnpaidWeek(selectedPerson);
 
     setWeekId(nextWeek);
   }
@@ -154,9 +143,7 @@ export default function AddIncomeModal({
     const numericAmount = Number(amount);
 
     if (!weekId) {
-      alert(
-        `${person} has no unpaid week available.`
-      );
+      alert(`${person} has no unpaid week available.`);
       return;
     }
 
@@ -192,7 +179,7 @@ export default function AddIncomeModal({
                 weekId,
                 amount: numericAmount,
                 paymentDate,
-              }
+              },
         ),
       });
 
@@ -203,7 +190,7 @@ export default function AddIncomeModal({
           result.error ||
             (isEditMode
               ? "Failed to update income."
-              : "Failed to save income.")
+              : "Failed to save income."),
         );
       }
 
@@ -222,7 +209,7 @@ export default function AddIncomeModal({
           ? error.message
           : isEditMode
             ? "Failed to update income."
-            : "Failed to save income."
+            : "Failed to save income.",
       );
     } finally {
       setIsSaving(false);
@@ -233,9 +220,7 @@ export default function AddIncomeModal({
   // SELECTED WEEK INFORMATION
   // --------------------------------
 
-  const selectedWeek = weeklyData.find(
-    (week) => week.id === weekId
-  );
+  const selectedWeek = weeklyData.find((week) => week.id === weekId);
 
   // --------------------------------
   // RENDER
@@ -258,17 +243,24 @@ export default function AddIncomeModal({
       {/* MODAL */}
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 px-4 backdrop-blur-sm">
-          <div className="soft-card w-full max-w-md p-6">
-
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 px-4 backdrop-blur-sm"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeModal();
+            }
+          }}
+        >
+          <div
+            className="soft-card w-full max-w-md p-6"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
             {/* HEADER */}
 
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-lg font-bold text-slate-700">
-                  {isEditMode
-                    ? "Edit Income"
-                    : "Add Income"}
+                  {isEditMode ? "Edit Income" : "Add Income"}
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-400">
@@ -291,7 +283,6 @@ export default function AddIncomeModal({
             {/* FORM */}
 
             <div className="mt-6 space-y-5">
-
               {/* PERSON */}
 
               <div>
@@ -304,20 +295,14 @@ export default function AddIncomeModal({
                     value={person}
                     onChange={(event) =>
                       handlePersonChange(
-                        event.target.value as
-                          | "Farhan"
-                          | "Anantha"
+                        event.target.value as "Farhan" | "Anantha",
                       )
                     }
                     className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
                   >
-                    <option value="Anantha">
-                      Anantha
-                    </option>
+                    <option value="Anantha">Anantha</option>
 
-                    <option value="Farhan">
-                      Farhan
-                    </option>
+                    <option value="Farhan">Farhan</option>
                   </select>
                 </div>
               </div>
@@ -339,27 +324,17 @@ export default function AddIncomeModal({
 
                         <p className="mt-1 text-xs text-slate-400">
                           Target date{" "}
-                          {new Intl.DateTimeFormat(
-                            "en-GB",
-                            {
-                              timeZone:
-                                "Asia/Jakarta",
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            }
-                          ).format(
-                            new Date(
-                              selectedWeek.targetDate
-                            )
-                          )}
+                          {new Intl.DateTimeFormat("en-GB", {
+                            timeZone: "Asia/Jakarta",
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }).format(new Date(selectedWeek.targetDate))}
                         </p>
                       </div>
 
                       <span className="rounded-lg bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-500">
-                        {isEditMode
-                          ? "Current week"
-                          : "Auto selected"}
+                        {isEditMode ? "Current week" : "Auto selected"}
                       </span>
                     </>
                   ) : (
@@ -387,9 +362,7 @@ export default function AddIncomeModal({
                   <input
                     type="date"
                     value={paymentDate}
-                    onChange={(event) =>
-                      setPaymentDate(event.target.value)
-                    }
+                    onChange={(event) => setPaymentDate(event.target.value)}
                     className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
                   />
                 </div>
@@ -411,9 +384,7 @@ export default function AddIncomeModal({
                     type="number"
                     min="1"
                     value={amount}
-                    onChange={(event) =>
-                      setAmount(event.target.value)
-                    }
+                    onChange={(event) => setAmount(event.target.value)}
                     className="w-full bg-transparent py-3 text-sm font-bold text-slate-700 outline-none"
                     placeholder="25000"
                   />
