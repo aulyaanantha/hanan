@@ -14,6 +14,15 @@ function formatRupiah(amount: number) {
   }).format(amount);
 }
 
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
 export default async function PersonalSavingsPage() {
   const authenticated = await isAuthenticated();
 
@@ -55,12 +64,12 @@ export default async function PersonalSavingsPage() {
       ascending: true,
     });
 
-  const today = new Date();
+  const now = new Date();
+  const today = formatDate(now);
 
   const currentWeek =
-    (weeks ?? []).find(
-      (week) => new Date(`${week.target_date}T00:00:00+07:00`) >= today,
-    )?.week_number ?? null;
+    (weeks ?? []).filter((week) => week.target_date <= today).at(-1)
+      ?.week_number ?? null;
 
   return (
     <AppShell>

@@ -17,13 +17,13 @@ function formatRupiah(amount: number) {
   }).format(amount);
 }
 
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Jakarta",
-    day: "2-digit",
-    month: "short",
     year: "numeric",
-  }).format(new Date(date));
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
 }
 
 export default async function HananPage() {
@@ -43,7 +43,7 @@ export default async function HananPage() {
     supabase
       .from("weeks")
       .select("*")
-      .order("week_number", { ascending: false }),
+      .order("week_number", { ascending: true }),
   ]);
 
   if (paymentsResult.error) {
@@ -72,16 +72,12 @@ export default async function HananPage() {
         new Date(b.expense_date).getTime() - new Date(a.expense_date).getTime(),
     );
   const weeks = weeksResult.data ?? [];
-  const today = new Date();
+  const now = new Date();
+  const today = formatDate(now);
 
   const currentWeek =
-    [...weeks]
-      .sort(
-        (a, b) =>
-          new Date(a.target_date).getTime() - new Date(b.target_date).getTime(),
-      )
-      .find((week) => new Date(`${week.target_date}T00:00:00+07:00`) >= today)
-      ?.week_number ?? null;
+    weeks.filter((week) => week.target_date <= today).at(-1)?.week_number ??
+    null;
 
   // --------------------------------
   // TOTALS
