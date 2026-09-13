@@ -145,7 +145,9 @@ export default async function HananPage() {
     };
   });
 
-  const weeklyData = allWeeklyData.filter((week) => week.total > 0);
+  const weeklyData = allWeeklyData
+    .filter((week) => week.total > 0)
+    .sort((a, b) => b.weekNumber - a.weekNumber);
 
   return (
     <AppShell>
