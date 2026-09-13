@@ -83,8 +83,6 @@ export default function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <div className="sidebar-footer-dot" />
-
         <p className="mt-6 text-center text-xs font-medium text-slate-400">
           © 2026 · Made by Anantha
         </p>
