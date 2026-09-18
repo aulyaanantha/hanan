@@ -171,13 +171,9 @@ export default async function SeaBankPage() {
               <h2 className="mt-2 text-xl font-bold text-slate-700">
                 Total Money In SeaBank
               </h2>
-
-              <p className="mt-1 text-xs text-slate-400">
-                Automatically calculated. No manual balance update needed.
-              </p>
             </div>
 
-            <div className="soft-card-inset flex h-12 w-16 items-center justify-center rounded-2xl">
+            <div className="soft-card-inset flex h-12 w-12 items-center justify-center rounded-2xl">
               <Landmark
                 size={21}
                 strokeWidth={1.8}
@@ -252,10 +248,6 @@ export default async function SeaBankPage() {
               <h2 className="mt-2 text-xl font-bold text-slate-700">
                 Interest Earned
               </h2>
-
-              <p className="mt-1 text-xs text-slate-400">
-                Interest grows automatically every day.
-              </p>
             </div>
 
             <div className="soft-card-inset flex h-12 w-12 items-center justify-center rounded-2xl">
@@ -280,7 +272,6 @@ export default async function SeaBankPage() {
               </p>
 
               <p className="mt-2 text-xs text-slate-400">
-                Starting from {formatRupiah(13510)} on {interestStartDate}.
                 Automatically accumulated for {interestDays}{" "}
                 {interestDays === 1 ? "day" : "days"}.
               </p>

@@ -23,6 +23,50 @@ function formatDate(date: Date) {
   }).format(date);
 }
 
+function getProgressMessage(percentage: number) {
+  if (percentage >= 100) {
+    return "Goal Reached! 🎉";
+  }
+
+  if (percentage >= 90) {
+    return "Almost Perfect!";
+  }
+
+  if (percentage >= 80) {
+    return "So Close!";
+  }
+
+  if (percentage >= 70) {
+    return "Amazing Progress!";
+  }
+
+  if (percentage >= 60) {
+    return "Keep It Up!";
+  }
+
+  if (percentage >= 50) {
+    return "Halfway There!";
+  }
+
+  if (percentage >= 40) {
+    return "You're Doing Great!";
+  }
+
+  if (percentage >= 30) {
+    return "Nice Progress!";
+  }
+
+  if (percentage >= 20) {
+    return "Keep Going!";
+  }
+
+  if (percentage >= 10) {
+    return "Good Start!";
+  }
+
+  return "Let's Start!";
+}
+
 export default async function Home() {
   const authenticated = await isAuthenticated();
 
@@ -267,7 +311,7 @@ export default async function Home() {
                   </p>
 
                   <p className="mt-3 text-4xl font-bold tracking-tight text-slate-700 lg:mt-2 lg:text-3xl">
-                    Now {progressPercentage.toFixed(2)}%
+                    Now {Math.min(progressPercentage, 100).toFixed(2)}%
                   </p>
                 </div>
 
@@ -294,7 +338,7 @@ export default async function Home() {
                   >
                     <div className="text-center">
                       <p className="text-3xl font-bold tracking-tight text-slate-700 lg:text-2xl">
-                        Good Job
+                        {getProgressMessage(progressPercentage)}
                       </p>
                     </div>
                   </div>
