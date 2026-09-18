@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  Camera,
-  RotateCcw,
-  X,
-  Loader2,
-} from "lucide-react";
+import { Camera, RotateCcw, X, Loader2, SwitchCamera } from "lucide-react";
 
 type AddMemoryModalProps = {
   onSuccess?: () => void;
@@ -23,23 +18,22 @@ function getTodayJakarta() {
   }).format(new Date());
 }
 
-export default function AddMemoryModal({
-  onSuccess,
-}: AddMemoryModalProps) {
+export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [cameraMode, setCameraMode] =
-    useState<CameraMode>("camera");
+  const [cameraMode, setCameraMode] = useState<CameraMode>("camera");
 
   const [photoBlob, setPhotoBlob] = useState<Blob | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [note, setNote] = useState("");
-  const [memoryDate, setMemoryDate] =
-    useState(getTodayJakarta());
+  const [memoryDate, setMemoryDate] = useState(getTodayJakarta());
 
   const [isSaving, setIsSaving] = useState(false);
   const [cameraError, setCameraError] = useState("");
+  const [cameraFacing, setCameraFacing] = useState<"user" | "environment">(
+    "environment",
+  );
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -53,19 +47,16 @@ export default function AddMemoryModal({
 
     try {
       if (!navigator.mediaDevices?.getUserMedia) {
-        setCameraError(
-          "Your browser does not support camera access."
-        );
+        setCameraError("Your browser does not support camera access.");
         return;
       }
 
-      const stream =
-        await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: "environment",
-          },
-          audio: false,
-        });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: cameraFacing,
+        },
+        audio: false,
+      });
 
       streamRef.current = stream;
 
@@ -75,9 +66,36 @@ export default function AddMemoryModal({
     } catch (error) {
       console.error("Camera error:", error);
 
-      setCameraError(
-        "Camera access was denied or is unavailable."
-      );
+      setCameraError("Camera access was denied or is unavailable.");
+    }
+  }
+
+  async function switchCamera() {
+    stopCamera();
+
+    setCameraError("");
+
+    const nextFacing = cameraFacing === "environment" ? "user" : "environment";
+
+    setCameraFacing(nextFacing);
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: nextFacing,
+        },
+        audio: false,
+      });
+
+      streamRef.current = stream;
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error("Camera switch error:", error);
+
+      setCameraError("Unable to switch camera.");
     }
   }
 
@@ -172,13 +190,7 @@ export default function AddMemoryModal({
       return;
     }
 
-    context.drawImage(
-      video,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     canvas.toBlob(
       (blob) => {
@@ -201,7 +213,7 @@ export default function AddMemoryModal({
         setCameraMode("preview");
       },
       "image/jpeg",
-      0.9
+      0.9,
     );
   }
 
@@ -249,13 +261,9 @@ export default function AddMemoryModal({
     try {
       setIsSaving(true);
 
-      const file = new File(
-        [photoBlob],
-        `memory-${Date.now()}.jpg`,
-        {
-          type: "image/jpeg",
-        }
-      );
+      const file = new File([photoBlob], `memory-${Date.now()}.jpg`, {
+        type: "image/jpeg",
+      });
 
       const formData = new FormData();
 
@@ -271,9 +279,7 @@ export default function AddMemoryModal({
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          result.error || "Failed to save memory."
-        );
+        throw new Error(result.error || "Failed to save memory.");
       }
 
       stopCamera();
@@ -297,11 +303,7 @@ export default function AddMemoryModal({
     } catch (error) {
       console.error(error);
 
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Failed to save memory."
-      );
+      alert(error instanceof Error ? error.message : "Failed to save memory.");
     } finally {
       setIsSaving(false);
     }
@@ -334,25 +336,20 @@ export default function AddMemoryModal({
             <div className="flex items-center justify-between px-5 py-5 sm:px-7">
               <div>
                 <h2 className="text-xl font-bold text-slate-700">
-                  {cameraMode === "camera" &&
-                    "Take a Memory"}
+                  {cameraMode === "camera" && "Take a Memory"}
 
-                  {cameraMode === "preview" &&
-                    "Looks good?"}
+                  {cameraMode === "preview" && "Looks good?"}
 
-                  {cameraMode === "note" &&
-                    "Save this moment"}
+                  {cameraMode === "note" && "Save this moment"}
                 </h2>
 
                 <p className="mt-1 text-sm text-slate-400">
-                  {cameraMode === "camera" &&
-                    "Capture this little moment."}
+                  {cameraMode === "camera" && "Capture this little moment."}
 
                   {cameraMode === "preview" &&
                     "You can retake it or keep this photo."}
 
-                  {cameraMode === "note" &&
-                    "Add a little note to remember it."}
+                  {cameraMode === "note" && "Add a little note to remember it."}
                 </p>
               </div>
 
@@ -410,9 +407,23 @@ export default function AddMemoryModal({
                   )}
                 </div>
 
-                {/* SHUTTER */}
+                {/* CAMERA ACTIONS */}
 
-                <div className="flex justify-center px-6 py-6">
+                <div className="flex items-center justify-center gap-8 px-6 py-6">
+                  {/* FLIP CAMERA */}
+
+                  <button
+                    type="button"
+                    onClick={switchCamera}
+                    disabled={Boolean(cameraError)}
+                    aria-label="Switch camera"
+                    className="soft-button flex h-11 w-11 items-center justify-center rounded-full text-indigo transition active:scale-95 disabled:opacity-50"
+                  >
+                    <SwitchCamera className="h-5 w-5" />
+                  </button>
+
+                  {/* SHUTTER */}
+
                   <button
                     type="button"
                     onClick={takePhoto}
@@ -422,6 +433,10 @@ export default function AddMemoryModal({
                   >
                     <span className="h-12 w-12 rounded-full bg-indigo-400 shadow-inner" />
                   </button>
+
+                  {/* EMPTY SPACE */}
+
+                  <div className="h-11 w-11" />
                 </div>
               </div>
             )}
@@ -484,9 +499,7 @@ export default function AddMemoryModal({
                     <input
                       type="date"
                       value={memoryDate}
-                      onChange={(event) =>
-                        setMemoryDate(event.target.value)
-                      }
+                      onChange={(event) => setMemoryDate(event.target.value)}
                       className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
                     />
                   </div>
@@ -501,9 +514,7 @@ export default function AddMemoryModal({
 
                   <textarea
                     value={note}
-                    onChange={(event) =>
-                      setNote(event.target.value)
-                    }
+                    onChange={(event) => setNote(event.target.value)}
                     rows={4}
                     placeholder="What happened in this moment?"
                     className="soft-card-inset mt-2 w-full resize-none rounded-xl bg-transparent px-4 py-3 text-sm leading-6 text-slate-600 outline-none placeholder:text-slate-300"
@@ -528,13 +539,9 @@ export default function AddMemoryModal({
                     disabled={isSaving}
                     className="soft-button flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-indigo-500 disabled:opacity-50"
                   >
-                    {isSaving && (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    )}
+                    {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
 
-                    {isSaving
-                      ? "Saving..."
-                      : "Save Memory"}
+                    {isSaving ? "Saving..." : "Save Memory"}
                   </button>
                 </div>
               </div>
