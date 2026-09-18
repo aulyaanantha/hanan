@@ -374,6 +374,10 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                     playsInline
                     muted
                     className="aspect-[3/4] w-full object-cover"
+                    style={{
+                      transform:
+                        cameraFacing === "user" ? "scaleX(1)" : "scaleX(1)",
+                    }}
                   />
 
                   {/* CAMERA OVERLAY */}
