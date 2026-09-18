@@ -190,7 +190,18 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
       return;
     }
 
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    if (cameraFacing === "user") {
+      context.save();
+
+      context.translate(canvas.width, 0);
+      context.scale(-1, 1);
+
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      context.restore();
+    } else {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }
 
     canvas.toBlob(
       (blob) => {
@@ -376,7 +387,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                     className="aspect-[3/4] w-full object-cover"
                     style={{
                       transform:
-                        cameraFacing === "user" ? "scaleX(1)" : "scaleX(1)",
+                        cameraFacing === "user" ? "scaleX(-1)" : "scaleX(1)",
                     }}
                   />
 
