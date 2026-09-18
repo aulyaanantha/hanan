@@ -7,6 +7,7 @@ import {
   WalletCards,
   UserRound,
   Landmark,
+  Images,
   Menu,
   X,
 } from "lucide-react";
@@ -31,6 +32,11 @@ const menuItems = [
     label: "SeaBank Balance",
     href: "/seabank",
     icon: Landmark,
+  },
+  {
+    label: "HANAN Memory",
+    href: "/hanan-memory",
+    icon: Images,
   },
 ];
 
