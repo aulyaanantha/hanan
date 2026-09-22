@@ -1,16 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Person = "Anantha" | "Farhan";
 
 export default function NotificationSetup() {
+  const [isVisible, setIsVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [registeredPerson, setRegisteredPerson] = useState<Person | null>(null);
   const [testLoading, setTestLoading] = useState(false);
   const [testMessage, setTestMessage] = useState("");
+
+  useEffect(() => {
+    const notificationSetup = localStorage.getItem("hanan_notification_setup");
+
+    if (notificationSetup !== "true") {
+      setIsVisible(true);
+    }
+  }, []);
 
   async function enableNotifications(person: Person) {
     setLoading(true);
@@ -86,6 +95,8 @@ export default function NotificationSetup() {
 
       setMessage(`Notifikasi berhasil diaktifkan untuk ${person} 💗`);
       setRegisteredPerson(person);
+      localStorage.setItem("hanan_notification_setup", "true");
+      setIsVisible(false);
     } catch (err) {
       console.error(err);
 
@@ -135,6 +146,10 @@ export default function NotificationSetup() {
     } finally {
       setTestLoading(false);
     }
+  }
+
+  if (!isVisible) {
+    return null;
   }
 
   return (
