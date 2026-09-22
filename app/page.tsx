@@ -5,6 +5,7 @@ import TodayInfo from "@/components/TodayInfo";
 import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import ChangeTarget from "@/components/ChangeTarget";
+import NotificationSetup from "@/components/notifications/NotificationSetup";
 
 function formatRupiah(value: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -214,6 +215,8 @@ export default async function Home() {
 
           <TodayInfo weekNumber={currentWeek?.week_number ?? null} />
         </header>
+
+        <NotificationSetup />
 
         <section className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
           {/* LEFT SUMMARY */}

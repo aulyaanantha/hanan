@@ -30,10 +30,15 @@ export async function POST(request: Request) {
       );
     }
 
+    const targetChanged = Number(settings.target_amount) !== targetAmount;
+
     const { error: updateError } = await supabase
       .from("app_settings")
       .update({
         target_amount: targetAmount,
+        ...(targetChanged && {
+          target_notification_sent: false,
+        }),
       })
       .eq("id", settings.id);
 

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { sendNotificationToPerson } from "@/lib/notifications/send";
+import { checkAndSendTargetNotification } from "@/lib/notifications/target";
 
 function isValidDate(value: unknown) {
   return (
@@ -60,7 +62,7 @@ export async function POST(request: Request) {
     // Check that the selected week exists.
     const { data: week, error: weekError } = await supabase
       .from("weeks")
-      .select("id")
+      .select("id, week_number")
       .eq("id", weekId)
       .single();
 
@@ -100,7 +102,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Insert contribution.
+    // ==========================================
+    // INSERT CONTRIBUTION
+    // ==========================================
+
     const { error: insertError } = await supabase
       .from("payments")
       .insert({
@@ -118,6 +123,59 @@ export async function POST(request: Request) {
         { status: 500 },
       );
     }
+
+    // ==========================================
+    // SEND NOTIFICATION TO THE OTHER PERSON
+    // ==========================================
+
+    const recipient: "Farhan" | "Anantha" =
+      person === "Anantha"
+        ? "Farhan"
+        : "Anantha";
+
+    const formattedAmount = new Intl.NumberFormat(
+      "id-ID",
+      {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0,
+      },
+    ).format(amount);
+
+    try {
+      await sendNotificationToPerson(
+        recipient,
+        {
+          title: "💰 HANAN Savings",
+          body: `${person} baru saja melakukan pembayaran ${formattedAmount} untuk Minggu ke-${week.week_number}.`,
+          url: "/hanan",
+        },
+      );
+    } catch (notificationError) {
+      // Notification failure must NOT make the payment fail.
+      console.error(
+        "Payment saved, but notification failed:",
+        notificationError,
+      );
+    }
+
+    // ==========================================
+    // CHECK HANAN TARGET
+    // ==========================================
+
+    try {
+      await checkAndSendTargetNotification();
+    } catch (targetNotificationError) {
+      // Target notification failure must NOT make the payment fail.
+      console.error(
+        "Payment saved, but target notification failed:",
+        targetNotificationError,
+      );
+    }
+
+    // ==========================================
+    // RESPONSE
+    // ==========================================
 
     return NextResponse.json({
       success: true,

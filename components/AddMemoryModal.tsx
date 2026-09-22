@@ -29,6 +29,10 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
   const [note, setNote] = useState("");
   const [memoryDate, setMemoryDate] = useState(getTodayJakarta());
 
+  const [devicePerson, setDevicePerson] = useState<"Anantha" | "Farhan" | null>(
+    null,
+  );
+
   const [isSaving, setIsSaving] = useState(false);
   const [cameraError, setCameraError] = useState("");
   const [cameraFacing, setCameraFacing] = useState<"user" | "environment">(
@@ -37,6 +41,46 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+
+  async function getDevicePerson() {
+    if (!("serviceWorker" in navigator)) {
+      throw new Error("Notification is not supported by this browser.");
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+
+    const subscription = await registration.pushManager.getSubscription();
+
+    if (!subscription) {
+      throw new Error(
+        "This device has not been registered for notifications yet.",
+      );
+    }
+
+    const response = await fetch("/api/notifications/me", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        subscription: subscription.toJSON(),
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Unable to identify this device.");
+    }
+
+    if (result.person !== "Anantha" && result.person !== "Farhan") {
+      throw new Error("This device does not have a valid Hanan identity.");
+    }
+
+    setDevicePerson(result.person);
+
+    return result.person as "Anantha" | "Farhan";
+  }
 
   // ==========================================
   // START CAMERA
@@ -122,14 +166,28 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
   // ==========================================
 
   async function openModal() {
-    setIsOpen(true);
-    setCameraMode("camera");
-    setPhotoBlob(null);
-    setPreviewUrl(null);
-    setNote("");
-    setMemoryDate(getTodayJakarta());
+    try {
+      const currentPerson = await getDevicePerson();
 
-    await startCamera();
+      setDevicePerson(currentPerson);
+
+      setIsOpen(true);
+      setCameraMode("camera");
+      setPhotoBlob(null);
+      setPreviewUrl(null);
+      setNote("");
+      setMemoryDate(getTodayJakarta());
+
+      await startCamera();
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Unable to identify this device.",
+      );
+    }
   }
 
   // ==========================================
@@ -151,6 +209,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
     setPreviewUrl(null);
     setNote("");
     setMemoryDate(getTodayJakarta());
+    setDevicePerson(null);
     setCameraError("");
   }
 
@@ -272,6 +331,10 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
     try {
       setIsSaving(true);
 
+      const currentPerson =
+        devicePerson ?? (await getDevicePerson());
+      setIsSaving(true);
+
       const file = new File([photoBlob], `memory-${Date.now()}.jpg`, {
         type: "image/jpeg",
       });
@@ -281,6 +344,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
       formData.append("image", file);
       formData.append("note", note);
       formData.append("memory_date", memoryDate);
+      formData.append("person", devicePerson ?? "");
 
       const response = await fetch("/api/memories", {
         method: "POST",
@@ -305,6 +369,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
       setPreviewUrl(null);
       setNote("");
       setMemoryDate(getTodayJakarta());
+      setDevicePerson(null);
 
       if (onSuccess) {
         onSuccess();

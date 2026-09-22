@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { sendNotificationToPerson } from "@/lib/notifications/send";
 
 const BUCKET_NAME = "memory-images";
 
@@ -72,6 +73,7 @@ export async function POST(request: NextRequest) {
     const image = formData.get("image");
     const note = formData.get("note");
     const memoryDate = formData.get("memory_date");
+    const person = formData.get("person");
 
     if (!(image instanceof File)) {
       return NextResponse.json(
@@ -83,6 +85,16 @@ export async function POST(request: NextRequest) {
     if (!memoryDate || typeof memoryDate !== "string") {
       return NextResponse.json(
         { error: "Memory date is required" },
+        { status: 400 }
+      );
+    }
+
+    if (
+      typeof person !== "string" ||
+      !["Anantha", "Farhan"].includes(person)
+    ) {
+      return NextResponse.json(
+        { error: "Valid person is required" },
         { status: 400 }
       );
     }
@@ -124,7 +136,8 @@ export async function POST(request: NextRequest) {
       .insert({
         image_path: filePath,
         note: typeof note === "string" ? note : "",
-        memory_date: memoryDate,
+        memory_date: memoryDate, 
+        person,
       })
       .select()
       .single();
@@ -140,6 +153,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Failed to save memory" },
         { status: 500 }
+      );
+    }
+
+    const recipient: "Anantha" | "Farhan" =
+      person === "Anantha" ? "Farhan" : "Anantha";
+
+    try {
+      await sendNotificationToPerson(recipient, {
+        title: "📸 Hanan Memory",
+        body: `${person} menambahkan memory baru 💗`,
+        url: "/hanan-memory",
+      });
+    } catch (notificationError) {
+      console.error(
+        "Failed to send memory notification:",
+        notificationError,
       );
     }
 
