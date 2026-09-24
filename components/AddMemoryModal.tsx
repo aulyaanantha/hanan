@@ -63,7 +63,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        subscription: subscription.toJSON(),
+        endpoint: subscription.endpoint,
       }),
     });
 

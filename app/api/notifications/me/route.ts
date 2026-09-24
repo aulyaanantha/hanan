@@ -16,14 +16,11 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const subscription = body.subscription;
+    const endpoint = body.endpoint;
 
-    if (
-      !subscription ||
-      typeof subscription.endpoint !== "string"
-    ) {
+    if (typeof endpoint !== "string" || !endpoint.trim()) {
       return NextResponse.json(
-        { error: "Push subscription is required." },
+        { error: "Push subscription endpoint is required." },
         { status: 400 },
       );
     }
@@ -33,7 +30,7 @@ export async function POST(request: Request) {
     const { data, error } = await supabase
       .from("notification_devices")
       .select("person")
-      .eq("endpoint", subscription.endpoint)
+      .eq("endpoint", endpoint)
       .maybeSingle();
 
     if (error) {
