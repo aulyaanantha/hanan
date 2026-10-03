@@ -890,8 +890,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
                   </div>
                 </div>
               </div>
-            ) : (
-              /* Empty state */
+            ) : spentCounterComplete ? (
               <div
                 className={`mt-10 transition-all duration-700 ${
                   isEntering
@@ -914,7 +913,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
                   </p>
                 </div>
               </div>
-            )}
+            ) : null}
 
             {/* Bottom message */}
             <p

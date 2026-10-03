@@ -104,16 +104,51 @@ export function buildMonthlyRecap({
   const previousRange = getMonthRange(previousMonth);
 
   // =========================================================
+  // WEEK MAP
+  // =========================================================
+  //
+  // Monthly Recap menentukan bulan pembayaran berdasarkan
+  // weeks.target_date, bukan payments.payment_date.
+  //
+  // payment
+  //    ↓
+  // payment.week_id
+  //    ↓
+  // weeks.id
+  //    ↓
+  // weeks.target_date
+  //
+  // payment_date tetap disimpan dan tetap tersedia untuk
+  // kebutuhan lain di aplikasi.
+  // =========================================================
+
+  const weekMap = new Map(
+    weeks.map((week) => [week.id, week]),
+  );
+
+  // =========================================================
   // PAYMENTS - RECAP MONTH
   // =========================================================
 
   // Semua payment berasal dari HANAN Savings.
   // Personal Savings TIDAK masuk di sini.
+  //
+  // Bulan payment ditentukan dari weeks.target_date.
 
   const monthlyPayments = payments.filter((payment) => {
+    if (!payment.week_id) {
+      return false;
+    }
+
+    const week = weekMap.get(payment.week_id);
+
+    if (!week) {
+      return false;
+    }
+
     return (
-      payment.payment_date >= recapRange.start &&
-      payment.payment_date < recapRange.end
+      week.target_date >= recapRange.start &&
+      week.target_date < recapRange.end
     );
   });
 
@@ -131,9 +166,19 @@ export function buildMonthlyRecap({
   // =========================================================
 
   const previousMonthPayments = payments.filter((payment) => {
+    if (!payment.week_id) {
+      return false;
+    }
+
+    const week = weekMap.get(payment.week_id);
+
+    if (!week) {
+      return false;
+    }
+
     return (
-      payment.payment_date >= previousRange.start &&
-      payment.payment_date < previousRange.end
+      week.target_date >= previousRange.start &&
+      week.target_date < previousRange.end
     );
   });
 
@@ -156,6 +201,9 @@ export function buildMonthlyRecap({
   // =========================================================
   // EXPENSES - RECAP MONTH
   // =========================================================
+
+  // Expense tetap menggunakan expense_date sebagai
+  // tanggal acuan.
 
   const monthlyExpenses = expenses.filter((expense) => {
     return (
@@ -193,6 +241,9 @@ export function buildMonthlyRecap({
   // MEMORIES
   // =========================================================
 
+  // Memory tetap menggunakan memory_date sebagai
+  // tanggal acuan.
+
   const monthlyMemories = memories.filter((memory) => {
     return (
       memory.memory_date >= recapRange.start &&
@@ -211,23 +262,43 @@ export function buildMonthlyRecap({
   // SAVING WEEKS
   // =========================================================
 
-  const monthlyWeekIds = new Set(
-    monthlyPayments
-      .map((payment) => payment.week_id)
-      .filter(Boolean),
-  );
+  // Week dihitung sebagai saving week jika ada payment
+  // yang terhubung ke week tersebut dan target_date-nya
+  // berada di bulan recap.
 
-  const savingWeeks = weeks.filter((week) =>
-    monthlyWeekIds.has(week.id),
-  ).length;
+  const savingWeeks = monthlyPayments.reduce(
+    (weekIds, payment) => {
+      if (payment.week_id) {
+        weekIds.add(payment.week_id);
+      }
+
+      return weekIds;
+    },
+    new Set<string>(),
+  ).size;
 
   // =========================================================
   // BALANCE AT END OF RECAP MONTH
   // =========================================================
 
-  const paymentsUntilEndOfMonth = payments.filter(
-    (payment) => payment.payment_date < recapRange.end,
-  );
+  // Untuk balance historis, payment juga mengikuti
+  // weeks.target_date.
+  //
+  // Expense tetap mengikuti expense_date.
+
+  const paymentsUntilEndOfMonth = payments.filter((payment) => {
+    if (!payment.week_id) {
+      return false;
+    }
+
+    const week = weekMap.get(payment.week_id);
+
+    if (!week) {
+      return false;
+    }
+
+    return week.target_date < recapRange.end;
+  });
 
   const expensesUntilEndOfMonth = expenses.filter(
     (expense) => expense.expense_date < recapRange.end,
