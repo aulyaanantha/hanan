@@ -6,6 +6,8 @@ import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import ChangeTarget from "@/components/ChangeTarget";
 import NotificationSetup from "@/components/notifications/NotificationSetup";
+import { buildMonthlyRecap } from "@/lib/monthly-recap";
+import MonthlyRecapCard from "@/components/MonthlyRecapCard";
 
 function formatRupiah(value: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -77,19 +79,31 @@ export default async function Home() {
 
   const supabase = createSupabaseServerClient();
 
-  const [paymentsResult, expensesResult, settingsResult, weeksResult] =
-    await Promise.all([
-      supabase.from("payments").select("person, amount, week_id"),
+  const [
+    paymentsResult,
+    expensesResult,
+    settingsResult,
+    weeksResult,
+    memoriesResult,
+  ] = await Promise.all([
+    supabase
+      .from("payments")
+      .select("id, person, amount, week_id, payment_date"),
 
-      supabase.from("hanan_expenses").select("amount"),
+    supabase.from("hanan_expenses").select("id, amount, expense_date, reason"),
 
-      supabase.from("app_settings").select("target_amount").limit(1).single(),
+    supabase.from("app_settings").select("target_amount").limit(1).single(),
 
-      supabase
-        .from("weeks")
-        .select("id, week_number, target_date")
-        .order("week_number", { ascending: true }),
-    ]);
+    supabase
+      .from("weeks")
+      .select("id, week_number, target_date")
+      .order("week_number", { ascending: true }),
+
+    supabase
+      .from("memories")
+      .select("id, image_path, note, memory_date, created_at")
+      .order("memory_date", { ascending: false }),
+  ]);
 
   if (paymentsResult.error) {
     throw new Error(paymentsResult.error.message);
@@ -107,9 +121,14 @@ export default async function Home() {
     throw new Error(weeksResult.error.message);
   }
 
+  if (memoriesResult.error) {
+    throw new Error(memoriesResult.error.message);
+  }
+
   const payments = paymentsResult.data ?? [];
   const expenses = expensesResult.data ?? [];
   const weeks = weeksResult.data ?? [];
+  const memories = memoriesResult.data ?? [];
 
   // ================================
   // TOTAL PEMASUKAN
@@ -152,6 +171,14 @@ export default async function Home() {
   // ================================
 
   const targetAmount = Number(settingsResult.data.target_amount);
+
+  const monthlyRecap = buildMonthlyRecap({
+    payments,
+    expenses,
+    weeks,
+    memories,
+    targetAmount,
+  });
 
   const progressPercentage =
     targetAmount > 0 ? (hananBalance / targetAmount) * 100 : 0;
@@ -217,6 +244,8 @@ export default async function Home() {
         </header>
 
         <NotificationSetup />
+          
+        <MonthlyRecapCard monthLabel={monthlyRecap.monthLabel} />
 
         <section className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
           {/* LEFT SUMMARY */}
