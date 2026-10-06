@@ -9,8 +9,8 @@ self.addEventListener("push", (event) => {
 
   const options = {
     body: data.body || "Ada pemberitahuan baru dari HANAN.",
-    icon: "/favicon.ico",
-    badge: "/favicon.ico",
+    icon: "/icons/hanan-notification.png",
+    badge: "/icons/hanan-badge.png",
     data: {
       url: data.url || "/",
     },
