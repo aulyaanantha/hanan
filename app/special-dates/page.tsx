@@ -83,6 +83,7 @@ export default async function SpecialDatesPage() {
   const sortedFeaturedDates = [...(featuredDates ?? [])].sort(
     (a, b) => (featuredOrder[a.title] ?? 99) - (featuredOrder[b.title] ?? 99),
   );
+  type SpecialDateColor = "indigo" | "red" | "blue" | "pink";
 
   const cards = sortedFeaturedDates.map((specialDate) => {
     const dateInfo = getDateInfo(
@@ -114,6 +115,13 @@ export default async function SpecialDatesPage() {
       countdown,
       isToday: dateInfo.isToday,
       elapsedDays,
+      color: (specialDate.title === "Our Anniversary"
+        ? "red"
+        : specialDate.title === "Farhan's Birthday"
+          ? "blue"
+          : specialDate.title === "Anantha's Birthday"
+            ? "pink"
+            : "indigo") as SpecialDateColor,
     };
   });
 
@@ -158,6 +166,7 @@ export default async function SpecialDatesPage() {
                   countdown={card.countdown}
                   isToday={card.isToday}
                   elapsedDays={card.elapsedDays}
+                  color={card.color}
                 />
               </div>
             ))}

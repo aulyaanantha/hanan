@@ -19,6 +19,9 @@ type SpecialDateCardProps = {
   isToday?: boolean;
   elapsedDays?: number;
 
+  // Card color
+  color?: "red" | "blue" | "pink" | "indigo";
+
   // Custom date actions
   isCustom?: boolean;
   onEdit?: () => void;
@@ -34,6 +37,40 @@ const iconMap: Record<string, LucideIcon> = {
   gem: Gem,
 };
 
+const colorMap = {
+  indigo: {
+    decoration: "bg-indigo-100/60",
+    iconBg: "bg-indigo-50",
+    iconText: "text-indigo-400",
+    countdownBg: "bg-indigo-50",
+    countdownText: "text-indigo-500",
+  },
+
+  red: {
+    decoration: "bg-red-100/60",
+    iconBg: "bg-red-50",
+    iconText: "text-red-400",
+    countdownBg: "bg-red-50",
+    countdownText: "text-red-500",
+  },
+
+  blue: {
+    decoration: "bg-blue-100/60",
+    iconBg: "bg-blue-50",
+    iconText: "text-blue-400",
+    countdownBg: "bg-blue-50",
+    countdownText: "text-blue-500",
+  },
+
+  pink: {
+    decoration: "bg-pink-100/60",
+    iconBg: "bg-pink-50",
+    iconText: "text-pink-400",
+    countdownBg: "bg-pink-50",
+    countdownText: "text-pink-500",
+  },
+};
+
 export default function SpecialDateCard({
   title,
   date,
@@ -42,11 +79,13 @@ export default function SpecialDateCard({
   countdown,
   isToday = false,
   elapsedDays,
+  color = "indigo",
   isCustom = false,
   onEdit,
   onDelete,
 }: SpecialDateCardProps) {
   const Icon = iconMap[icon] ?? CalendarDays;
+  const colors = colorMap[color];
 
   return (
     <div
@@ -63,7 +102,7 @@ export default function SpecialDateCard({
       {/* DECORATION */}
 
       <div
-        className="
+        className={`
           pointer-events-none
           absolute
           -right-10
@@ -71,12 +110,12 @@ export default function SpecialDateCard({
           h-32
           w-32
           rounded-full
-          bg-indigo-100/60
+          ${colors.decoration}
           max-md:-right-6
           max-md:-top-6
           max-md:h-20
           max-md:w-20
-        "
+        `}
       />
 
       <div className="relative">
@@ -84,20 +123,20 @@ export default function SpecialDateCard({
 
         <div className="flex items-start justify-between">
           <div
-            className="
+            className={`
               flex
               h-14
               w-14
               items-center
               justify-center
               rounded-2xl
-              bg-indigo-50
-              text-indigo-400
+              ${colors.iconBg}
+              ${colors.iconText}
               shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]
               max-md:h-10
               max-md:w-10
               max-md:rounded-xl
-            "
+            `}
           >
             <Icon
               size={26}
@@ -213,10 +252,10 @@ export default function SpecialDateCard({
         {/* COUNTDOWN */}
 
         <div
-          className="
+          className={`
             mt-6
             rounded-2xl
-            bg-indigo-50
+            ${colors.countdownBg}
             px-4
             py-3
             text-center
@@ -224,16 +263,16 @@ export default function SpecialDateCard({
             max-md:rounded-xl
             max-md:px-2
             max-md:py-2
-          "
+          `}
         >
           <p
-            className="
+            className={`
               text-sm
               font-semibold
-              text-indigo-500
+              ${colors.countdownText}
               max-md:text-[10px]
               max-md:leading-tight
-            "
+            `}
           >
             {countdown}
           </p>
