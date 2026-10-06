@@ -10,6 +10,7 @@ import {
   Images,
   Menu,
   X,
+  CalendarHeart,
 } from "lucide-react";
 
 const menuItems = [
@@ -37,6 +38,11 @@ const menuItems = [
     label: "HANAN Memory",
     href: "/hanan-memory",
     icon: Images,
+  },
+  {
+    label: "Special Dates",
+    href: "/special-dates",
+    icon: CalendarHeart,
   },
 ];
 
