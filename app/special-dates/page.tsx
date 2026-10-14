@@ -134,11 +134,11 @@ export default async function SpecialDatesPage() {
 
         <div className="mb-7 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-700">
+            <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               Special Dates
             </h1>
 
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-[var(--muted)]">
               The little dates that mean a lot to us.
             </p>
           </div>
@@ -179,11 +179,11 @@ export default async function SpecialDatesPage() {
 
         <section className="mt-10">
           <div className="mb-5 w-full">
-            <h2 className="text-lg font-bold text-slate-700">
+            <h2 className="text-lg font-bold text-[var(--foreground)]">
               Other Special Dates
             </h2>
 
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-[var(--primary)]">
               Add other little moments worth remembering.
             </p>
 
@@ -215,15 +215,15 @@ export default async function SpecialDatesPage() {
             />
           ) : (
             <div className="soft-card rounded-3xl p-8 text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-400">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-[var(--primary)]">
                 <CalendarDays size={28} strokeWidth={1.8} />
               </div>
 
-              <h3 className="mt-4 font-semibold text-slate-700">
+              <h3 className="mt-4 font-semibold text-[var(--foreground)]">
                 No other dates yet
               </h3>
 
-              <p className="mt-2 text-sm text-slate-400">
+              <p className="mt-2 text-sm text-[var(--primary)]">
                 Your custom special dates will appear here.
               </p>
             </div>
@@ -233,7 +233,7 @@ export default async function SpecialDatesPage() {
 
       {/* FOOTER */}
 
-      <p className="mt-6 text-center text-xs font-medium text-slate-400">
+      <p className="mt-6 text-center text-xs font-medium text-[var(--primary)]">
         © 2026 · Made by Anantha
       </p>
     </AppShell>

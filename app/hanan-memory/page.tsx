@@ -78,11 +78,11 @@ export default async function HananMemoryPage() {
 
         <div className="mb-7 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-700">
+            <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               HANAN Memory
             </h1>
 
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-[var(--muted)]">
               Little moments from our journey.
             </p>
           </div>
@@ -106,7 +106,7 @@ export default async function HananMemoryPage() {
 
       {/* FOOTER */}
 
-      <p className="mt-6 text-center text-xs font-medium text-slate-400">
+      <p className="mt-6 text-center text-xs font-medium text-[var(--muted)]">
         © 2026 · Made by Anantha
       </p>
     </AppShell>

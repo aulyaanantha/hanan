@@ -172,32 +172,32 @@ export default function HananTable({
 
   return (
     <div>
-      <div className="overflow-hidden rounded-2xl bg-white/60 shadow-[inset_2px_2px_5px_rgba(174,184,196,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]">
+      <div className="overflow-hidden rounded-2xl bg-[var(--surface)]/60 shadow-[inset_2px_2px_5px_rgba(174,184,196,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]">
         <div className="w-full overflow-x-auto overscroll-x-contain">
           <table className="w-full min-w-[900px] table-fixed">
             <thead>
               <tr className="border-b border-slate-200/70">
-                <th className="px-5 py-4 text-left text-xs font-semibold text-slate-400">
+                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--muted)]">
                   Week
                 </th>
 
-                <th className="px-5 py-4 text-left text-xs font-semibold text-slate-400">
+                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--muted)]">
                   Target Date
                 </th>
 
-                <th className="px-5 py-4 text-left text-xs font-semibold text-slate-400">
+                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--muted)]">
                   Farhan
                 </th>
 
-                <th className="px-5 py-4 text-left text-xs font-semibold text-slate-400">
+                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--muted)]">
                   Anantha
                 </th>
 
-                <th className="px-5 py-4 text-left text-xs font-semibold text-slate-400">
+                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--muted)]">
                   Payment Date
                 </th>
 
-                <th className="px-5 py-4 text-right text-xs font-semibold text-slate-400">
+                <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--muted)]">
                   Total
                 </th>
               </tr>
@@ -211,12 +211,12 @@ export default function HananTable({
                     className="border-b border-slate-200/40 last:border-0"
                   >
                     <td className="px-5 py-4">
-                      <span className="text-sm font-semibold text-slate-600">
+                      <span className="text-sm font-semibold text-[var(--foreground)]">
                         M{week.weekNumber}
                       </span>
                     </td>
 
-                    <td className="px-5 py-4 text-sm text-slate-400">
+                    <td className="px-5 py-4 text-sm text-[var(--muted)]">
                       {new Intl.DateTimeFormat("en-GB", {
                         timeZone: "Asia/Jakarta",
                         day: "2-digit",
@@ -292,7 +292,7 @@ export default function HananTable({
                     {/* TOTAL */}
 
                     <td className="px-5 py-4 text-right">
-                      <span className="text-sm font-semibold text-slate-600">
+                      <span className="text-sm font-semibold text-[var(--foreground)]">
                         Rp {new Intl.NumberFormat("id-ID").format(week.total)}
                       </span>
                     </td>
@@ -312,7 +312,7 @@ export default function HananTable({
                           disabled={isDeleting}
                           aria-label={`Edit M${week.weekNumber}`}
                           title="Edit contribution"
-                          className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:text-indigo-400 disabled:opacity-50"
+                          className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] transition hover:text-[var(--primary-dark)] disabled:opacity-50"
                         >
                           <Pencil size={15} strokeWidth={2} />
                         </button>
@@ -325,7 +325,7 @@ export default function HananTable({
                           disabled={isDeleting}
                           aria-label={`Delete M${week.weekNumber}`}
                           title="Delete contribution"
-                          className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:text-rose-400 disabled:opacity-50"
+                          className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] transition hover:text-rose-400 disabled:opacity-50"
                         >
                           <Trash2 size={15} strokeWidth={2} />
                         </button>
@@ -334,8 +334,8 @@ export default function HananTable({
 
                         {openMenu?.type === "edit" &&
                           openMenu.weekId === week.id && (
-                            <div className="absolute right-20 top-10 z-50 w-40 rounded-xl bg-white p-2 shadow-[4px_4px_12px_rgba(174,184,196,0.35),-4px_-4px_12px_rgba(255,255,255,0.9)]">
-                              <p className="px-3 py-2 text-xs font-semibold text-slate-400">
+                            <div className="absolute right-20 top-10 z-50 w-40 rounded-xl bg-[var(--surface)] p-2 shadow-[4px_4px_12px_rgba(174,184,196,0.35),-4px_-4px_12px_rgba(255,255,255,0.9)]">
+                              <p className="px-3 py-2 text-xs font-semibold text-[var(--muted)]">
                                 Edit contribution
                               </p>
 
@@ -343,7 +343,7 @@ export default function HananTable({
                                 <button
                                   type="button"
                                   onClick={() => handleEdit(week, "Farhan")}
-                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] transition hover:bg-slate-100"
                                 >
                                   Farhan
                                 </button>
@@ -353,7 +353,7 @@ export default function HananTable({
                                 <button
                                   type="button"
                                   onClick={() => handleEdit(week, "Anantha")}
-                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] transition hover:bg-slate-100"
                                 >
                                   Anantha
                                 </button>
@@ -365,8 +365,8 @@ export default function HananTable({
 
                         {openMenu?.type === "delete" &&
                           openMenu.weekId === week.id && (
-                            <div className="absolute right-0 top-10 z-50 w-44 rounded-xl bg-white p-2 shadow-[4px_4px_12px_rgba(174,184,196,0.35),-4px_-4px_12px_rgba(255,255,255,0.9)]">
-                              <p className="px-3 py-2 text-xs font-semibold text-slate-400">
+                            <div className="absolute right-0 top-10 z-50 w-44 rounded-xl bg-[var(--surface)] p-2 shadow-[4px_4px_12px_rgba(174,184,196,0.35),-4px_-4px_12px_rgba(255,255,255,0.9)]">
+                              <p className="px-3 py-2 text-xs font-semibold text-[var(--muted)]">
                                 Delete contribution
                               </p>
 
@@ -380,7 +380,7 @@ export default function HananTable({
                                       week.weekNumber,
                                     )
                                   }
-                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-rose-50 hover:text-rose-500"
+                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] transition hover:bg-rose-50 hover:text-rose-500"
                                 >
                                   Farhan
                                 </button>
@@ -396,7 +396,7 @@ export default function HananTable({
                                       week.weekNumber,
                                     )
                                   }
-                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-rose-50 hover:text-rose-500"
+                                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] transition hover:bg-rose-50 hover:text-rose-500"
                                 >
                                   Anantha
                                 </button>
@@ -412,11 +412,11 @@ export default function HananTable({
                   <td colSpan={7}>
                     <div className="flex min-h-[360px] items-center justify-center">
                       <div className="text-center">
-                        <p className="text-sm font-semibold text-slate-500">
+                        <p className="text-sm font-semibold text-[var(--muted)]">
                           No contributions yet
                         </p>
 
-                        <p className="mt-1 text-xs text-slate-400">
+                        <p className="mt-1 text-xs text-[var(--muted)]">
                           Add your first HANAN contribution.
                         </p>
                       </div>
@@ -437,12 +437,12 @@ export default function HananTable({
             type="button"
             onClick={() => setCurrentPage((page) => Math.max(page - 1, 1))}
             disabled={currentPage === 1}
-            className="soft-button rounded-xl px-4 py-2 text-xs font-semibold text-slate-500 disabled:cursor-not-allowed disabled:opacity-40"
+            className="soft-button rounded-xl px-4 py-2 text-xs font-semibold text-[var(--muted)] disabled:cursor-not-allowed disabled:opacity-40"
           >
             ← Previous
           </button>
 
-          <span className="text-xs font-semibold text-slate-400">
+          <span className="text-xs font-semibold text-[var(--muted)]">
             Page {currentPage} of {totalPages}
           </span>
 
@@ -452,7 +452,7 @@ export default function HananTable({
               setCurrentPage((page) => Math.min(page + 1, totalPages))
             }
             disabled={currentPage === totalPages}
-            className="soft-button rounded-xl px-4 py-2 text-xs font-semibold text-slate-500 disabled:cursor-not-allowed disabled:opacity-40"
+            className="soft-button rounded-xl px-4 py-2 text-xs font-semibold text-[var(--muted)] disabled:cursor-not-allowed disabled:opacity-40"
           >
             Next →
           </button>

@@ -125,14 +125,14 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
     return (
       <div className="soft-card flex flex-col items-center justify-center px-6 py-16 text-center">
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl soft-card-inset">
-          <CalendarDays className="h-7 w-7 text-indigo-400" />
+          <CalendarDays className="h-7 w-7 text-[var(--primary)]" />
         </div>
 
-        <h3 className="text-lg font-semibold text-slate-700">
+        <h3 className="text-lg font-semibold text-[var(--foreground)]">
           No memories yet
         </h3>
 
-        <p className="mt-2 max-w-sm text-sm leading-6 text-slate-400">
+        <p className="mt-2 max-w-sm text-sm leading-6 text-[var(--muted)]">
           Start saving little moments from your journey together.
         </p>
       </div>
@@ -152,13 +152,13 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
               {/* MONTH HEADER */}
 
               <div className="mb-5 flex items-center gap-4">
-                <h2 className="whitespace-nowrap text-lg font-bold tracking-tight text-slate-700">
+                <h2 className="whitespace-nowrap text-lg font-bold tracking-tight text-[var(--foreground)]">
                   {monthYear}
                 </h2>
 
                 <div className="h-px flex-1 bg-slate-200/70" />
 
-                <span className="hidden whitespace-nowrap text-xs font-medium text-slate-400 sm:block">
+                <span className="hidden whitespace-nowrap text-xs font-medium text-[var(--muted)] sm:block">
                   {monthMemories.length}{" "}
                   {monthMemories.length === 1 ? "memory" : "memories"}
                 </span>
@@ -171,7 +171,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
                   <article
                     key={memory.id}
                     onClick={() => setSelectedMemory(memory)}
-                    className="group cursor-pointer overflow-hidden rounded-2xl bg-slate-100 shadow-[6px_6px_14px_rgba(148,163,184,0.18),-6px_-6px_14px_rgba(255,255,255,0.8)] transition duration-300 hover:-translate-y-1 hover:shadow-[8px_8px_18px_rgba(148,163,184,0.22),-8px_-8px_18px_rgba(255,255,255,0.9)]"
+                    className="group cursor-pointer overflow-hidden rounded-2xl bg-slate-100 shadow-[6px_6px_14px_rgba(--shadow-dark),-6px_-6px_14px_rgba(--shadow-light)] transition duration-300 hover:-translate-y-1 hover:shadow-[8px_8px_18px_rgba(--shadow-dark),-8px_-8px_18px_rgba(--shadow-light)]"
                   >
                     {/* IMAGE */}
 
@@ -188,7 +188,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
 
                       {/* DATE ON HOVER */}
 
-                      <div className="absolute bottom-3 left-3 rounded-xl bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-600 opacity-0 shadow-lg backdrop-blur transition duration-300 group-hover:opacity-100">
+                      <div className="absolute bottom-3 left-3 rounded-xl bg-[var(--surface)]/90 px-3 py-1.5 text-xs font-semibold text-[var(--foreground)] opacity-0 shadow-lg backdrop-blur transition duration-300 group-hover:opacity-100">
                         {formatMemoryDate(memory.memory_date)}
                       </div>
                     </div>
@@ -206,11 +206,11 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
 
       {selectedMemory && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-3 py-4 backdrop-blur-md sm:px-4 sm:py-6"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--surface)]/60 px-3 py-4 backdrop-blur-md sm:px-4 sm:py-6"
           onClick={closeDetail}
         >
           <div
-            className="relative flex max-h-[90vh] w-[94vw] max-w-5xl flex-col overflow-hidden rounded-3xl bg-slate-100 shadow-2xl lg:flex-row"
+            className="relative flex max-h-[90vh] w-[94vw] max-w-5xl flex-col overflow-hidden rounded-3xl bg-[var(--surface-raised)] shadow-2xl lg:flex-row"
             onClick={(event) => event.stopPropagation()}
           >
             {/* CLOSE */}
@@ -218,7 +218,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
             <button
               type="button"
               onClick={closeDetail}
-              className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-xl bg-white/90 text-slate-500 shadow-lg backdrop-blur transition hover:text-slate-700 sm:right-4 sm:top-4 sm:h-10 sm:w-10"
+              className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--surface)]/90 text-[var(--muted)] shadow-lg backdrop-blur transition hover:text-[var(--foreground)] sm:right-4 sm:top-4 sm:h-10 sm:w-10"
               aria-label="Close memory"
             >
               <X className="h-5 w-5" />
@@ -242,7 +242,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
               <div className="shrink-0 px-4 pt-4 sm:px-6 sm:pt-6 lg:px-7 lg:pt-7">
                 {/* DATE */}
 
-                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400">
+                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--primary)]">
                   <CalendarDays className="h-4 w-4" />
 
                   {formatMemoryDate(selectedMemory.memory_date)}
@@ -251,7 +251,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
                 {/* PERSON */}
 
                 {selectedMemory.person && (
-                  <p className="mt-2 text-xs font-medium text-slate-400">
+                  <p className="mt-2 text-xs font-medium text-[var(--muted)]">
                     Memory by {selectedMemory.person}
                   </p>
                 )}
@@ -259,11 +259,11 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
                 {/* NOTE */}
 
                 {selectedMemory.note ? (
-                  <p className="mt-4 whitespace-pre-wrap text-xs leading-5 text-slate-600 sm:text-sm sm:leading-6">
+                  <p className="mt-4 whitespace-pre-wrap text-xs leading-5 text-[var(--foreground)] sm:text-sm sm:leading-6">
                     {selectedMemory.note}
                   </p>
                 ) : (
-                  <p className="mt-4 text-xs italic text-slate-400 sm:text-sm">
+                  <p className="mt-4 text-xs italic text-[var(--muted)] sm:text-sm">
                     No note for this memory.
                   </p>
                 )}
@@ -273,7 +273,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
 
               <div className="min-h-0 flex-1 overflow-hidden px-4 sm:px-6 lg:px-7">
                 <div className="mt-4 h-full border-t border-slate-200/70 pt-3">
-                  <h3 className="shrink-0 text-xs font-bold text-slate-600">
+                  <h3 className="shrink-0 text-xs font-bold text-[var(--foreground)]">
                     💬 Comments
                   </h3>
 
@@ -293,7 +293,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
                       setEditingMemory(selectedMemory);
                       setSelectedMemory(null);
                     }}
-                    className="soft-button flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold text-slate-500 transition hover:text-indigo-500 sm:py-3 sm:text-sm"
+                    className="soft-button flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold text-[var(--muted)] transition hover:text-[var(--primary)] sm:py-3 sm:text-sm"
                   >
                     <Pencil className="h-4 w-4" />
                     Edit
@@ -303,7 +303,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
                     type="button"
                     onClick={() => handleDelete(selectedMemory.id)}
                     disabled={deletingId === selectedMemory.id}
-                    className="soft-button flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold text-slate-500 transition hover:text-rose-500 disabled:opacity-50 sm:py-3 sm:text-sm"
+                    className="soft-button flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold text-[var(--muted)] transition hover:text-rose-500 disabled:opacity-50 sm:py-3 sm:text-sm"
                   >
                     <Trash2 className="h-4 w-4" />
 

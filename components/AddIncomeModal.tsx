@@ -234,7 +234,7 @@ export default function AddIncomeModal({
         <button
           type="button"
           onClick={openModal}
-          className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-indigo-500 transition hover:text-indigo-600"
+          className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-[var(--primary)] transition hover:text-[var(--primary-dark)]"
         >
           + Add Income
         </button>
@@ -259,11 +259,11 @@ export default function AddIncomeModal({
 
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-lg font-bold text-slate-700">
+                <h2 className="text-lg font-bold text-[var(--foreground)]">
                   {isEditMode ? "Edit Income" : "Add Income"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-[var(--muted)]">
                   {isEditMode
                     ? "Update this HANAN contribution."
                     : "Record a new HANAN contribution."}
@@ -274,7 +274,7 @@ export default function AddIncomeModal({
                 type="button"
                 onClick={closeModal}
                 disabled={isSaving}
-                className="soft-button flex h-9 w-9 items-center justify-center rounded-xl text-lg text-slate-400"
+                className="soft-button flex h-9 w-9 items-center justify-center rounded-xl text-lg text-[var(--muted)]"
               >
                 ×
               </button>
@@ -286,7 +286,7 @@ export default function AddIncomeModal({
               {/* PERSON */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   FROM
                 </label>
 
@@ -298,7 +298,7 @@ export default function AddIncomeModal({
                         event.target.value as "Farhan" | "Anantha",
                       )
                     }
-                    className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
+                    className="w-full bg-transparent py-3 text-sm font-semibold text-[var(--foreground)] outline-none"
                   >
                     <option value="Anantha">Anantha</option>
 
@@ -310,7 +310,7 @@ export default function AddIncomeModal({
               {/* WEEK */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   WEEK
                 </label>
 
@@ -318,11 +318,11 @@ export default function AddIncomeModal({
                   {selectedWeek ? (
                     <>
                       <div>
-                        <p className="text-sm font-bold text-slate-700">
+                        <p className="text-sm font-bold text-[var(--foreground)]">
                           M{selectedWeek.weekNumber}
                         </p>
 
-                        <p className="mt-1 text-xs text-slate-400">
+                        <p className="mt-1 text-xs text-[var(--muted)]">
                           Target date{" "}
                           {new Intl.DateTimeFormat("en-GB", {
                             timeZone: "Asia/Jakarta",
@@ -339,11 +339,11 @@ export default function AddIncomeModal({
                     </>
                   ) : (
                     <div>
-                      <p className="text-sm font-semibold text-slate-500">
+                      <p className="text-sm font-semibold text-[var(--muted)]">
                         No unpaid week
                       </p>
 
-                      <p className="mt-1 text-xs text-slate-400">
+                      <p className="mt-1 text-xs text-[var(--muted)]">
                         {person} has paid all available weeks.
                       </p>
                     </div>
@@ -354,7 +354,7 @@ export default function AddIncomeModal({
               {/* PAYMENT DATE */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   PAYMENT DATE
                 </label>
 
@@ -363,7 +363,7 @@ export default function AddIncomeModal({
                     type="date"
                     value={paymentDate}
                     onChange={(event) => setPaymentDate(event.target.value)}
-                    className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
+                    className="w-full bg-transparent py-3 text-sm font-semibold text-[var(--foreground)] outline-none"
                   />
                 </div>
               </div>
@@ -371,12 +371,12 @@ export default function AddIncomeModal({
               {/* AMOUNT */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   AMOUNT
                 </label>
 
                 <div className="soft-card-inset mt-2 flex items-center rounded-2xl px-4">
-                  <span className="mr-2 text-sm font-semibold text-slate-400">
+                  <span className="mr-2 text-sm font-semibold text-[var(--muted)]">
                     Rp
                   </span>
 
@@ -385,7 +385,7 @@ export default function AddIncomeModal({
                     min="1"
                     value={amount}
                     onChange={(event) => setAmount(event.target.value)}
-                    className="w-full bg-transparent py-3 text-sm font-bold text-slate-700 outline-none"
+                    className="w-full bg-transparent py-3 text-sm font-bold text-[var(--foreground)] outline-none"
                     placeholder="25000"
                   />
                 </div>
@@ -399,7 +399,7 @@ export default function AddIncomeModal({
                 type="button"
                 onClick={closeModal}
                 disabled={isSaving}
-                className="soft-button rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-500"
+                className="soft-button rounded-xl px-4 py-2.5 text-xs font-semibold text-[var(--muted)]"
               >
                 Cancel
               </button>
@@ -408,7 +408,7 @@ export default function AddIncomeModal({
                 type="button"
                 onClick={handleSave}
                 disabled={isSaving || !weekId}
-                className="rounded-xl bg-indigo-400 px-5 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-xl bg-[var(--primary)] px-5 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-[var(--primary-dark)] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSaving
                   ? isEditMode

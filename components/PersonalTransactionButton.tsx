@@ -12,7 +12,7 @@ export default function PersonalTransactionButton() {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-indigo-500 transition hover:text-indigo-600"
+        className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-[var(--primary)] transition hover:text-[var(--primary-dark)]"
       >
         + Add Transaction
       </button>

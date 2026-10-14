@@ -221,9 +221,9 @@ export default function AddSpecialDateModal({
             py-3
             text-xs
             font-semibold
-            text-indigo-500
+            text-[var(--primary)]
             transition
-            hover:text-indigo-600
+            hover:text-[var(--primary-dark)]
           "
         >
           <CalendarPlus
@@ -276,13 +276,13 @@ export default function AddSpecialDateModal({
 
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-lg font-bold text-slate-700">
+                <h2 className="text-lg font-bold text-[var(--foreground)]">
                   {isEditMode
                     ? "Edit Special Date"
                     : "Add Special Date"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-[var(--muted)]">
                   {isEditMode
                     ? "Update your special date."
                     : "Add an important date to your HANAN calendar."}
@@ -301,9 +301,9 @@ export default function AddSpecialDateModal({
                   items-center
                   justify-center
                   rounded-xl
-                  text-slate-400
+                  text-[var(--muted)]
                   transition
-                  hover:text-slate-600
+                  hover:text-[var(--foreground)]
                   disabled:cursor-not-allowed
                   disabled:opacity-50
                 "
@@ -321,7 +321,7 @@ export default function AddSpecialDateModal({
               {/* TITLE */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   TITLE
                 </label>
 
@@ -339,9 +339,9 @@ export default function AddSpecialDateModal({
                       py-3
                       text-sm
                       font-semibold
-                      text-slate-600
+                      text-[var(--foreground)]
                       outline-none
-                      placeholder:text-slate-300
+                      placeholder:text-[var(--muted)]
                     "
                   />
                 </div>
@@ -350,7 +350,7 @@ export default function AddSpecialDateModal({
               {/* DATE */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   DATE
                 </label>
 
@@ -367,7 +367,7 @@ export default function AddSpecialDateModal({
                       py-3
                       text-sm
                       font-semibold
-                      text-slate-600
+                      text-[var(--foreground)]
                       outline-none
                     "
                   />
@@ -377,7 +377,7 @@ export default function AddSpecialDateModal({
               {/* ICON */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   ICON
                 </label>
 
@@ -404,8 +404,8 @@ export default function AddSpecialDateModal({
                           transition
                           ${
                             isSelected
-                              ? "bg-indigo-100 text-indigo-500 shadow-inner"
-                              : "soft-button text-slate-400 hover:text-indigo-400"
+                              ? "bg-indigo-100 text-[var(--primary)] shadow-inner"
+                              : "soft-button text-[var(--muted)] hover:text-[var(--primary)]"
                           }
                         `}
                       >
@@ -422,9 +422,9 @@ export default function AddSpecialDateModal({
               {/* DESCRIPTION */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   DESCRIPTION
-                  <span className="ml-1 font-medium normal-case tracking-normal text-slate-300">
+                  <span className="ml-1 font-medium normal-case tracking-normal text-[var(--muted)]">
                     (optional)
                   </span>
                 </label>
@@ -444,9 +444,9 @@ export default function AddSpecialDateModal({
                       py-3
                       text-sm
                       font-medium
-                      text-slate-600
+                      text-[var(--foreground)]
                       outline-none
-                      placeholder:text-slate-300
+                      placeholder:text-[var(--muted)]
                     "
                   />
                 </div>
@@ -455,7 +455,7 @@ export default function AddSpecialDateModal({
               {/* REPEAT */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   REPEAT
                 </label>
 
@@ -483,8 +483,8 @@ export default function AddSpecialDateModal({
                           transition
                           ${
                             isSelected
-                              ? "bg-indigo-50 text-indigo-500 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]"
-                              : "soft-button text-slate-500 hover:text-indigo-400"
+                              ? "bg-indigo-50 text-[var(--primary)] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]"
+                              : "soft-button text-[var(--muted)] hover:text-[var(--primary)]"
                           }
                         `}
                       >
@@ -509,7 +509,7 @@ export default function AddSpecialDateModal({
                           `}
                         >
                           {isSelected && (
-                            <span className="h-2.5 w-2.5 rounded-full bg-indigo-400" />
+                            <span className="h-2.5 w-2.5 rounded-full bg-[var(--primary)]" />
                           )}
                         </span>
 
@@ -521,15 +521,15 @@ export default function AddSpecialDateModal({
                               font-semibold
                               ${
                                 isSelected
-                                  ? "text-indigo-500"
-                                  : "text-slate-600"
+                                  ? "text-[var(--primary)]"
+                                  : "text-[var(--foreground)]"
                               }
                             `}
                           >
                             {option.title}
                           </span>
 
-                          <span className="mt-0.5 block text-xs text-slate-400">
+                          <span className="mt-0.5 block text-xs text-[var(--muted)]">
                             {option.description}
                           </span>
                         </span>
@@ -554,9 +554,9 @@ export default function AddSpecialDateModal({
                   py-2.5
                   text-xs
                   font-semibold
-                  text-slate-500
+                  text-[var(--muted)]
                   transition
-                  hover:text-slate-700
+                  hover:text-[var(--foreground)]
                   disabled:cursor-not-allowed
                   disabled:opacity-50
                 "
@@ -574,7 +574,7 @@ export default function AddSpecialDateModal({
                 }
                 className="
                   rounded-xl
-                  bg-indigo-400
+                  bg-[var(--primary)]
                   px-5
                   py-2.5
                   text-xs

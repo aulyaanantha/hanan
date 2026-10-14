@@ -156,11 +156,11 @@ export default async function HananPage() {
 
         <div className="mb-7 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-700">
+            <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               HANAN Savings
             </h1>
 
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-[var(--muted)]">
               Record our income and expenses.
             </p>
           </div>
@@ -179,7 +179,7 @@ export default async function HananPage() {
                 {/* TOTAL INCOME */}
 
                 <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
-                  <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                  <p className="text-[9px] font-bold tracking-wide text-[var(--muted)] sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">INCOME</span>
                     <span className="hidden lg:inline">TOTAL INCOME</span>
                   </p>
@@ -188,7 +188,7 @@ export default async function HananPage() {
                     {formatRupiah(totalIncome)}
                   </p>
 
-                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                  <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
                     Total contributions
                   </p>
                 </div>
@@ -196,7 +196,7 @@ export default async function HananPage() {
                 {/* TOTAL OUTCOME */}
 
                 <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
-                  <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                  <p className="text-[9px] font-bold tracking-wide text-[var(--muted)] sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">OUTCOME</span>
                     <span className="hidden lg:inline">TOTAL OUTCOME</span>
                   </p>
@@ -205,7 +205,7 @@ export default async function HananPage() {
                     {formatRupiah(totalExpense)}
                   </p>
 
-                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                  <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
                     Total expenses
                   </p>
                 </div>
@@ -213,18 +213,18 @@ export default async function HananPage() {
                 {/* BALANCE */}
 
                 <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
-                  <p className="text-[9px] font-bold tracking-wide text-indigo-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                  <p className="text-[9px] font-bold tracking-wide text-[var(--primary)] sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">SAVINGS</span>
                     <span className="hidden lg:inline">
                       HANAN SAVINGS BALANCE
                     </span>
                   </p>
 
-                  <p className="mt-1 text-sm font-bold tracking-tight text-indigo-500 sm:text-base lg:mt-3 lg:text-2xl">
+                  <p className="mt-1 text-sm font-bold tracking-tight text-[var(--primary)] sm:text-base lg:mt-3 lg:text-2xl">
                     {formatRupiah(hananBalance)}
                   </p>
 
-                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                  <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
                     Current shared balance
                   </p>
                 </div>
@@ -251,7 +251,7 @@ export default async function HananPage() {
                 {/* TOTAL INCOME */}
 
                 <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
-                  <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                  <p className="text-[9px] font-bold tracking-wide text-[var(--muted)] sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">INCOME</span>
                     <span className="hidden lg:inline">TOTAL INCOME</span>
                   </p>
@@ -260,7 +260,7 @@ export default async function HananPage() {
                     {formatRupiah(totalIncome)}
                   </p>
 
-                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                  <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
                     Total contributions
                   </p>
                 </div>
@@ -268,7 +268,7 @@ export default async function HananPage() {
                 {/* TOTAL OUTCOME */}
 
                 <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
-                  <p className="text-[9px] font-bold tracking-wide text-slate-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                  <p className="text-[9px] font-bold tracking-wide text-[var(--muted)] sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">OUTCOME</span>
                     <span className="hidden lg:inline">TOTAL OUTCOME</span>
                   </p>
@@ -277,7 +277,7 @@ export default async function HananPage() {
                     {formatRupiah(totalExpense)}
                   </p>
 
-                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                  <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
                     Total expenses
                   </p>
                 </div>
@@ -285,18 +285,18 @@ export default async function HananPage() {
                 {/* BALANCE */}
 
                 <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
-                  <p className="text-[9px] font-bold tracking-wide text-indigo-400 sm:text-[10px] lg:text-xs lg:tracking-wider">
+                  <p className="text-[9px] font-bold tracking-wide text-[var(--primary)] sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">SAVINGS</span>
                     <span className="hidden lg:inline">
                       HANAN SAVINGS BALANCE
                     </span>
                   </p>
 
-                  <p className="mt-1 text-sm font-bold tracking-tight text-indigo-500 sm:text-base lg:mt-3 lg:text-2xl">
+                  <p className="mt-1 text-sm font-bold tracking-tight text-[var(--primary)] sm:text-base lg:mt-3 lg:text-2xl">
                     {formatRupiah(hananBalance)}
                   </p>
 
-                  <p className="mt-1 hidden text-xs text-slate-400 sm:block">
+                  <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
                     Current shared balance
                   </p>
                 </div>
@@ -317,7 +317,7 @@ export default async function HananPage() {
           }
         />
       </div>
-      <p className="mt-6 text-center text-xs font-medium text-slate-400">
+      <p className="mt-6 text-center text-xs font-medium text-[var(--muted)]">
         © 2026 · Made by Anantha
       </p>
     </AppShell>

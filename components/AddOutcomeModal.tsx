@@ -130,7 +130,7 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
         <button
           type="button"
           onClick={openModal}
-          className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-rose-400 transition hover:text-rose-500"
+          className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-[var(--primary)] transition hover:text-rose-500"
         >
           + Add Outcome
         </button>
@@ -155,11 +155,11 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
 
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-lg font-bold text-slate-700">
+                <h2 className="text-lg font-bold text-[var(--foreground)]">
                   {isEditing ? "Edit Outcome" : "Add Outcome"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-[var(--muted)]">
                   {isEditing
                     ? "Update this HANAN expense."
                     : "Record a new HANAN expense."}
@@ -170,7 +170,7 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
                 type="button"
                 onClick={closeModal}
                 disabled={isSaving}
-                className="soft-button flex h-9 w-9 items-center justify-center rounded-xl text-lg text-slate-400"
+                className="soft-button flex h-9 w-9 items-center justify-center rounded-xl text-lg text-[var(--muted)]"
               >
                 ×
               </button>
@@ -182,7 +182,7 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
               {/* DATE */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   DATE
                 </label>
 
@@ -191,7 +191,7 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
                     type="date"
                     value={expenseDate}
                     onChange={(event) => setExpenseDate(event.target.value)}
-                    className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
+                    className="w-full bg-transparent py-3 text-sm font-semibold text-[var(--foreground)] outline-none"
                   />
                 </div>
               </div>
@@ -199,7 +199,7 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
               {/* REASON */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   REASON
                 </label>
 
@@ -209,7 +209,7 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
                     value={reason}
                     onChange={(event) => setReason(event.target.value)}
                     placeholder="e.g. Richeese"
-                    className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
+                    className="w-full bg-transparent py-3 text-sm font-semibold text-[var(--foreground)] outline-none"
                   />
                 </div>
               </div>
@@ -217,12 +217,12 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
               {/* AMOUNT */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-slate-400">
+                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   AMOUNT
                 </label>
 
                 <div className="soft-card-inset mt-2 flex items-center rounded-2xl px-4">
-                  <span className="mr-2 text-sm font-semibold text-slate-400">
+                  <span className="mr-2 text-sm font-semibold text-[var(--muted)]">
                     Rp
                   </span>
 
@@ -231,7 +231,7 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
                     min="1"
                     value={amount}
                     onChange={(event) => setAmount(event.target.value)}
-                    className="w-full bg-transparent py-3 text-sm font-bold text-slate-700 outline-none"
+                    className="w-full bg-transparent py-3 text-sm font-bold text-[var(--foreground)] outline-none"
                     placeholder="50000"
                   />
                 </div>
@@ -245,7 +245,7 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
                 type="button"
                 onClick={closeModal}
                 disabled={isSaving}
-                className="soft-button rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-500"
+                className="soft-button rounded-xl px-4 py-2.5 text-xs font-semibold text-[var(--muted)]"
               >
                 Cancel
               </button>
@@ -254,7 +254,7 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
                 type="button"
                 onClick={handleSave}
                 disabled={isSaving}
-                className="rounded-xl bg-indigo-400 px-5 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-xl bg-[var(--primary)] px-5 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-[var(--primary-dark)] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSaving
                   ? "Saving..."

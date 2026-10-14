@@ -153,15 +153,15 @@ export default function NotificationSetup() {
   }
 
   return (
-    <div className="rounded-3xl bg-[#e9eef5] p-6 shadow-[8px_8px_20px_rgba(174,184,196,0.35),-8px_-8px_20px_rgba(255,255,255,0.9)]">
+    <div className="rounded-3xl bg-[var(--surface-raised)] p-6 shadow-[8px_8px_20px_rgba(--shadow-dark),-8px_-8px_20px_rgba(--shadow-light)]">
       <div className="text-center">
         <div className="text-3xl">🔔</div>
 
-        <h2 className="mt-2 text-lg font-bold text-slate-700">
+        <h2 className="mt-2 text-lg font-bold text-[var(--foreground)]">
           Enable Notifications
         </h2>
 
-        <p className="mt-2 text-sm leading-6 text-slate-400">
+        <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
           Pilih siapa yang menggunakan perangkat ini.
         </p>
       </div>
@@ -171,7 +171,7 @@ export default function NotificationSetup() {
           type="button"
           disabled={loading}
           onClick={() => enableNotifications("Anantha")}
-          className="rounded-2xl bg-[#e9eef5] px-5 py-4 text-sm font-bold text-slate-700 shadow-[5px_5px_12px_rgba(174,184,196,0.35),-5px_-5px_12px_rgba(255,255,255,0.9)] transition active:scale-[0.98] disabled:opacity-50"
+          className="rounded-2xl bg-[var(--surface)] px-5 py-4 text-sm font-bold text-[var(--foreground)] shadow-[5px_5px_12px_rgba(--shadow-dark),-5px_-5px_12px_rgba(--shadow-light)] transition active:scale-[0.98] disabled:opacity-50"
         >
           💗 Anantha
         </button>
@@ -180,21 +180,21 @@ export default function NotificationSetup() {
           type="button"
           disabled={loading}
           onClick={() => enableNotifications("Farhan")}
-          className="rounded-2xl bg-[#e9eef5] px-5 py-4 text-sm font-bold text-slate-700 shadow-[5px_5px_12px_rgba(174,184,196,0.35),-5px_-5px_12px_rgba(255,255,255,0.9)] transition active:scale-[0.98] disabled:opacity-50"
+          className="rounded-2xl bg-[var(--surface)] px-5 py-4 text-sm font-bold text-[var(--foreground)] shadow-[5px_5px_12px_rgba(--shadow-dark),-5px_-5px_12px_rgba(--shadow-light)] transition active:scale-[0.98] disabled:opacity-50"
         >
           💙 Farhan
         </button>
       </div>
 
       {loading && (
-        <p className="mt-4 text-center text-xs font-medium text-slate-400">
+        <p className="mt-4 text-center text-xs font-medium text-[var(--muted)]">
           Setting up notifications...
         </p>
       )}
 
       {message && (
-        <div className="mt-4 rounded-2xl bg-emerald-50 px-4 py-3 text-center">
-          <p className="text-xs font-semibold text-emerald-500">{message}</p>
+        <div className="mt-4 rounded-2xl bg-[var(--surface-raised)] px-4 py-3 text-center">
+          <p className="text-xs font-semibold text-[var(--surface-raised)]">{message}</p>
         </div>
       )}
 
@@ -204,7 +204,7 @@ export default function NotificationSetup() {
             type="button"
             onClick={sendTestNotification}
             disabled={testLoading}
-            className="w-full rounded-2xl bg-indigo-400 px-5 py-4 text-sm font-bold text-white shadow-[5px_5px_12px_rgba(129,140,248,0.3),-3px_-3px_10px_rgba(255,255,255,0.8)] transition hover:bg-indigo-500 active:scale-[0.99] disabled:opacity-50"
+            className="w-full rounded-2xl bg-[var(--primary)] px-5 py-4 text-sm font-bold text-white shadow-[5px_5px_12px_rgba(--shadow-dark),-3px_-3px_10px_rgba(--shadow-light)] transition hover:bg-[var(--primary-dark)] active:scale-[0.99] disabled:opacity-50"
           >
             {testLoading ? "Sending..." : "🔔 Send Test Notification"}
           </button>
@@ -212,8 +212,8 @@ export default function NotificationSetup() {
       )}
 
       {error && (
-        <div className="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-center">
-          <p className="text-xs font-semibold text-rose-400">{error}</p>
+        <div className="mt-4 rounded-2xl bg-[var(--surface-raised)] px-4 py-3 text-center">
+          <p className="text-xs font-semibold text-[var(--surface-raised)]">{error}</p>
         </div>
       )}
     </div>

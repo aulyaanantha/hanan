@@ -18,8 +18,8 @@ export default function HananTabs({ income, outcome }: Props) {
           onClick={() => setActiveTab("income")}
           className={`rounded-t-2xl px-7 py-3 text-sm font-semibold transition ${
             activeTab === "income"
-              ? "bg-[#e8edf3] text-indigo-500 shadow-[0_-4px_10px_rgba(174,184,196,0.18)]"
-              : "bg-[#dfe4eb] text-slate-500"
+              ? "bg-[var(--surface)] text-[var(--primary)] shadow-[0_-4px_10px_rgba(174,184,196,0.18)]"
+              : "bg-[var(--surface-raised)] text-[var(--muted)]"
           }`}
         >
           Income
@@ -30,8 +30,8 @@ export default function HananTabs({ income, outcome }: Props) {
           onClick={() => setActiveTab("outcome")}
           className={`rounded-t-2xl px-7 py-3 text-sm font-semibold transition ${
             activeTab === "outcome"
-              ? "bg-[#e8edf3] text-indigo-500 shadow-[0_-4px_10px_rgba(174,184,196,0.18)]"
-              : "bg-[#dfe4eb] text-slate-500"
+              ? "bg-[var(--surface)] text-[var(--primary)] shadow-[0_-4px_10px_rgba(174,184,196,0.18)]"
+              : "bg-[var(--surface-raised)] text-[var(--muted)]"
           }`}
         >
           Outcome

@@ -21,7 +21,7 @@ export default function MonthlyRecapCard({
         background:
           "linear-gradient(135deg, #f7dff0 0%, #eee4f8 48%, #e5eaff 100%)",
         boxShadow:
-          "10px 10px 24px rgba(174, 184, 196, 0.45), -10px -10px 24px rgba(255, 255, 255, 0.9)",
+          "10px 10px 24px var(--shadow-dark), -10px -10px 24px var(--shadow-light)",
       }}
     >
       {/* Decorative blobs */}
@@ -57,7 +57,7 @@ export default function MonthlyRecapCard({
             <Sparkles
               size={19}
               strokeWidth={1.7}
-              className="text-indigo-400"
+              className="text-[var(--primary)]"
             />
           </div>
         </div>

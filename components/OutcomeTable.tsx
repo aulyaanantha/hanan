@@ -81,23 +81,23 @@ export default function OutcomeTable({
   return (
     <div>
       {/* TABLE */}
-      <div className="overflow-hidden rounded-2xl bg-white/60 shadow-[inset_2px_2px_5px_rgba(174,184,196,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]">
+      <div className="overflow-hidden rounded-2xl bg-[var(--surface)]/60 shadow-[inset_2px_2px_5px_rgba(174,184,196,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[820px]">
             <thead>
               <tr className="border-b border-slate-200/70">
                 {/* DATE */}
-                <th className="px-5 py-4 text-left text-xs font-semibold text-slate-400">
+                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--muted)]">
                   Date
                 </th>
 
                 {/* REASON */}
-                <th className="px-5 py-4 text-left text-xs font-semibold text-slate-400">
+                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--muted)]">
                   Reason
                 </th>
 
                 {/* AMOUNT */}
-                <th className="px-5 py-4 text-right text-xs font-semibold text-slate-400">
+                <th className="px-5 py-4 text-right text-xs font-semibold text-[var(--muted)]">
                   Amount
                 </th>
               </tr>
@@ -111,13 +111,13 @@ export default function OutcomeTable({
                     className="border-b border-slate-200/40 last:border-0"
                   >
                     {/* DATE */}
-                    <td className="px-5 py-4 text-sm text-slate-400">
+                    <td className="px-5 py-4 text-sm text-[var(--muted)]">
                       {formatDate(expense.expense_date)}
                     </td>
 
                     {/* REASON */}
                     <td className="px-5 py-4">
-                      <span className="text-sm font-semibold text-slate-600">
+                      <span className="text-sm font-semibold text-[var(--foreground)]">
                         {expense.reason}
                       </span>
                     </td>
@@ -140,7 +140,7 @@ export default function OutcomeTable({
                           onClick={() =>
                             setEditingExpense(expense)
                           }
-                          className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:text-indigo-400"
+                          className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] transition hover:text-[var(--primary)]"
                         >
                           <svg
                             className="h-4 w-4"
@@ -169,7 +169,7 @@ export default function OutcomeTable({
                           onClick={() =>
                             handleDelete(expense)
                           }
-                          className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:text-rose-400"
+                          className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] transition hover:text-rose-400"
                         >
                           <svg
                             className="h-4 w-4"
@@ -198,15 +198,15 @@ export default function OutcomeTable({
                   <td colSpan={4}>
                     <div className="flex min-h-[360px] items-center justify-center">
                       <div className="text-center">
-                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#e8edf3] text-2xl text-slate-300 shadow-[inset_4px_4px_8px_rgba(174,184,196,0.3),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]">
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--surface-raised)] text-2xl text-slate-300 shadow-[inset_4px_4px_8px_rgba(174,184,196,0.3),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]">
                           +
                         </div>
 
-                        <p className="mt-5 text-sm font-semibold text-slate-500">
+                        <p className="mt-5 text-sm font-semibold text-[var(--muted)]">
                           No outcome records yet.
                         </p>
 
-                        <p className="mt-1 text-xs text-slate-400">
+                        <p className="mt-1 text-xs text-[var(--muted)]">
                           Click “Add Outcome” to get started.
                         </p>
                       </div>
@@ -230,12 +230,12 @@ export default function OutcomeTable({
               )
             }
             disabled={currentPage === 1}
-            className="soft-button rounded-xl px-3 py-2 text-xs font-semibold text-slate-500 transition disabled:cursor-not-allowed disabled:opacity-40"
+            className="soft-button rounded-xl px-3 py-2 text-xs font-semibold text-[var(--muted)] transition disabled:cursor-not-allowed disabled:opacity-40"
           >
             ← Previous
           </button>
 
-          <span className="text-xs font-medium text-slate-400">
+          <span className="text-xs font-medium text-[var(--muted)]">
             Page {currentPage} of {totalPages}
           </span>
 
@@ -247,7 +247,7 @@ export default function OutcomeTable({
               )
             }
             disabled={currentPage === totalPages}
-            className="soft-button rounded-xl px-3 py-2 text-xs font-semibold text-slate-500 transition disabled:cursor-not-allowed disabled:opacity-40"
+            className="soft-button rounded-xl px-3 py-2 text-xs font-semibold text-[var(--muted)] transition disabled:cursor-not-allowed disabled:opacity-40"
           >
             Next →
           </button>

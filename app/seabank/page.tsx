@@ -99,11 +99,11 @@ export default async function SeaBankPage() {
 
         <header className="flex items-start justify-between gap-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-700">
+            <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               SeaBank Balance
             </h1>
 
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-[var(--muted)]">
               Automatically calculated.
             </p>
           </div>
@@ -118,11 +118,11 @@ export default async function SeaBankPage() {
 
           <div className="soft-card flex items-center justify-between p-4 md:p-6">
             <div>
-              <p className="text-xs font-bold tracking-wider text-slate-400">
+              <p className="text-xs font-bold tracking-wider text-[var(--muted)]">
                 HANAN SAVINGS
               </p>
 
-              <p className="mt-1 text-lg font-bold text-slate-700 md:text-2xl">
+              <p className="mt-1 text-lg font-bold text-[var(--foreground)] md:text-2xl">
                 {formatRupiah(hananBalance)}
               </p>
             </div>
@@ -131,7 +131,7 @@ export default async function SeaBankPage() {
               <WalletCards
                 size={21}
                 strokeWidth={1.8}
-                className="text-indigo-400"
+                className="text-[var(--primary)]"
               />
             </div>
           </div>
@@ -140,11 +140,11 @@ export default async function SeaBankPage() {
 
           <div className="soft-card flex items-center justify-between p-4 md:p-6">
             <div>
-              <p className="text-xs font-bold tracking-wider text-slate-400">
+              <p className="text-xs font-bold tracking-wider text-[var(--muted)]">
                 PERSONAL SAVINGS
               </p>
 
-              <p className="mt-1 text-lg font-bold text-slate-700 md:text-2xl">
+              <p className="mt-1 text-lg font-bold text-[var(--foreground)] md:text-2xl">
                 {formatRupiah(personalBalance)}
               </p>
             </div>
@@ -153,7 +153,7 @@ export default async function SeaBankPage() {
               <UserRound
                 size={21}
                 strokeWidth={1.8}
-                className="text-indigo-400"
+                className="text-[var(--primary)]"
               />
             </div>
           </div>
@@ -164,11 +164,11 @@ export default async function SeaBankPage() {
         <section className="soft-card p-7">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-xs font-bold tracking-[0.16em] text-indigo-400">
+              <p className="text-xs font-bold tracking-[0.16em] text-[var(--primary)]">
                 SEABANK BALANCE
               </p>
 
-              <h2 className="mt-2 text-xl font-bold text-slate-700">
+              <h2 className="mt-2 text-xl font-bold text-[var(--foreground)]">
                 Total Money In SeaBank
               </h2>
             </div>
@@ -177,12 +177,12 @@ export default async function SeaBankPage() {
               <Landmark
                 size={21}
                 strokeWidth={1.8}
-                className="text-indigo-400"
+                className="text-[var(--primary)]"
               />
             </div>
           </div>
 
-          <p className="mt-4 text-2xl font-bold tracking-tight text-slate-700 md:mt-7 md:text-4xl">
+          <p className="mt-4 text-2xl font-bold tracking-tight text-[var(--foreground)] md:mt-7 md:text-4xl">
             {formatRupiah(seaBankBalance)}
           </p>
 
@@ -190,11 +190,11 @@ export default async function SeaBankPage() {
 
           <div className="mt-7 grid grid-cols-3 gap-2 md:gap-4">
             <div className="soft-card-inset rounded-xl p-3 md:rounded-2xl md:p-5">
-              <p className="text-xs font-bold tracking-wider text-slate-400">
+              <p className="text-xs font-bold tracking-wider text-[var(--muted)]">
                 HANAN
               </p>
 
-              <p className="mt-2 font-bold text-slate-700">
+              <p className="mt-2 font-bold text-[var(--foreground)]">
                 <span className="block text-xs md:inline md:text-lg">Rp</span>
                 <span className="block text-sm md:inline md:text-lg">
                   {new Intl.NumberFormat("id-ID", {
@@ -205,11 +205,11 @@ export default async function SeaBankPage() {
             </div>
 
             <div className="soft-card-inset rounded-xl p-3 md:rounded-2xl md:p-5">
-              <p className="text-xs font-bold tracking-wider text-slate-400">
+              <p className="text-xs font-bold tracking-wider text-[var(--muted)]">
                 PERSONAL
               </p>
 
-              <p className="mt-2 font-bold text-slate-700">
+              <p className="mt-2 font-bold text-[var(--foreground)]">
                 <span className="block text-xs md:inline md:text-lg">Rp</span>
                 <span className="block text-sm md:inline md:text-lg">
                   {new Intl.NumberFormat("id-ID", {
@@ -220,7 +220,7 @@ export default async function SeaBankPage() {
             </div>
 
             <div className="soft-card-inset rounded-xl p-3 md:rounded-2xl md:p-5">
-              <p className="text-xs font-bold tracking-wider text-slate-400">
+              <p className="text-xs font-bold tracking-wider text-[var(--muted)]">
                 INTEREST
               </p>
 
@@ -241,11 +241,11 @@ export default async function SeaBankPage() {
         <section className="soft-card p-4 md:p-7">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-xs font-bold tracking-[0.16em] text-indigo-400">
+              <p className="text-xs font-bold tracking-[0.16em] text-[var(--primary)]">
                 INTEREST
               </p>
 
-              <h2 className="mt-2 text-xl font-bold text-slate-700">
+              <h2 className="mt-2 text-xl font-bold text-[var(--foreground)]">
                 Interest Earned
               </h2>
             </div>
@@ -263,7 +263,7 @@ export default async function SeaBankPage() {
 
           <div className="mt-7">
             <div className="soft-card-inset rounded-2xl p-6">
-              <p className="text-lg font-bold text-slate-700 md:text-xl">
+              <p className="text-lg font-bold text-[var(--foreground)] md:text-xl">
                 Interest Earned So Far
               </p>
 
@@ -271,7 +271,7 @@ export default async function SeaBankPage() {
                 {formatRupiah(interestEarned)}
               </p>
 
-              <p className="mt-2 text-xs text-slate-400">
+              <p className="mt-2 text-xs text-[var(--muted)]">
                 Automatically accumulated for {interestDays}{" "}
                 {interestDays === 1 ? "day" : "days"}.
               </p>
@@ -282,33 +282,33 @@ export default async function SeaBankPage() {
 
           <div className="mt-5 grid grid-cols-2 gap-2 md:mt-7 md:gap-4">
             <div className="soft-card-inset rounded-xl p-3 md:rounded-2xl md:p-5">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 md:text-xs">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)] md:text-xs">
                 ESTIMATED / DAY
               </p>
 
-              <p className="mt-1 text-sm font-bold text-slate-700 md:mt-2 md:text-lg">
+              <p className="mt-1 text-sm font-bold text-[var(--foreground)] md:mt-2 md:text-lg">
                 {formatRupiah(estimatedDailyInterest)}
               </p>
             </div>
 
             <div className="soft-card-inset rounded-xl p-3 md:rounded-2xl md:p-5">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 md:text-xs">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--muted)] md:text-xs">
                 ESTIMATED / 30 DAYS
               </p>
 
-              <p className="mt-1 text-sm font-bold text-slate-700 md:mt-2 md:text-lg">
+              <p className="mt-1 text-sm font-bold text-[var(--foreground)] md:mt-2 md:text-lg">
                 {formatRupiah(estimated30DayInterest)}
               </p>
             </div>
           </div>
 
-          <p className="mt-5 text-xs text-slate-400">
+          <p className="mt-5 text-xs text-[var(--muted)]">
             Based on an annual interest rate of {(annualRate * 100).toFixed(2)}
             %.
           </p>
         </section>
       </div>
-      <p className="mt-6 text-center text-xs font-medium text-slate-400">
+      <p className="mt-6 text-center text-xs font-medium text-[var(--muted)]">
         © 2026 · Made by Anantha
       </p>
     </AppShell>

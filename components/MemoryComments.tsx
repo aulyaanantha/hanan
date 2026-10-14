@@ -226,18 +226,18 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
 
       <div className="space-y-1.5 pr-1">
         {loading ? (
-          <p className="text-sm text-slate-400">Memuat komentar...</p>
+          <p className="text-sm text-[var(--muted)]">Memuat komentar...</p>
         ) : comments.length === 0 ? (
-          <p className="text-sm text-slate-400">Belum ada komentar 💗</p>
+          <p className="text-sm text-[var(--muted)]">Belum ada komentar 💗</p>
         ) : (
           comments.map((item) => (
             <div
               key={item.id}
-              className="rounded-xl bg-slate-50 px-3 py-2 shadow-[inset_2px_2px_5px_rgba(148,163,184,0.08),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]"
+              className="rounded-xl bg-[var(--surface-raised)] px-3 py-2 shadow-[inset_2px_2px_5px_rgba(--shadow-dark),inset_-2px_-2px_5px_rgba(--shadow-light)]"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex min-w-0 items-center gap-2">
-                  <span className="truncate text-xs font-semibold text-slate-600">
+                  <span className="truncate text-xs font-semibold text-[var(--foreground)]">
                     {item.person}
                   </span>
 
@@ -246,7 +246,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
                       type="button"
                       onClick={() => handleDeleteComment(item.id)}
                       disabled={deletingId === item.id}
-                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-slate-300 transition hover:bg-rose-50 hover:text-rose-400 disabled:opacity-50"
+                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[var(--muted)] transition hover:bg-[var(--surface-raised)] hover:text-[var(--primary)] disabled:opacity-50"
                       title="Hapus komentar"
                       aria-label="Hapus komentar"
                     >
@@ -255,12 +255,12 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
                   )}
                 </div>
 
-                <span className="shrink-0 text-[10px] text-slate-400">
+                <span className="shrink-0 text-[10px] text-[var(--muted)]">
                   {formatCommentDate(item.created_at)}
                 </span>
               </div>
 
-              <p className="mt-0.5 whitespace-pre-wrap break-words text-xs leading-5 text-slate-600">
+              <p className="mt-0.5 whitespace-pre-wrap break-words text-xs leading-5 text-[var(--foreground)]">
                 {item.comment}
               </p>
             </div>
@@ -271,7 +271,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
       {/* ERROR */}
 
       {error && (
-        <div className="rounded-2xl bg-rose-50 px-4 py-3">
+        <div className="rounded-2xl bg-[var(--surface-raised)] px-4 py-3">
           <p className="text-xs font-semibold text-rose-400">{error}</p>
         </div>
       )}
@@ -286,13 +286,13 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
           maxLength={500}
           placeholder="Tulis komentar..."
           disabled={sending}
-          className="min-w-0 flex-1 rounded-xl bg-slate-50 px-3 py-2.5 text-xs text-slate-600 shadow-[inset_3px_3px_7px_rgba(148,163,184,0.12),inset_-3px_-3px_7px_rgba(255,255,255,0.9)] outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-100 disabled:opacity-60"
+          className="min-w-0 flex-1 rounded-xl bg-[var(--surface-raised)] px-3 py-2.5 text-xs text-[var(--foreground)] shadow-[inset_3px_3px_7px_rgba(--shadow-dark),inset_-3px_-3px_7px_rgba(--shadow-light)] outline-none placeholder:text-[var(--muted)] focus:ring-2 focus:ring-indigo-100 disabled:opacity-60"
         />
 
         <button
           type="submit"
           disabled={sending || !comment.trim()}
-          className="rounded-xl bg-indigo-400 px-3 py-2.5 text-xs font-semibold text-white shadow-[4px_4px_10px_rgba(129,140,248,0.25)] transition hover:bg-indigo-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-xl bg-[var(--primary)] px-3 py-2.5 text-xs font-semibold text-white shadow-[4px_4px_10px_rgba(129,140,248,0.25)] transition hover:bg-[var(--primary-dark)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {sending ? "..." : "Kirim"}
         </button>

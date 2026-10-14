@@ -78,11 +78,11 @@ export default async function PersonalSavingsPage() {
 
         <div className="mb-7 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-700">
+            <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               Personal Savings
             </h1>
 
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-[var(--muted)]">
               Manage your personal savings and transactions.
             </p>
           </div>
@@ -96,15 +96,15 @@ export default async function PersonalSavingsPage() {
           {/* BALANCE */}
 
           <div className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">
-            <p className="text-[10px] font-semibold text-slate-400 sm:text-xs">
+            <p className="text-[10px] font-semibold text-[var(--muted)] sm:text-xs">
               Current Balance
             </p>
 
-            <p className="mt-2 text-sm font-bold tracking-tight text-indigo-500 sm:mt-3 sm:text-2xl">
+            <p className="mt-2 text-sm font-bold tracking-tight text-[var(--primary)] sm:mt-3 sm:text-2xl">
               {formatRupiah(currentBalance)}
             </p>
 
-            <p className="mt-1 hidden text-[9px] text-slate-400 sm:block sm:text-xs">
+            <p className="mt-1 hidden text-[9px] text-[var(--muted)] sm:block sm:text-xs">
               Personal savings
             </p>
           </div>
@@ -112,7 +112,7 @@ export default async function PersonalSavingsPage() {
           {/* DEPOSIT */}
 
           <div className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">
-            <p className="text-[10px] font-semibold text-slate-400 sm:text-xs">
+            <p className="text-[10px] font-semibold text-[var(--muted)] sm:text-xs">
               Total Deposit
             </p>
 
@@ -120,7 +120,7 @@ export default async function PersonalSavingsPage() {
               {formatRupiah(totalDeposit)}
             </p>
 
-            <p className="mt-1 hidden text-[9px] text-slate-400 sm:block sm:text-xs">
+            <p className="mt-1 hidden text-[9px] text-[var(--muted)] sm:block sm:text-xs">
               Money added
             </p>
           </div>
@@ -128,7 +128,7 @@ export default async function PersonalSavingsPage() {
           {/* WITHDRAWAL */}
 
           <div className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">
-            <p className="text-[10px] font-semibold text-slate-400 sm:text-xs">
+            <p className="text-[10px] font-semibold text-[var(--muted)] sm:text-xs">
               Total Withdrawal
             </p>
 
@@ -136,7 +136,7 @@ export default async function PersonalSavingsPage() {
               {formatRupiah(totalWithdrawal)}
             </p>
 
-            <p className="mt-1 hidden text-[9px] text-slate-400 sm:block sm:text-xs">
+            <p className="mt-1 hidden text-[9px] text-[var(--muted)] sm:block sm:text-xs">
               Money withdrawn
             </p>
           </div>
@@ -164,7 +164,7 @@ export default async function PersonalSavingsPage() {
           </div>
         </section>
       </div>
-      <p className="mt-6 text-center text-xs font-medium text-slate-400">
+      <p className="mt-6 text-center text-xs font-medium text-[var(--muted)]">
         © 2026 · Made by Anantha
       </p>
     </AppShell>

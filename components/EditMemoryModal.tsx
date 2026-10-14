@@ -82,7 +82,7 @@ export default function EditMemoryModal({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/50 px-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-[var(--overlay)] px-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
@@ -93,9 +93,9 @@ export default function EditMemoryModal({
 
         <div className="flex items-center justify-between px-5 py-5 sm:px-7">
           <div>
-            <h2 className="text-xl font-bold text-slate-700">Edit Memory</h2>
+            <h2 className="text-xl font-bold text-[var(--foreground)]">Edit Memory</h2>
 
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-[var(--muted)]">
               Update the details of this moment.
             </p>
           </div>
@@ -104,7 +104,7 @@ export default function EditMemoryModal({
             type="button"
             onClick={onClose}
             disabled={isSaving}
-            className="soft-button flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition hover:text-slate-600"
+            className="soft-button flex h-9 w-9 items-center justify-center rounded-xl text-[var(--muted)] transition hover:text-[var(--foreground)]"
           >
             <X className="h-5 w-5" />
           </button>
@@ -126,18 +126,18 @@ export default function EditMemoryModal({
           {/* DATE */}
 
           <div>
-            <label className="text-xs font-bold tracking-wider text-slate-400">
+            <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
               DATE
             </label>
 
             <div className="soft-card-inset mt-2 flex items-center rounded-xl px-4">
-              <CalendarDays className="h-4 w-4 shrink-0 text-indigo-400" />
+              <CalendarDays className="h-4 w-4 shrink-0 text-[var(--primary)]" />
 
               <input
                 type="date"
                 value={memoryDate}
                 onChange={(event) => setMemoryDate(event.target.value)}
-                className="w-full bg-transparent py-3 pl-3 text-sm font-semibold text-slate-600 outline-none"
+                className="w-full bg-transparent py-3 pl-3 text-sm font-semibold text-[var(--foreground)] outline-none"
               />
             </div>
           </div>
@@ -145,7 +145,7 @@ export default function EditMemoryModal({
           {/* NOTE */}
 
           <div className="mt-5">
-            <label className="text-xs font-bold tracking-wider text-slate-400">
+            <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
               NOTE
             </label>
 
@@ -154,7 +154,7 @@ export default function EditMemoryModal({
               onChange={(event) => setNote(event.target.value)}
               rows={4}
               placeholder="What happened in this moment?"
-              className="soft-card-inset mt-2 w-full resize-none rounded-xl bg-transparent px-4 py-3 text-sm leading-6 text-slate-600 outline-none placeholder:text-slate-300"
+              className="soft-card-inset mt-2 w-full resize-none rounded-xl bg-transparent px-4 py-3 text-sm leading-6 text-[var(--foreground)] outline-none placeholder:text-[var(--muted)]"
             />
           </div>
 
@@ -165,7 +165,7 @@ export default function EditMemoryModal({
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="soft-button flex-1 rounded-xl py-3 text-sm font-semibold text-slate-500"
+              className="soft-button flex-1 rounded-xl py-3 text-sm font-semibold text-[var(--muted)]"
             >
               Cancel
             </button>
@@ -174,7 +174,7 @@ export default function EditMemoryModal({
               type="button"
               onClick={handleSave}
               disabled={isSaving}
-              className="soft-button flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-indigo-500 disabled:opacity-50"
+              className="soft-button flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-[var(--primary)] disabled:opacity-50"
             >
               {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
 

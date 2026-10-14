@@ -76,18 +76,18 @@ export default function UpdateSeaBankBalance({
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/30 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl bg-[#e8edf3] p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-3xl bg-[var(--surface)] p-6 shadow-2xl">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs font-bold tracking-[0.16em] text-indigo-400">
+                <p className="text-xs font-bold tracking-[0.16em] text-[var(--primary)]">
                   SEABANK
                 </p>
 
-                <h2 className="mt-2 text-xl font-bold text-slate-700">
+                <h2 className="mt-2 text-xl font-bold text-[var(--foreground)]">
                   Update Balance
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-[var(--muted)]">
                   Record your current SeaBank balance.
                 </p>
               </div>
@@ -95,7 +95,7 @@ export default function UpdateSeaBankBalance({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="soft-card-inset flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition hover:text-slate-600"
+                className="soft-card-inset flex h-9 w-9 items-center justify-center rounded-xl text-[var(--muted)] transition hover:text-[var(--foreground)]"
               >
                 <X size={17} />
               </button>
@@ -105,12 +105,12 @@ export default function UpdateSeaBankBalance({
               onSubmit={handleSubmit}
               className="mt-7"
             >
-              <label className="text-xs font-bold tracking-wider text-slate-400">
+              <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                 RECORDED BALANCE
               </label>
 
-              <div className="mt-2 flex items-center rounded-2xl bg-[#e8edf3] px-4 py-3 shadow-[inset_4px_4px_8px_rgba(174,184,196,0.35),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]">
-                <span className="mr-2 text-sm font-semibold text-slate-400">
+              <div className="mt-2 flex items-center rounded-2xl bg-[var(--surface)] px-4 py-3 shadow-[inset_4px_4px_8px_rgba(174,184,196,0.35),inset_-4px_-4px_8px_rgba(255,255,255,0.8)]">
+                <span className="mr-2 text-sm font-semibold text-[var(--muted)]">
                   Rp
                 </span>
 
@@ -122,7 +122,7 @@ export default function UpdateSeaBankBalance({
                   onChange={(event) =>
                     setBalance(event.target.value)
                   }
-                  className="w-full bg-transparent text-lg font-bold text-slate-700 outline-none"
+                  className="w-full bg-transparent text-lg font-bold text-[var(--foreground)] outline-none"
                   placeholder="0"
                   autoFocus
                 />

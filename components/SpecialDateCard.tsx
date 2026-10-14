@@ -41,9 +41,9 @@ const colorMap = {
   indigo: {
     decoration: "bg-indigo-100/60",
     iconBg: "bg-indigo-50",
-    iconText: "text-indigo-400",
+    iconText: "text-[var(--primary)]",
     countdownBg: "bg-indigo-50",
-    countdownText: "text-indigo-500",
+    countdownText: "text-[var(--primary)]",
   },
 
   red: {
@@ -132,7 +132,7 @@ export default function SpecialDateCard({
               rounded-2xl
               ${colors.iconBg}
               ${colors.iconText}
-              shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]
+              shadow-[inset_2px_2px_5px_rgba(0,0,0,0.05),inset_-2px_-2px_5px_var(--shadow-light)]
               max-md:h-10
               max-md:w-10
               max-md:rounded-xl
@@ -160,9 +160,9 @@ export default function SpecialDateCard({
                   items-center
                   justify-center
                   rounded-xl
-                  text-slate-400
+                  text-[var(--muted)]
                   transition
-                  hover:text-indigo-500
+                  hover:text-[var(--primary)]
                   max-md:h-7
                   max-md:w-7
                   max-md:rounded-lg
@@ -187,7 +187,7 @@ export default function SpecialDateCard({
                   items-center
                   justify-center
                   rounded-xl
-                  text-slate-400
+                  text-[var(--muted)]
                   transition
                   hover:text-rose-400
                   max-md:h-7
@@ -213,7 +213,7 @@ export default function SpecialDateCard({
             mt-5
             text-xl
             font-bold
-            text-slate-700
+            text-[var(--foreground)]
             max-md:mt-3
             max-md:text-sm
           "
@@ -226,7 +226,7 @@ export default function SpecialDateCard({
             mt-2
             text-sm
             font-medium
-            text-slate-400
+            text-[var(--muted)]
             max-md:mt-1
             max-md:text-[11px]
           "
@@ -240,7 +240,7 @@ export default function SpecialDateCard({
               mt-3
               text-sm
               leading-relaxed
-              text-slate-400
+              text-[var(--muted)]
               max-md:mt-2
               max-md:text-[11px]
             "

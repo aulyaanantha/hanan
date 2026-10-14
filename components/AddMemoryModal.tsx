@@ -396,7 +396,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
       <button
         type="button"
         onClick={openModal}
-        className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-indigo-500 transition hover:text-indigo-600"
+        className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-[var(--primary)] transition hover:text-[var(--primary-dark)]"
       >
         <Camera className="h-4 w-4" />
         Add Memory
@@ -405,13 +405,13 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
       {/* MODAL */}
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/30 px-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--surface)]/30 px-4 backdrop-blur-sm">
           <div className="soft-card w-full max-w-lg overflow-hidden rounded-3xl">
             {/* HEADER */}
 
             <div className="flex items-center justify-between px-5 py-5 sm:px-7">
               <div>
-                <h2 className="text-xl font-bold text-slate-700">
+                <h2 className="text-xl font-bold text-[var(--foreground)]">
                   {cameraMode === "camera" && "Take a Memory"}
 
                   {cameraMode === "preview" && "Looks good?"}
@@ -419,7 +419,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                   {cameraMode === "note" && "Save this moment"}
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-[var(--muted)]">
                   {cameraMode === "camera" && "Capture this little moment."}
 
                   {cameraMode === "preview" &&
@@ -433,7 +433,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                 type="button"
                 onClick={closeModal}
                 disabled={isSaving}
-                className="soft-button flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition hover:text-slate-600"
+                className="soft-button flex h-9 w-9 items-center justify-center rounded-xl text-[var(--muted)] transition hover:text-[var(--foreground)]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -478,7 +478,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                         <button
                           type="button"
                           onClick={startCamera}
-                          className="mt-4 rounded-xl bg-white px-4 py-2 text-xs font-semibold text-slate-600"
+                          className="mt-4 rounded-xl bg-[var(--surface)] px-4 py-2 text-xs font-semibold text-[var(--foreground)]"
                         >
                           Try Again
                         </button>
@@ -497,7 +497,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                     onClick={switchCamera}
                     disabled={Boolean(cameraError)}
                     aria-label="Switch camera"
-                    className="soft-button flex h-11 w-11 items-center justify-center rounded-full text-indigo transition active:scale-95 disabled:opacity-50"
+                    className="soft-button flex h-11 w-11 items-center justify-center rounded-full text-[var(--primary)] transition active:scale-95 disabled:opacity-50"
                   >
                     <SwitchCamera className="h-5 w-5" />
                   </button>
@@ -509,9 +509,9 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                     onClick={takePhoto}
                     disabled={Boolean(cameraError)}
                     aria-label="Take photo"
-                    className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-[5px_5px_12px_rgba(148,163,184,0.3),-5px_-5px_12px_rgba(255,255,255,0.9)] transition active:scale-95 disabled:opacity-50"
+                    className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--surface)] shadow-[5px_5px_12px_rgba(--shadow-dark),-5px_-5px_12px_rgba(--shadow-light)] transition active:scale-95 disabled:opacity-50"
                   >
-                    <span className="h-12 w-12 rounded-full bg-indigo-400 shadow-inner" />
+                    <span className="h-12 w-12 rounded-full bg-[var(--primary)] shadow-inner" />
                   </button>
 
                   {/* EMPTY SPACE */}
@@ -537,7 +537,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                   <button
                     type="button"
                     onClick={retakePhoto}
-                    className="soft-button flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-slate-500"
+                    className="soft-button flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-[var(--muted)]"
                   >
                     <RotateCcw className="h-4 w-4" />
                     Retake
@@ -546,7 +546,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                   <button
                     type="button"
                     onClick={usePhoto}
-                    className="soft-button flex-1 rounded-xl py-3 text-sm font-semibold text-indigo-500"
+                    className="soft-button flex-1 rounded-xl py-3 text-sm font-semibold text-[var(--primary)]"
                   >
                     Use Photo
                   </button>
@@ -571,7 +571,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                 {/* DATE */}
 
                 <div>
-                  <label className="text-xs font-bold tracking-wider text-slate-400">
+                  <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                     DATE
                   </label>
 
@@ -580,7 +580,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                       type="date"
                       value={memoryDate}
                       onChange={(event) => setMemoryDate(event.target.value)}
-                      className="w-full bg-transparent py-3 text-sm font-semibold text-slate-600 outline-none"
+                      className="w-full bg-transparent py-3 text-sm font-semibold text-[var(--foreground)] outline-none"
                     />
                   </div>
                 </div>
@@ -588,7 +588,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                 {/* NOTE */}
 
                 <div className="mt-5">
-                  <label className="text-xs font-bold tracking-wider text-slate-400">
+                  <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
                     NOTE
                   </label>
 
@@ -597,7 +597,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                     onChange={(event) => setNote(event.target.value)}
                     rows={4}
                     placeholder="What happened in this moment?"
-                    className="soft-card-inset mt-2 w-full resize-none rounded-xl bg-transparent px-4 py-3 text-sm leading-6 text-slate-600 outline-none placeholder:text-slate-300"
+                    className="soft-card-inset mt-2 w-full resize-none rounded-xl bg-transparent px-4 py-3 text-sm leading-6 text-[var(--foreground)] outline-none placeholder:text-[var(--muted)]"
                   />
                 </div>
 
@@ -608,7 +608,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                     type="button"
                     onClick={retakePhoto}
                     disabled={isSaving}
-                    className="soft-button rounded-xl px-4 py-3 text-sm font-semibold text-slate-500"
+                    className="soft-button rounded-xl px-4 py-3 text-sm font-semibold text-[var(--muted)]"
                   >
                     Retake
                   </button>
@@ -617,7 +617,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
                     type="button"
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="soft-button flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-indigo-500 disabled:opacity-50"
+                    className="soft-button flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-[var(--primary)] disabled:opacity-50"
                   >
                     {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
 

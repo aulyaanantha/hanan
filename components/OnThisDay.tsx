@@ -39,11 +39,11 @@ export default function OnThisDay({
         <Heart className="h-5 w-5 fill-pink-300 text-pink-300" />
 
         <div>
-          <h2 className="text-lg font-bold text-slate-700">
+          <h2 className="text-lg font-bold text-[var(--foreground)]">
             On This Day
           </h2>
 
-          <p className="mt-0.5 text-xs text-slate-400">
+          <p className="mt-0.5 text-xs text-[var(--primary)]">
             Little moments from this day in the past.
           </p>
         </div>
@@ -62,19 +62,19 @@ export default function OnThisDay({
                 className="h-full w-full object-cover"
               />
 
-              <div className="absolute left-3 top-3 rounded-xl bg-white/90 px-3 py-1.5 text-xs font-semibold text-pink-400 shadow-lg backdrop-blur">
+              <div className="absolute left-3 top-3 rounded-xl bg-[var(--surface)]/90 px-3 py-1.5 text-xs font-semibold text-pink-400 shadow-lg backdrop-blur">
                 {getYear(memory.memory_date)}
               </div>
             </div>
 
             <div className="px-4 py-4">
-              <p className="flex items-center gap-1.5 text-xs font-medium text-indigo-400">
+              <p className="flex items-center gap-1.5 text-xs font-medium text-[var(--primary)]">
                 <CalendarDays className="h-3.5 w-3.5" />
                 {formatMemoryDate(memory.memory_date)}
               </p>
 
               {memory.note && (
-                <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">
+                <p className="mt-2 line-clamp-2 text-sm leading-6 text-[var(--foreground)]">
                   {memory.note}
                 </p>
               )}

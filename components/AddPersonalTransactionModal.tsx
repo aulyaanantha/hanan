@@ -130,16 +130,16 @@ export default function AddPersonalTransactionModal({
         }
       }}
     >
-      <div className="w-full max-w-md rounded-3xl bg-[#e8edf3] p-5 shadow-[8px_8px_24px_rgba(174,184,196,0.35),-8px_-8px_24px_rgba(255,255,255,0.9)] sm:p-6">
+      <div className="w-full max-w-md rounded-3xl bg-[var(--surface-raised)] p-5 shadow-[8px_8px_24px_rgba(174,184,196,0.35),-8px_-8px_24px_rgba(255,255,255,0.9)] sm:p-6">
         {/* HEADER */}
 
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-slate-700">
+            <h2 className="text-lg font-bold text-[var(--foreground)]">
               {isEditing ? "Edit Transaction" : "Add Transaction"}
             </h2>
 
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-[var(--muted)]">
               {isEditing
                 ? "Update your personal savings transaction."
                 : "Record a personal savings transaction."}
@@ -149,7 +149,7 @@ export default function AddPersonalTransactionModal({
           <button
             type="button"
             onClick={onClose}
-            className="soft-button flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition hover:text-slate-600"
+            className="soft-button flex h-9 w-9 items-center justify-center rounded-xl text-[var(--muted)] transition hover:text-[var(--foreground)]"
             aria-label="Close"
           >
             <X size={18} />
@@ -160,7 +160,7 @@ export default function AddPersonalTransactionModal({
           {/* TYPE */}
 
           <div>
-            <label className="mb-2 block text-xs font-semibold text-slate-500">
+            <label className="mb-2 block text-xs font-semibold text-[var(--muted)]">
               Type
             </label>
 
@@ -170,8 +170,8 @@ export default function AddPersonalTransactionModal({
                 onClick={() => setType("deposit")}
                 className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${
                   type === "deposit"
-                    ? "bg-white text-emerald-500 shadow-[inset_2px_2px_5px_rgba(174,184,196,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]"
-                    : "soft-button text-slate-500"
+                    ? "bg-white text-emerald-500 shadow-[inset_2px_2px_5px_rgba(--shadow-dark),inset_-2px_-2px_5px_rgba(--shadow-light)]"
+                    : "soft-button text-[var(--muted)]"
                 }`}
               >
                 Deposit
@@ -182,8 +182,8 @@ export default function AddPersonalTransactionModal({
                 onClick={() => setType("withdrawal")}
                 className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${
                   type === "withdrawal"
-                    ? "bg-white text-rose-400 shadow-[inset_2px_2px_5px_rgba(174,184,196,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]"
-                    : "soft-button text-slate-500"
+                    ? "bg-white text-[var(--primary)] shadow-[inset_2px_2px_5px_rgba(--shadow-dark),inset_-2px_-2px_5px_rgba(--shadow-light)]"
+                    : "soft-button text-[var(--muted)]"
                 }`}
               >
                 Withdrawal
@@ -196,13 +196,13 @@ export default function AddPersonalTransactionModal({
           <div>
             <label
               htmlFor="personal-amount"
-              className="mb-2 block text-xs font-semibold text-slate-500"
+              className="mb-2 block text-xs font-semibold text-[var(--muted)]"
             >
               Amount
             </label>
 
             <div className="relative">
-              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-[var(--muted)]">
                 Rp
               </span>
 
@@ -213,7 +213,7 @@ export default function AddPersonalTransactionModal({
                 value={formatAmount(amount)}
                 onChange={handleAmountChange}
                 placeholder="0"
-                className="w-full rounded-xl border-0 bg-[#e8edf3] py-3 pl-11 pr-4 text-sm font-semibold text-slate-600 outline-none shadow-[inset_3px_3px_7px_rgba(174,184,196,0.35),inset_-3px_-3px_7px_rgba(255,255,255,0.9)] placeholder:text-slate-300"
+                className="w-full rounded-xl border-0 bg-[var(--surface-raised)] py-3 pl-11 pr-4 text-sm font-semibold text-[var(--foreground)] outline-none shadow-[inset_3px_3px_7px_rgba(--shadow-dark),inset_-3px_-3px_7px_rgba(--shadow-light)] placeholder:text-[var(--muted)]"
               />
             </div>
           </div>
@@ -223,7 +223,7 @@ export default function AddPersonalTransactionModal({
           <div>
             <label
               htmlFor="personal-date"
-              className="mb-2 block text-xs font-semibold text-slate-500"
+              className="mb-2 block text-xs font-semibold text-[var(--muted)]"
             >
               Date
             </label>
@@ -233,7 +233,7 @@ export default function AddPersonalTransactionModal({
               type="date"
               value={date}
               onChange={(event) => setDate(event.target.value)}
-              className="w-full rounded-xl border-0 bg-[#e8edf3] px-4 py-3 text-sm font-semibold text-slate-600 outline-none shadow-[inset_3px_3px_7px_rgba(174,184,196,0.35),inset_-3px_-3px_7px_rgba(255,255,255,0.9)]"
+              className="w-full rounded-xl border-0 bg-[var(--surface-raised)] px-4 py-3 text-sm font-semibold text-[var(--foreground)] outline-none shadow-[inset_3px_3px_7px_rgba(--shadow-dark),inset_-3px_-3px_7px_rgba(--shadow-light)]"
             />
           </div>
 
@@ -242,7 +242,7 @@ export default function AddPersonalTransactionModal({
           <div>
             <label
               htmlFor="personal-note"
-              className="mb-2 block text-xs font-semibold text-slate-500"
+              className="mb-2 block text-xs font-semibold text-[var(--muted)]"
             >
               Note
             </label>
@@ -253,7 +253,7 @@ export default function AddPersonalTransactionModal({
               value={note}
               onChange={(event) => setNote(event.target.value)}
               placeholder="Optional"
-              className="w-full rounded-xl border-0 bg-[#e8edf3] px-4 py-3 text-sm font-semibold text-slate-600 outline-none shadow-[inset_3px_3px_7px_rgba(174,184,196,0.35),inset_-3px_-3px_7px_rgba(255,255,255,0.9)] placeholder:text-slate-300"
+              className="w-full rounded-xl border-0 bg-[var(--surface-raised)] px-4 py-3 text-sm font-semibold text-[var(--foreground)] outline-none shadow-[inset_3px_3px_7px_rgba(--shadow-dark),inset_-3px_-3px_7px_rgba(--shadow-light)] placeholder:text-[var(--muted)]"
             />
           </div>
 
@@ -272,7 +272,7 @@ export default function AddPersonalTransactionModal({
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="soft-button rounded-xl px-4 py-3 text-xs font-semibold text-slate-500 transition disabled:opacity-50"
+              className="soft-button rounded-xl px-4 py-3 text-xs font-semibold text-[var(--muted)] transition disabled:opacity-50"
             >
               Cancel
             </button>
@@ -280,7 +280,7 @@ export default function AddPersonalTransactionModal({
             <button
               type="submit"
               disabled={isSaving}
-              className="rounded-xl bg-indigo-400 px-5 py-3 text-xs font-semibold text-white shadow-[4px_4px_10px_rgba(174,184,196,0.35),-3px_-3px_8px_rgba(255,255,255,0.8)] transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl bg-[var(--primary)] px-5 py-3 text-xs font-semibold text-white shadow-[4px_4px_10px_rgba(--shadow-dark),-3px_-3px_8px_rgba(--shadow-light)] transition hover:bg-[var(--primary-dark)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSaving
                 ? "Saving..."

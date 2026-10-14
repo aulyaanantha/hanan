@@ -231,11 +231,11 @@ export default async function Home() {
 
         <header className="flex items-start justify-between gap-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-700">
+            <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               Dashboard
             </h1>
 
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-[var(--muted)]">
               Track shared savings, contributions, and expenses.
             </p>
           </div>
@@ -244,7 +244,7 @@ export default async function Home() {
         </header>
 
         <NotificationSetup />
-          
+
         <MonthlyRecapCard monthLabel={monthlyRecap.monthLabel} />
 
         <section className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
@@ -255,15 +255,15 @@ export default async function Home() {
 
             <div className="soft-card col-span-2 flex items-center justify-between p-5 lg:col-span-1 lg:p-4">
               <div>
-                <p className="text-xs font-bold tracking-wider text-slate-400 lg:text-[10px]">
+                <p className="text-xs font-bold tracking-wider text-[var(--muted)] lg:text-[10px]">
                   TOTAL BALANCE
                 </p>
 
-                <p className="mt-3 text-2xl font-bold tracking-tight text-slate-700 lg:mt-2 lg:text-xl">
+                <p className="mt-3 text-2xl font-bold tracking-tight text-[var(--foreground)] lg:mt-2 lg:text-xl">
                   {formatRupiah(hananBalance)}
                 </p>
 
-                <p className="mt-1 text-xs text-slate-400 lg:text-[10px]">
+                <p className="mt-1 text-xs text-[var(--muted)] lg:text-[10px]">
                   HANAN savings balance
                 </p>
               </div>
@@ -272,7 +272,7 @@ export default async function Home() {
                 <Wallet
                   size={21}
                   strokeWidth={1.8}
-                  className="text-indigo-400 lg:h-[18px] lg:w-[18px]"
+                  className="text-[var(--primary)] lg:h-[18px] lg:w-[18px]"
                 />
               </div>
             </div>
@@ -281,7 +281,7 @@ export default async function Home() {
 
             <div className="soft-card flex items-center justify-between p-5 lg:p-4">
               <div>
-                <p className="text-xs font-bold tracking-wider text-slate-400 lg:text-[10px]">
+                <p className="text-xs font-bold tracking-wider text-[var(--muted)] lg:text-[10px]">
                   MONEY IN
                 </p>
 
@@ -289,7 +289,7 @@ export default async function Home() {
                   {formatRupiah(totalIncome)}
                 </p>
 
-                <p className="mt-1 text-xs text-slate-400 lg:text-[10px]">
+                <p className="mt-1 text-xs text-[var(--muted)] lg:text-[10px]">
                   Total income
                 </p>
               </div>
@@ -308,7 +308,7 @@ export default async function Home() {
 
             <div className="soft-card flex items-center justify-between p-5 lg:p-4">
               <div>
-                <p className="text-xs font-bold tracking-wider text-slate-400 lg:text-[10px]">
+                <p className="text-xs font-bold tracking-wider text-[var(--muted)] lg:text-[10px]">
                   MONEY OUT
                 </p>
 
@@ -316,7 +316,7 @@ export default async function Home() {
                   {formatRupiah(totalExpense)}
                 </p>
 
-                <p className="mt-1 text-xs text-slate-400 lg:text-[10px]">
+                <p className="mt-1 text-xs text-[var(--muted)] lg:text-[10px]">
                   Total expenses
                 </p>
               </div>
@@ -338,11 +338,11 @@ export default async function Home() {
             <div>
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-bold tracking-wider text-indigo-400 lg:text-[10px]">
+                  <p className="text-xs font-bold tracking-wider text-[var(--primary)] lg:text-[10px]">
                     HANAN TARGET
                   </p>
 
-                  <p className="mt-3 text-4xl font-bold tracking-tight text-slate-700 lg:mt-2 lg:text-3xl">
+                  <p className="mt-3 text-4xl font-bold tracking-tight text-[var(--foreground)] lg:mt-2 lg:text-3xl">
                     Now {Math.min(progressPercentage, 100).toFixed(2)}%
                   </p>
                 </div>
@@ -355,21 +355,21 @@ export default async function Home() {
                   className="relative h-44 w-44 lg:h-36 lg:w-36"
                   style={{
                     background: `conic-gradient(
-                      #7182f5 0% ${progressWidth}%,
-                      #dfe4eb ${progressWidth}% 100%
-                    )`,
+  var(--primary) 0% ${progressWidth}%,
+  var(--surface-raised) ${progressWidth}% 100%
+)`,
                     borderRadius: "50%",
                   }}
                 >
                   <div
-                    className="absolute inset-[12px] flex items-center justify-center rounded-full bg-[#e8edf3] lg:inset-[10px]"
+                    className="absolute inset-[12px] flex items-center justify-center rounded-full bg-[var(--surface-raised)] lg:inset-[10px]"
                     style={{
                       boxShadow:
-                        "inset 5px 5px 10px rgba(174, 184, 196, 0.45), inset -5px -5px 10px rgba(255, 255, 255, 0.8)",
+                        "inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light)",
                     }}
                   >
                     <div className="text-center">
-                      <p className="text-3xl font-bold tracking-tight text-slate-700 lg:text-2xl">
+                      <p className="text-3xl font-bold tracking-tight text-[var(--foreground)] lg:text-2xl">
                         {getProgressMessage(progressPercentage)}
                       </p>
                     </div>
@@ -378,7 +378,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="mt-5 flex items-center justify-between text-xs text-slate-400 lg:mt-4 lg:text-[10px]">
+            <div className="mt-5 flex items-center justify-between text-xs text-[var(--muted)] lg:mt-4 lg:text-[10px]">
               <span>{formatRupiah(hananBalance)}</span>
 
               <span>Target {formatRupiah(targetAmount)}</span>
@@ -395,7 +395,7 @@ export default async function Home() {
 
           <div className="soft-card p-7">
             <div>
-              <p className="text-xs font-bold tracking-[0.16em] text-indigo-400">
+              <p className="text-xs font-bold tracking-[0.16em] text-[var(--primary)]">
                 LAST CONTRIBUTION
               </p>
             </div>
@@ -403,7 +403,7 @@ export default async function Home() {
             <div className="mt-7 space-y-4">
               <div className="soft-card-inset flex items-center justify-between rounded-2xl px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 shrink-0 rounded-full bg-[#e8edf3] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
+                  <div className="h-11 w-11 shrink-0 rounded-full bg-[var(--surface-raised)] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
                     <img
                       src="/images/farhan.jpg"
                       alt="Farhan"
@@ -412,24 +412,24 @@ export default async function Home() {
                   </div>
 
                   <div>
-                    <p className="text-sm font-semibold text-slate-600">
+                    <p className="text-sm font-semibold text-[var(--foreground)]">
                       Farhan
                     </p>
 
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className="mt-1 text-xs text-[var(--muted)]">
                       Last Contribution Week
                     </p>
                   </div>
                 </div>
 
-                <span className="text-lg font-bold text-indigo-500">
+                <span className="text-lg font-bold text-[var(--primary)]">
                   {farhanLastWeek ? `M${farhanLastWeek}` : "—"}
                 </span>
               </div>
 
               <div className="soft-card-inset flex items-center justify-between rounded-2xl px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 shrink-0 rounded-full bg-[#e8edf3] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
+                  <div className="h-11 w-11 shrink-0 rounded-full bg-[var(--surface-raised)] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
                     <img
                       src="/images/anantha.jpg"
                       alt="Anantha"
@@ -438,17 +438,17 @@ export default async function Home() {
                   </div>
 
                   <div>
-                    <p className="text-sm font-semibold text-slate-600">
+                    <p className="text-sm font-semibold text-[var(--foreground)]">
                       Anantha
                     </p>
 
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className="mt-1 text-xs text-[var(--muted)]">
                       Last Contribution Week
                     </p>
                   </div>
                 </div>
 
-                <span className="text-lg font-bold text-indigo-500">
+                <span className="text-lg font-bold text-[var(--primary)]">
                   {ananthaLastWeek ? `M${ananthaLastWeek}` : "—"}
                 </span>
               </div>
@@ -459,7 +459,7 @@ export default async function Home() {
 
           <div className="soft-card p-7">
             <div>
-              <p className="text-xs font-bold tracking-[0.16em] text-indigo-400">
+              <p className="text-xs font-bold tracking-[0.16em] text-[var(--primary)]">
                 TOTAL CONTRIBUTION
               </p>
             </div>
@@ -467,7 +467,7 @@ export default async function Home() {
             <div className="mt-7 space-y-4">
               <div className="soft-card-inset flex items-center justify-between rounded-2xl px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 shrink-0 rounded-full bg-[#e8edf3] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
+                  <div className="h-11 w-11 shrink-0 rounded-full bg-[var(--surface-raised)] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
                     <img
                       src="/images/farhan.jpg"
                       alt="Farhan"
@@ -476,24 +476,24 @@ export default async function Home() {
                   </div>
 
                   <div>
-                    <p className="text-sm font-semibold text-slate-600">
+                    <p className="text-sm font-semibold text-[var(--foreground)]">
                       Farhan
                     </p>
 
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className="mt-1 text-xs text-[var(--muted)]">
                       Total contribution
                     </p>
                   </div>
                 </div>
 
-                <span className="text-lg font-bold text-slate-700">
+                <span className="text-lg font-bold text-[var(--foreground)]">
                   {formatRupiah(farhanTotal)}
                 </span>
               </div>
 
               <div className="soft-card-inset flex items-center justify-between rounded-2xl px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 shrink-0 rounded-full bg-[#e8edf3] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
+                  <div className="h-11 w-11 shrink-0 rounded-full bg-[var(--surface-raised)] p-1 shadow-[4px_4px_9px_rgba(174,184,196,0.35),-4px_-4px_9px_rgba(255,255,255,0.85)]">
                     <img
                       src="/images/anantha.jpg"
                       alt="Anantha"
@@ -502,17 +502,17 @@ export default async function Home() {
                   </div>
 
                   <div>
-                    <p className="text-sm font-semibold text-slate-600">
+                    <p className="text-sm font-semibold text-[var(--foreground)]">
                       Anantha
                     </p>
 
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className="mt-1 text-xs text-[var(--muted)]">
                       Total contribution
                     </p>
                   </div>
                 </div>
 
-                <span className="text-lg font-bold text-slate-700">
+                <span className="text-lg font-bold text-[var(--foreground)]">
                   {formatRupiah(ananthaTotal)}
                 </span>
               </div>
@@ -520,7 +520,7 @@ export default async function Home() {
           </div>
         </section>
       </div>
-      <p className="mt-6 text-center text-xs font-medium text-slate-400">
+      <p className="mt-6 text-center text-xs font-medium text-[var(--muted)]">
         © 2026 · Made by Anantha
       </p>
     </AppShell>
