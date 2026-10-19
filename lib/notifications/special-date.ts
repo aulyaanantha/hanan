@@ -198,39 +198,6 @@ export async function sendSpecialDateNotifications() {
       );
     }
 
-    // ========================================
-    // H+3 AUTO DELETE
-    // ========================================
-
-    if (
-      specialDate.repeat_type === "none"
-    ) {
-      const deleteDate =
-        addDays(
-          specialDate.date,
-          3,
-        );
-
-      if (today === deleteDate) {
-        const { error: deleteError } =
-          await supabase
-            .from("special_dates")
-            .delete()
-            .eq("id", specialDate.id)
-            .eq("is_featured", false);
-
-        if (deleteError) {
-          console.error(
-            `Could not auto-delete ${specialDate.title}:`,
-            deleteError,
-          );
-        } else {
-          console.log(
-            `Auto-deleted special date: ${specialDate.title}`,
-          );
-        }
-      }
-    }
   }
 }
 

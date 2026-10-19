@@ -71,6 +71,28 @@ export default async function SpecialDatesPage() {
   }
 
   // =========================================
+  // FILTER CUSTOM DATES FOR DISPLAY
+  // =========================================
+
+  const cutoffDate = new Date(`${today}T00:00:00Z`);
+
+  cutoffDate.setUTCDate(
+    cutoffDate.getUTCDate() - 3,
+  );
+
+  const cutoffDateString = [
+    cutoffDate.getUTCFullYear(),
+    String(cutoffDate.getUTCMonth() + 1).padStart(2, "0"),
+    String(cutoffDate.getUTCDate()).padStart(2, "0"),
+  ].join("-");
+
+  const visibleCustomDates = (customDates ?? []).filter(
+    (specialDate) =>
+      specialDate.repeat_type !== "none" ||
+      specialDate.date >= cutoffDateString,
+  );
+
+  // =========================================
   // PREPARE DATE DATA
   // =========================================
 
@@ -192,9 +214,9 @@ export default async function SpecialDatesPage() {
             </div>
           </div>
 
-          {customDates && customDates.length > 0 ? (
+          {visibleCustomDates.length > 0 ? (
             <SpecialDatesList
-              dates={customDates.map((specialDate) => {
+              dates={visibleCustomDates.map((specialDate) => {
                 const dateInfo = getDateInfo(
                   specialDate.date,
                   specialDate.repeat_type,
