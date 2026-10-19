@@ -85,6 +85,7 @@ export default async function Home() {
     settingsResult,
     weeksResult,
     memoriesResult,
+    specialDatesResult,
   ] = await Promise.all([
     supabase
       .from("payments")
@@ -103,6 +104,15 @@ export default async function Home() {
       .from("memories")
       .select("id, image_path, note, memory_date, created_at")
       .order("memory_date", { ascending: false }),
+
+
+    supabase
+      .from("special_dates")
+      .select(
+        "id, title, date, description, icon, repeat_type, type, is_featured"
+      )
+      .order("date", { ascending: true }),
+
   ]);
 
   if (paymentsResult.error) {
@@ -129,6 +139,7 @@ export default async function Home() {
   const expenses = expensesResult.data ?? [];
   const weeks = weeksResult.data ?? [];
   const memories = memoriesResult.data ?? [];
+  const specialDates = specialDatesResult.data ?? [];
 
   // ================================
   // TOTAL PEMASUKAN
@@ -177,6 +188,7 @@ export default async function Home() {
     expenses,
     weeks,
     memories,
+    specialDates,
     targetAmount,
   });
 

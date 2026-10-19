@@ -185,13 +185,33 @@ export default function HananTable({
                   Target Date
                 </th>
 
-                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--muted)]">
-                  Farhan
+
+                <th className="px-5 py-4 text-left">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src="/images/farhan.jpg"
+                      alt="Farhan"
+                      className="h-7 w-7 shrink-0 rounded-full object-cover"
+                    />
+                    <span className="text-xs font-semibold text-[var(--muted)]">
+                      Farhan
+                    </span>
+                  </div>
                 </th>
 
-                <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--muted)]">
-                  Anantha
+                <th className="px-5 py-4 text-left">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src="/images/anantha.jpg"
+                      alt="Anantha"
+                      className="h-7 w-7 shrink-0 rounded-full object-cover"
+                    />
+                    <span className="text-xs font-semibold text-[var(--muted)]">
+                      Anantha
+                    </span>
+                  </div>
                 </th>
+
 
                 <th className="px-5 py-4 text-left text-xs font-semibold text-[var(--muted)]">
                   Payment Date

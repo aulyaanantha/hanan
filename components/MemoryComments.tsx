@@ -94,7 +94,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Gagal memuat komentar.");
+        throw new Error(data.error || "Failed to load comments.");
       }
 
       setComments(data.comments ?? []);
@@ -102,7 +102,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
       console.error(error);
 
       setError(
-        error instanceof Error ? error.message : "Gagal memuat komentar.",
+        error instanceof Error ? error.message : "Failed to load comments.",
       );
     } finally {
       setLoading(false);
@@ -111,11 +111,11 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
 
   async function getSubscriptionEndpoint() {
     if (!("serviceWorker" in navigator)) {
-      throw new Error("Browser ini belum mendukung Service Worker.");
+      throw new Error("This browser does not yet support Service Workers.");
     }
 
     if (!("PushManager" in window)) {
-      throw new Error("Browser ini belum mendukung Push Notification.");
+      throw new Error("This browser does not support Push Notification yet.");
     }
 
     // Gunakan service worker yang sama dengan NotificationSetup
@@ -127,7 +127,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
 
     if (!subscription) {
       throw new Error(
-        "Notification device belum terdaftar. Silakan aktifkan notification terlebih dahulu.",
+        "The notification device is not registered. Please enable notifications first.",
       );
     }
 
@@ -163,7 +163,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Gagal mengirim komentar.");
+        throw new Error(data.error || "Failed to post comment.");
       }
 
       setComments((current) => [...current, data.comment]);
@@ -173,7 +173,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
       console.error(error);
 
       setError(
-        error instanceof Error ? error.message : "Gagal mengirim komentar.",
+        error instanceof Error ? error.message : "Failed to post comment.",
       );
     } finally {
       setSending(false);
@@ -205,7 +205,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Gagal menghapus komentar.");
+        throw new Error(data.error || "Failed to delete comment.");
       }
 
       setComments((current) => current.filter((item) => item.id !== commentId));
@@ -213,7 +213,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
       console.error(error);
 
       setError(
-        error instanceof Error ? error.message : "Gagal menghapus komentar.",
+        error instanceof Error ? error.message : "Failed to delete comment.",
       );
     } finally {
       setDeletingId(null);
@@ -226,9 +226,9 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
 
       <div className="space-y-1.5 pr-1">
         {loading ? (
-          <p className="text-sm text-[var(--muted)]">Memuat komentar...</p>
+          <p className="text-sm text-[var(--muted)]">Loading comments...</p>
         ) : comments.length === 0 ? (
-          <p className="text-sm text-[var(--muted)]">Belum ada komentar 💗</p>
+          <p className="text-sm text-[var(--muted)]">No comments yet.</p>
         ) : (
           comments.map((item) => (
             <div
@@ -284,7 +284,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
           value={comment}
           onChange={(event) => setComment(event.target.value)}
           maxLength={500}
-          placeholder="Tulis komentar..."
+          placeholder="Write a comment..."
           disabled={sending}
           className="min-w-0 flex-1 rounded-xl bg-[var(--surface-raised)] px-3 py-2.5 text-xs text-[var(--foreground)] shadow-[inset_3px_3px_7px_rgba(--shadow-dark),inset_-3px_-3px_7px_rgba(--shadow-light)] outline-none placeholder:text-[var(--muted)] focus:ring-2 focus:ring-indigo-100 disabled:opacity-60"
         />
@@ -294,7 +294,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
           disabled={sending || !comment.trim()}
           className="rounded-xl bg-[var(--primary)] px-3 py-2.5 text-xs font-semibold text-white shadow-[4px_4px_10px_rgba(129,140,248,0.25)] transition hover:bg-[var(--primary-dark)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {sending ? "..." : "Kirim"}
+          {sending ? "..." : "Send"}
         </button>
       </form>
     </div>

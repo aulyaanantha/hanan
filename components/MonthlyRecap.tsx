@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { CSSProperties } from "react";
-import { ArrowLeft, ArrowRight, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, X, CalendarDays } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AnimatedCounter from "@/components/recap/AnimatedCounter";
 
@@ -12,6 +12,19 @@ type RecapMemory = {
   note: string;
   memoryDate: string;
 };
+
+
+type RecapSpecialDate = {
+  id: string;
+  title: string;
+  date: string;
+  description: string;
+  icon: string;
+  repeatType: "none" | "monthly" | "yearly";
+  type: string | null;
+  isFeatured: boolean;
+};
+
 
 type MonthlyRecapData = {
   monthLabel: string;
@@ -25,6 +38,7 @@ type MonthlyRecapData = {
     date: string;
   } | null;
   memories: RecapMemory[];
+  specialDates: RecapSpecialDate[];
   savingWeeks: number;
   goalProgress: number;
   balanceAtEndOfMonth: number;
@@ -96,6 +110,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
     "spent",
     "growing",
     ...(recap.memories.length > 0 ? ["memory"] : []),
+    "special-dates",
     "summary",
   ] as const;
 
@@ -337,9 +352,8 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
         {Array.from({ length: totalSlides }).map((_, index) => (
           <div
             key={index}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              index === currentSlide ? "w-8 bg-slate-600" : "w-2 bg-slate-300"
-            }`}
+            className={`h-1.5 rounded-full transition-all duration-300 ${index === currentSlide ? "w-8 bg-slate-600" : "w-2 bg-slate-300"
+              }`}
           />
         ))}
       </div>
@@ -778,22 +792,20 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
             {/* Caption */}
             <p
-              className={`mt-7 text-base text-slate-500 transition-all duration-700 sm:text-lg ${
-                counterComplete
+              className={`mt-7 text-base text-slate-500 transition-all duration-700 sm:text-lg ${counterComplete
                   ? "translate-y-0 opacity-100"
                   : "translate-y-3 opacity-0"
-              }`}
+                }`}
             >
               saved into HANAN this month ♡
             </p>
 
             {/* Small message */}
             <p
-              className={`mt-3 text-xs text-slate-400 transition-all duration-700 ${
-                counterComplete
+              className={`mt-3 text-xs text-slate-400 transition-all duration-700 ${counterComplete
                   ? "translate-y-0 opacity-100"
                   : "translate-y-2 opacity-0"
-              }`}
+                }`}
             >
               every little bit counts
             </p>
@@ -860,11 +872,10 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
             {/* Expense detail */}
             {spentCounterComplete && recap.largestExpense ? (
               <div
-                className={`mx-auto mt-10 max-w-md transition-all duration-700 ${
-                  isEntering
+                className={`mx-auto mt-10 max-w-md transition-all duration-700 ${isEntering
                     ? "translate-y-0 opacity-100"
                     : "translate-y-4 opacity-0"
-                }`}
+                  }`}
                 style={{
                   transitionDelay: "900ms",
                 }}
@@ -892,11 +903,10 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               </div>
             ) : spentCounterComplete ? (
               <div
-                className={`mt-10 transition-all duration-700 ${
-                  isEntering
+                className={`mt-10 transition-all duration-700 ${isEntering
                     ? "translate-y-0 opacity-100"
                     : "translate-y-4 opacity-0"
-                }`}
+                  }`}
                 style={{
                   transitionDelay: "700ms",
                 }}
@@ -917,9 +927,8 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
             {/* Bottom message */}
             <p
-              className={`mt-8 text-xs text-slate-400 transition-all duration-700 ${
-                isEntering ? "opacity-100" : "opacity-0"
-              }`}
+              className={`mt-8 text-xs text-slate-400 transition-all duration-700 ${isEntering ? "opacity-100" : "opacity-0"
+                }`}
               style={{
                 transitionDelay: "1200ms",
               }}
@@ -982,11 +991,10 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
             {/* Graph */}
             <div
-              className={`mx-auto mt-10 max-w-2xl transition-all duration-1000 ${
-                isEntering
+              className={`mx-auto mt-10 max-w-2xl transition-all duration-1000 ${isEntering
                   ? "translate-y-0 opacity-100"
                   : "translate-y-5 opacity-0"
-              }`}
+                }`}
               style={{
                 transitionDelay: "500ms",
               }}
@@ -1072,11 +1080,10 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
                   {/* Previous label */}
                   <div
-                    className={`absolute bottom-[-2px] left-[5%] text-left transition-all duration-700 ${
-                      isEntering
+                    className={`absolute bottom-[-2px] left-[5%] text-left transition-all duration-700 ${isEntering
                         ? "translate-y-0 opacity-100"
                         : "translate-y-3 opacity-0"
-                    }`}
+                      }`}
                     style={{
                       transitionDelay: "800ms",
                     }}
@@ -1092,11 +1099,10 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
                   {/* Current label */}
                   <div
-                    className={`absolute right-[2%] top-[-8px] text-right transition-all duration-700 ${
-                      isEntering
+                    className={`absolute right-[2%] top-[-8px] text-right transition-all duration-700 ${isEntering
                         ? "translate-y-0 opacity-100"
                         : "translate-y-3 opacity-0"
-                    }`}
+                      }`}
                     style={{
                       transitionDelay: "1500ms",
                     }}
@@ -1113,11 +1119,10 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
                 {/* Growth percentage */}
                 <div
-                  className={`mt-5 border-t border-slate-200/50 pt-5 transition-all duration-700 ${
-                    isEntering
+                  className={`mt-5 border-t border-slate-200/50 pt-5 transition-all duration-700 ${isEntering
                       ? "translate-y-0 opacity-100"
                       : "translate-y-3 opacity-0"
-                  }`}
+                    }`}
                   style={{
                     transitionDelay: "1800ms",
                   }}
@@ -1150,9 +1155,8 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
             {/* Bottom message */}
             <p
-              className={`mt-7 text-xs text-slate-400 transition-all duration-700 ${
-                isEntering ? "opacity-100" : "opacity-0"
-              }`}
+              className={`mt-7 text-xs text-slate-400 transition-all duration-700 ${isEntering ? "opacity-100" : "opacity-0"
+                }`}
               style={{
                 transitionDelay: "2100ms",
               }}
@@ -1218,22 +1222,20 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               <div className="relative mx-auto mt-8 h-[390px] w-full max-w-[350px]">
                 {/* Soft glow */}
                 <div
-                  className={`absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-200/30 blur-3xl transition-all duration-700 ${
-                    memoryRevealed
+                  className={`absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-200/30 blur-3xl transition-all duration-700 ${memoryRevealed
                       ? "scale-110 opacity-100"
                       : "scale-90 opacity-50"
-                  }`}
+                    }`}
                 />
 
                 {/* Polaroid */}
                 <div
-                  className={`absolute left-1/2 top-1/2 w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-[10px] bg-white p-3 pb-5 shadow-[0_25px_70px_rgba(148,163,184,0.22)] transition-all ${
-                    memorySpinning
+                  className={`absolute left-1/2 top-1/2 w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-[10px] bg-white p-3 pb-5 shadow-[0_25px_70px_rgba(148,163,184,0.22)] transition-all ${memorySpinning
                       ? "scale-[0.96] rotate-[-4deg] duration-100"
                       : memoryRevealed
                         ? "scale-100 rotate-[-2deg] duration-700"
                         : "scale-90 rotate-[4deg] opacity-0 duration-500"
-                  }`}
+                    }`}
                 >
                   <div className="aspect-square overflow-hidden rounded-[5px] bg-slate-100">
                     <MemoryImage
@@ -1244,11 +1246,10 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
                   {/* Memory info */}
                   <div
-                    className={`transition-all duration-700 ${
-                      memoryRevealed
+                    className={`transition-all duration-700 ${memoryRevealed
                         ? "translate-y-0 opacity-100"
                         : "translate-y-3 opacity-0"
-                    }`}
+                      }`}
                   >
                     <p className="mt-4 line-clamp-2 text-sm font-medium text-slate-600">
                       {recap.memories[memoryIndex].note || "A little memory ♡"}
@@ -1270,17 +1271,165 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
               {/* Reveal caption */}
               <p
-                className={`mt-2 text-sm text-slate-400 transition-all duration-700 ${
-                  memoryRevealed
+                className={`mt-2 text-sm text-slate-400 transition-all duration-700 ${memoryRevealed
                     ? "translate-y-0 opacity-100"
                     : "translate-y-3 opacity-0"
-                }`}
+                  }`}
               >
                 one little moment worth remembering ♡
               </p>
             </div>
           </section>
         )}
+
+
+
+        {/* Slide Special Dates */}
+        <section
+          className="relative flex h-full min-w-full items-center justify-center overflow-hidden px-5 py-10 sm:px-8"
+          style={{
+            background:
+              "radial-gradient(circle at 15% 20%, rgba(251,207,232,0.38), transparent 34%), radial-gradient(circle at 90% 85%, rgba(221,214,254,0.4), transparent 36%), linear-gradient(135deg, #fff8fc 0%, #f8f4ff 55%, #f2f7ff 100%)",
+          }}
+        >
+          {/* Background decorations */}
+          <div className="pointer-events-none absolute -left-24 top-10 h-64 w-64 rounded-full bg-pink-200/30 blur-3xl" />
+          <div className="pointer-events-none absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-violet-200/30 blur-3xl" />
+
+          {/* Floating decorations */}
+          <div className="recap-sparkle pointer-events-none absolute left-[10%] top-[17%] text-lg text-pink-300">
+            ✦
+          </div>
+          <div className="recap-sparkle pointer-events-none absolute right-[11%] top-[22%] text-xl text-violet-300">
+            ✧
+          </div>
+          <div className="recap-heart pointer-events-none absolute bottom-[17%] left-[13%] text-sm text-pink-300">
+            ♡
+          </div>
+          <div className="recap-heart pointer-events-none absolute bottom-[19%] right-[12%] text-lg text-violet-300">
+            ♡
+          </div>
+
+          {/* Main content */}
+          <div
+            key={`special-dates-${currentSlide}-${isEntering}`}
+            className="relative z-10 my-auto w-full max-w-lg"
+          >
+            {/* Heading */}
+            <div className="text-center">
+              <p className="recap-fade-up text-xs font-bold tracking-[0.3em] text-violet-400 sm:text-sm">
+                SPECIAL DATES
+              </p>
+
+              <div
+                className="recap-fade-up mx-auto mt-3 flex items-center justify-center gap-3"
+                style={{ animationDelay: "150ms" }}
+              >
+                <span className="h-px w-9 bg-pink-200" />
+                <span className="text-xs text-pink-300">♡</span>
+                <span className="h-px w-9 bg-pink-200" />
+              </div>
+
+              <h2 className="text-4xl font-bold tracking-tight text-slate-700 sm:text-6xl">
+                Our Little Moments
+              </h2>
+
+              <p className="mt-2 text-sm text-slate-400">
+                Little dates that mean a lot to us.
+              </p>
+            </div>
+
+            {/* Total count */}
+            <div className="mx-auto mt-6 max-w-xs rounded-3xl border border-white/80 bg-white/65 px-5 py-4 text-center shadow-[0_12px_35px_rgba(148,163,184,0.12)] backdrop-blur-xl">
+              <p className="text-xs font-medium text-slate-400 sm:text-sm">
+                Special dates this month
+              </p>
+
+              <p className="mt-1 text-4xl font-bold leading-tight text-violet-400 sm:text-5xl">
+                {recap.specialDates.length}
+              </p>
+
+              <p className="mt-2 text-xs text-slate-400">
+                {recap.specialDates.length === 1
+                  ? "one little moment to celebrate ♡"
+                  : "little moments worth celebrating ♡"}
+              </p>
+            </div>
+
+            {/* Special dates list */}
+            <div className="mx-auto mt-4 max-h-[30vh] max-w-md space-y-3 overflow-y-auto px-1 pb-1">
+              {recap.specialDates.length > 0 ? (
+                recap.specialDates.map((specialDate) => {
+                  const formattedDate = new Date(
+                    `${specialDate.date}T00:00:00`,
+                  ).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  });
+
+                  return (
+                    <div
+                      key={specialDate.id}
+                      className="flex items-center gap-3 rounded-2xl border border-white/80 bg-white/65 p-3 shadow-[0_6px_20px_rgba(148,163,184,0.08)] backdrop-blur-xl transition-transform duration-200 hover:-translate-y-0.5 sm:gap-4 sm:p-4"
+                    >
+                      {/* Icon */}
+
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-pink-100/80 text-violet-400 sm:h-12 sm:w-12">
+                        <CalendarDays
+                          className="h-5 w-5 sm:h-[22px] sm:w-[22px]"
+                          strokeWidth={1.8}
+                          aria-hidden="true"
+                        />
+                      </div>
+
+
+                      {/* Date information */}
+                      <div className="min-w-0 flex-1">
+                        <p className="break-words text-sm font-semibold leading-snug text-slate-700 sm:text-base">
+                          {specialDate.title}
+                        </p>
+
+                        <p className="mt-1 text-xs font-medium text-violet-400">
+                          {formattedDate}
+                        </p>
+
+                        {specialDate.description && (
+                          <p className="mt-1.5 break-words text-xs leading-relaxed text-slate-500 sm:text-sm">
+                            {specialDate.description}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Decorative heart */}
+                      <span className="shrink-0 self-center text-sm text-violet-300">
+                        ♡
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="rounded-2xl border border-white/80 bg-white/65 px-5 py-6 text-center shadow-sm backdrop-blur-xl">
+                  <p className="text-3xl">🌷</p>
+
+                  <p className="mt-3 text-sm font-medium text-slate-600">
+                    No special dates this month.
+                  </p>
+
+                  <p className="mt-1 text-xs text-slate-400">
+                    Every month has its own little story. ♡
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Closing caption */}
+            <p className="mt-4 text-center text-xs tracking-wide text-slate-400">
+              some dates become memories forever ✨
+            </p>
+          </div>
+        </section>
+
 
         {/* Slide 6 */}
         <section
@@ -1321,7 +1470,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
           >
             {/* Label */}
             <p
-              className="recap-fade-up text-xs font-bold tracking-[0.3em] text-violet-400 sm:text-sm"
+              className="recap-fade-up text-xs font-bold tracking-[0.3em] text-pink-400 sm:text-sm"
               style={{
                 animationDelay: "150ms",
               }}
@@ -1336,9 +1485,9 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
                 animationDelay: "300ms",
               }}
             >
-              <span className="h-px w-8 bg-violet-200" />
-              <span className="text-xs text-violet-300">✦</span>
-              <span className="h-px w-8 bg-violet-200" />
+              <span className="h-px w-8 bg-pink-200" />
+              <span className="text-xs text-pink-300">✦</span>
+              <span className="h-px w-8 bg-pink-200" />
             </div>
 
             {/* Stats */}

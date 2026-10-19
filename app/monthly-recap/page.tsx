@@ -19,6 +19,7 @@ export default async function MonthlyRecapPage() {
     weeksResult,
     memoriesResult,
     settingsResult,
+    specialDatesResult,
   ] = await Promise.all([
     supabase
       .from("payments")
@@ -44,6 +45,13 @@ export default async function MonthlyRecapPage() {
       .select("target_amount")
       .limit(1)
       .single(),
+
+    supabase
+      .from("special_dates")
+      .select(
+        "id, title, date, description, icon, repeat_type, type, is_featured"
+      )
+      .order("date", { ascending: true }),
   ]);
 
   if (paymentsResult.error) {
@@ -66,17 +74,26 @@ export default async function MonthlyRecapPage() {
     throw new Error(settingsResult.error.message);
   }
 
+  
+  if (specialDatesResult.error) {
+    throw new Error(specialDatesResult.error.message);
+  }
+
+
   const payments = paymentsResult.data ?? [];
   const expenses = expensesResult.data ?? [];
   const weeks = weeksResult.data ?? [];
   const memories = memoriesResult.data ?? [];
   const targetAmount = Number(settingsResult.data.target_amount);
+  const specialDates = specialDatesResult.data ?? [];
+
 
   const monthlyRecap = buildMonthlyRecap({
     payments,
     expenses,
     weeks,
     memories,
+    specialDates,
     targetAmount,
   });
 

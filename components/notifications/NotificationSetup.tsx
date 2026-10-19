@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Bell, Heart } from "lucide-react";
 
 type Person = "Anantha" | "Farhan";
 
@@ -155,14 +156,22 @@ export default function NotificationSetup() {
   return (
     <div className="rounded-3xl bg-[var(--surface-raised)] p-6 shadow-[8px_8px_20px_rgba(--shadow-dark),-8px_-8px_20px_rgba(--shadow-light)]">
       <div className="text-center">
-        <div className="text-3xl">🔔</div>
+
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--surface)] text-[var(--primary)] shadow-[5px_5px_12px_rgba(--shadow-dark),-5px_-5px_12px_rgba(--shadow-light)]">
+          <Bell
+            className="h-7 w-7"
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+        </div>
+
 
         <h2 className="mt-2 text-lg font-bold text-[var(--foreground)]">
           Enable Notifications
         </h2>
 
         <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-          Pilih siapa yang menggunakan perangkat ini.
+          Select who uses this device.
         </p>
       </div>
 
@@ -173,7 +182,16 @@ export default function NotificationSetup() {
           onClick={() => enableNotifications("Anantha")}
           className="rounded-2xl bg-[var(--surface)] px-5 py-4 text-sm font-bold text-[var(--foreground)] shadow-[5px_5px_12px_rgba(--shadow-dark),-5px_-5px_12px_rgba(--shadow-light)] transition active:scale-[0.98] disabled:opacity-50"
         >
-          💗 Anantha
+
+          <span className="inline-flex items-center justify-center gap-2">
+            <Heart
+              className="h-4 w-4 fill-pink-400 text-pink-400"
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+            Anantha
+          </span>
+
         </button>
 
         <button
@@ -182,7 +200,16 @@ export default function NotificationSetup() {
           onClick={() => enableNotifications("Farhan")}
           className="rounded-2xl bg-[var(--surface)] px-5 py-4 text-sm font-bold text-[var(--foreground)] shadow-[5px_5px_12px_rgba(--shadow-dark),-5px_-5px_12px_rgba(--shadow-light)] transition active:scale-[0.98] disabled:opacity-50"
         >
-          💙 Farhan
+
+          <span className="inline-flex items-center justify-center gap-2">
+            <Heart
+              className="h-4 w-4 fill-blue-400 text-blue-400"
+              strokeWidth={1.8}
+              aria-hidden="true"
+            />
+            Farhan
+          </span>
+
         </button>
       </div>
 
@@ -206,7 +233,16 @@ export default function NotificationSetup() {
             disabled={testLoading}
             className="w-full rounded-2xl bg-[var(--primary)] px-5 py-4 text-sm font-bold text-white shadow-[5px_5px_12px_rgba(--shadow-dark),-3px_-3px_10px_rgba(--shadow-light)] transition hover:bg-[var(--primary-dark)] active:scale-[0.99] disabled:opacity-50"
           >
-            {testLoading ? "Sending..." : "🔔 Send Test Notification"}
+
+            {testLoading ? (
+              "Sending..."
+            ) : (
+              <span className="inline-flex items-center justify-center gap-2">
+                <Bell className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+                Send Test Notification
+              </span>
+            )}
+
           </button>
         </div>
       )}

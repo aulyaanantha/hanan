@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarDays, Pencil, Trash2, X } from "lucide-react";
+import { CalendarDays, MessageCircle, Pencil, Trash2, X } from "lucide-react";
 import EditMemoryModal from "@/components/EditMemoryModal";
 import MemoryComments from "@/components/MemoryComments";
 
@@ -250,11 +250,28 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
 
                 {/* PERSON */}
 
+
                 {selectedMemory.person && (
-                  <p className="mt-2 text-xs font-medium text-[var(--muted)]">
-                    Memory by {selectedMemory.person}
-                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <img
+                      src={
+                        selectedMemory.person === "Anantha"
+                          ? "/images/anantha.jpg"
+                          : "/images/farhan.jpg"
+                      }
+                      alt={selectedMemory.person}
+                      className="h-7 w-7 shrink-0 rounded-full object-cover ring-2 ring-[var(--surface-raised)]"
+                    />
+
+                    <p className="text-xs font-medium text-[var(--muted)]">
+                      Memory by{" "}
+                      <span className="font-semibold text-[var(--foreground)]">
+                        {selectedMemory.person}
+                      </span>
+                    </p>
+                  </div>
                 )}
+
 
                 {/* NOTE */}
 
@@ -273,8 +290,14 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
 
               <div className="min-h-0 flex-1 overflow-hidden px-4 sm:px-6 lg:px-7">
                 <div className="mt-4 h-full border-t border-slate-200/70 pt-3">
-                  <h3 className="shrink-0 text-xs font-bold text-[var(--foreground)]">
-                    💬 Comments
+
+                  <h3 className="flex shrink-0 items-center gap-2 text-xs font-bold text-[var(--foreground)]">
+                    <MessageCircle
+                      className="h-4 w-4 text-[var(--primary)]"
+                      strokeWidth={1.8}
+                      aria-hidden="true"
+                    />
+                    Comments
                   </h3>
 
                   <div className="mt-2 h-[180px] overflow-y-auto pr-1 sm:h-[220px]">

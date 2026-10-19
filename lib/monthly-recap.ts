@@ -35,11 +35,25 @@ type Memory = {
   created_at: string;
 };
 
+
+type SpecialDate = {
+  id: string;
+  title: string;
+  date: string;
+  description: string | null;
+  icon: string;
+  repeat_type: "none" | "monthly" | "yearly";
+  type: string | null;
+  is_featured: boolean;
+};
+
+
 type MonthlyRecapInput = {
   payments: Payment[];
   expenses: Expense[];
   weeks: Week[];
   memories: Memory[];
+  specialDates: SpecialDate[];
   targetAmount: number;
 };
 
@@ -67,6 +81,19 @@ export type MonthlyRecapData = {
     memoryDate: string;
   }[];
 
+
+  specialDates: {
+    id: string;
+    title: string;
+    date: string;
+    description: string;
+    icon: string;
+    repeatType: "none" | "monthly" | "yearly";
+    type: string | null;
+    isFeatured: boolean;
+  }[];
+
+
   savingWeeks: number;
 
   goalProgress: number;
@@ -79,6 +106,7 @@ export function buildMonthlyRecap({
   expenses,
   weeks,
   memories,
+  specialDates,
   targetAmount,
 }: MonthlyRecapInput): MonthlyRecapData {
   // =========================================================
@@ -228,13 +256,13 @@ export function buildMonthlyRecap({
   const largestExpense =
     monthlyExpenses.length > 0
       ? monthlyExpenses.reduce((largest, expense) => {
-          if (!largest) return expense;
+        if (!largest) return expense;
 
-          return Number(expense.amount) >
-            Number(largest.amount)
-            ? expense
-            : largest;
-        }, monthlyExpenses[0])
+        return Number(expense.amount) >
+          Number(largest.amount)
+          ? expense
+          : largest;
+      }, monthlyExpenses[0])
       : null;
 
   // =========================================================
@@ -257,6 +285,75 @@ export function buildMonthlyRecap({
     note: memory.note ?? "",
     memoryDate: memory.memory_date,
   }));
+
+
+  // =========================================================
+  // SPECIAL DATES - RECAP MONTH
+  // =========================================================
+
+  const recapYear = recapMonth.getUTCFullYear();
+  const recapMonthIndex = recapMonth.getUTCMonth();
+  const daysInRecapMonth = new Date(
+    Date.UTC(recapYear, recapMonthIndex + 1, 0),
+  ).getUTCDate();
+
+  const monthlySpecialDates = specialDates
+    .filter((specialDate) => {
+      const [year, month, day] = specialDate.date
+        .split("-")
+        .map(Number);
+
+      if (!year || !month || !day) {
+        return false;
+      }
+
+      if (specialDate.repeat_type === "none") {
+        return (
+          specialDate.date >= recapRange.start &&
+          specialDate.date < recapRange.end
+        );
+      }
+
+      if (specialDate.repeat_type === "yearly") {
+        return (
+          month === recapMonthIndex + 1 &&
+          day <= daysInRecapMonth
+        );
+      }
+
+      if (specialDate.repeat_type === "monthly") {
+        return day <= daysInRecapMonth;
+      }
+
+      return false;
+    })
+    .map((specialDate) => {
+      const [, month, day] = specialDate.date
+        .split("-")
+        .map(Number);
+
+      const displayDate =
+        specialDate.repeat_type === "none"
+          ? specialDate.date
+          : [
+            String(recapYear),
+            String(month).padStart(2, "0"),
+            String(day).padStart(2, "0"),
+          ].join("-");
+
+      return {
+        id: specialDate.id,
+        title: specialDate.title,
+        date: displayDate,
+        description: specialDate.description ?? "",
+        icon: specialDate.icon,
+        repeatType: specialDate.repeat_type,
+        type: specialDate.type,
+        isFeatured: specialDate.is_featured,
+      };
+    })
+    .sort((a, b) => a.date.localeCompare(b.date));
+
 
   // =========================================================
   // SAVING WEEKS
@@ -327,9 +424,9 @@ export function buildMonthlyRecap({
   const goalProgress =
     targetAmount > 0
       ? Math.min(
-          (balanceAtEndOfMonth / targetAmount) * 100,
-          100,
-        )
+        (balanceAtEndOfMonth / targetAmount) * 100,
+        100,
+      )
       : 0;
 
   // =========================================================
@@ -349,13 +446,15 @@ export function buildMonthlyRecap({
 
     largestExpense: largestExpense
       ? {
-          amount: Number(largestExpense.amount),
-          reason: largestExpense.reason ?? "",
-          date: largestExpense.expense_date,
-        }
+        amount: Number(largestExpense.amount),
+        reason: largestExpense.reason ?? "",
+        date: largestExpense.expense_date,
+      }
       : null,
 
     memories: recapMemories,
+
+    specialDates: monthlySpecialDates,
 
     savingWeeks,
 
