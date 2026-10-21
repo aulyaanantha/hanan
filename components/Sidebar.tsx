@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   CalendarHeart,
+  MapPin,
   Settings,
 } from "lucide-react";
 
@@ -45,6 +46,11 @@ const menuItems = [
     label: "Special Dates",
     href: "/special-dates",
     icon: CalendarHeart,
+  },
+  {
+    label: "HANAN Places",
+    href: "/places",
+    icon: MapPin,
   },
 ];
 
@@ -101,6 +107,12 @@ export default function Sidebar() {
               key={item.href}
               href={item.href}
               className="sidebar-link"
+              aria-current={
+                pathname === item.href ||
+                  (item.href !== "/" && pathname.startsWith(`${item.href}/`))
+                  ? "page"
+                  : undefined
+              }
               onClick={() => setIsOpen(false)}
             >
               <Icon size={19} strokeWidth={1.8} />
