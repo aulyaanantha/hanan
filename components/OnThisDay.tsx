@@ -49,7 +49,7 @@ export default function OnThisDay({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 lg:grid-cols-4 lg:gap-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5">
         {memories.map((memory) => (
           <article
             key={memory.id}

@@ -166,7 +166,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
 
               {/* MEMORY CARDS */}
 
-              <div className="grid grid-cols-3 gap-3 lg:grid-cols-4 lg:gap-5">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5">
                 {monthMemories.map((memory) => (
                   <article
                     key={memory.id}
@@ -316,23 +316,23 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
                       setEditingMemory(selectedMemory);
                       setSelectedMemory(null);
                     }}
-                    className="soft-button flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold text-[var(--muted)] transition hover:text-[var(--primary)] sm:py-3 sm:text-sm"
+                    className="mobile-round-action soft-button flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold text-[var(--muted)] transition hover:text-[var(--primary)] sm:py-3 sm:text-sm"
                   >
                     <Pencil className="h-4 w-4" />
-                    Edit
+                    <span className="max-md:sr-only">Edit</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleDelete(selectedMemory.id)}
                     disabled={deletingId === selectedMemory.id}
-                    className="soft-button flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold text-[var(--muted)] transition hover:text-rose-500 disabled:opacity-50 sm:py-3 sm:text-sm"
+                    className="mobile-round-action soft-button flex flex-1 items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-semibold text-[var(--muted)] transition hover:text-rose-500 disabled:opacity-50 sm:py-3 sm:text-sm"
                   >
                     <Trash2 className="h-4 w-4" />
 
-                    {deletingId === selectedMemory.id
+                    <span className="max-md:sr-only">{deletingId === selectedMemory.id
                       ? "Deleting..."
-                      : "Delete"}
+                      : "Delete"}</span>
                   </button>
                 </div>
               </div>

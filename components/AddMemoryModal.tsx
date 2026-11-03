@@ -405,7 +405,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
       {/* MODAL */}
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--surface)]/30 px-4 backdrop-blur-sm">
+        <div className="form-modal fixed inset-0 z-50 flex items-center justify-center bg-[var(--surface)]/30 px-4 backdrop-blur-sm">
           <div className="soft-card w-full max-w-lg overflow-hidden rounded-3xl">
             {/* HEADER */}
 

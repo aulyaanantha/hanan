@@ -246,7 +246,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
                       type="button"
                       onClick={() => handleDeleteComment(item.id)}
                       disabled={deletingId === item.id}
-                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[var(--muted)] transition hover:bg-[var(--surface-raised)] hover:text-[var(--primary)] disabled:opacity-50"
+                      className="mobile-round-action flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[var(--muted)] transition hover:bg-[var(--surface-raised)] hover:text-[var(--primary)] disabled:opacity-50"
                       title="Hapus komentar"
                       aria-label="Hapus komentar"
                     >

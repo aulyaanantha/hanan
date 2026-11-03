@@ -154,7 +154,7 @@ export default async function SpecialDatesPage() {
             HEADER
         ========================================= */}
 
-        <div className="mb-7 flex items-start justify-between gap-4">
+        <div className="page-heading mb-7 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               Special Dates
@@ -175,11 +175,11 @@ export default async function SpecialDatesPage() {
 ========================================= */}
 
         <section>
-          <div className="grid gap-5 grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
             {cards.map((card, index) => (
               <div
                 key={card.id}
-                className={index === 0 ? "col-span-2 md:col-span-1" : ""}
+                className={`min-w-0 ${index === 0 ? "col-span-2 md:col-span-1" : ""}`}
               >
                 <SpecialDateCard
                   title={card.title}

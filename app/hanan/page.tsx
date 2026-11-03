@@ -154,7 +154,7 @@ export default async function HananPage() {
       <div className="mx-auto max-w-6xl">
         {/* HEADER */}
 
-        <div className="mb-7 flex items-start justify-between gap-4">
+        <div className="page-heading mb-7 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               HANAN Savings
@@ -175,7 +175,7 @@ export default async function HananPage() {
             <div className="soft-card-inset rounded-2xl p-4 sm:p-5">
               {/* SUMMARY CARDS */}
 
-              <section className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
+              <section className="savings-summary shared-summary grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
                 {/* TOTAL INCOME */}
 
                 <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
@@ -247,7 +247,7 @@ export default async function HananPage() {
             <div className="soft-card-inset rounded-2xl p-4 sm:p-5">
               {/* SUMMARY */}
 
-              <section className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
+              <section className="savings-summary shared-summary grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
                 {/* TOTAL INCOME */}
 
                 <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">

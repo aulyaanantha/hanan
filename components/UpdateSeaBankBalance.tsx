@@ -75,7 +75,7 @@ export default function UpdateSeaBankBalance({
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/30 p-4 backdrop-blur-sm">
+        <div className="form-modal fixed inset-0 z-50 flex items-center justify-center bg-slate-900/30 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-3xl bg-[var(--surface)] p-6 shadow-2xl">
             <div className="flex items-start justify-between">
               <div>

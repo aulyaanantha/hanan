@@ -238,9 +238,7 @@ export default function AddSpecialDateModal({
 
       {isOpen && (
         <div
-          className="
-            fixed
-            inset-0
+          className="form-modal fixed inset-0
             z-50
             flex
             items-center

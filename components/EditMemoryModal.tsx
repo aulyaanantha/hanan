@@ -82,7 +82,7 @@ export default function EditMemoryModal({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-[var(--overlay)] px-4 backdrop-blur-sm"
+      className="form-modal fixed inset-0 z-[60] flex items-center justify-center bg-[var(--overlay)] px-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div

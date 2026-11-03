@@ -76,7 +76,7 @@ export default async function HananMemoryPage() {
       <div className="mx-auto max-w-6xl">
         {/* HEADER */}
 
-        <div className="mb-7 flex items-start justify-between gap-4">
+        <div className="page-heading mb-7 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               HANAN Memory

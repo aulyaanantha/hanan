@@ -77,7 +77,7 @@ export default async function PersonalSavingsPage() {
       <div className="mx-auto max-w-6xl">
         {/* PAGE HEADER */}
 
-        <div className="mb-7 flex items-start justify-between gap-4">
+        <div className="page-heading mb-7 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               Personal Savings
@@ -93,7 +93,7 @@ export default async function PersonalSavingsPage() {
 
         {/* SUMMARY */}
 
-        <section className="grid grid-cols-3 gap-2 sm:gap-4">
+        <section className="savings-summary personal-summary grid grid-cols-3 gap-2 sm:gap-4">
           {/* BALANCE */}
 
           <div className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">

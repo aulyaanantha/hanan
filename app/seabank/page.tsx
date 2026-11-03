@@ -97,7 +97,7 @@ export default async function SeaBankPage() {
       <div className="space-y-8">
         {/* HEADER */}
 
-        <header className="flex items-start justify-between gap-6">
+        <header className="page-heading flex items-start justify-between gap-6">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               SeaBank Balance

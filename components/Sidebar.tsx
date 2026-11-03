@@ -73,7 +73,7 @@ export default function Sidebar() {
           />
         </div>
 
-        <div>
+        <div className="brand-copy">
           <div className="brand-title">HANAN</div>
           <div className="brand-subtitle">Savings Tracker</div>
         </div>
@@ -102,13 +102,14 @@ export default function Sidebar() {
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
           aria-expanded={isOpen}
+          aria-controls="primary-navigation"
         >
           {isOpen ? <X size={21} /> : <Menu size={21} />}
         </button>
 
       </div>
 
-      <nav className={`sidebar-nav ${isOpen ? "mobile-menu-open" : ""}`}>
+      <nav id="primary-navigation" aria-label="Main navigation" className={`sidebar-nav ${isOpen ? "mobile-menu-open" : ""}`}>
         {menuItems.filter((item) => item.href !== "/personal" || canAccessPersonalSavings).map((item) => {
           const Icon = item.icon;
 

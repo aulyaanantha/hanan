@@ -241,7 +241,7 @@ export default async function Home() {
             HEADER
         ================================= */}
 
-        <header className="flex items-start justify-between gap-6">
+        <header className="page-heading flex items-start justify-between gap-6">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
               Dashboard
@@ -262,7 +262,7 @@ export default async function Home() {
         <section className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
           {/* LEFT SUMMARY */}
 
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
+          <div className="dashboard-summary grid grid-cols-2 gap-4 lg:grid-cols-1">
             {/* TOTAL BALANCE */}
 
             <div className="soft-card col-span-2 flex items-center justify-between p-5 lg:col-span-1 lg:p-4">

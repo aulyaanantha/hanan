@@ -12,7 +12,7 @@ export default function HananTabs({ income, outcome }: Props) {
 
   return (
     <div>
-      <div className="relative z-10 flex items-end gap-2 px-2">
+      <div className="income-tabs relative z-10 flex items-end gap-2 px-2">
         <button
           type="button"
           onClick={() => setActiveTab("income")}

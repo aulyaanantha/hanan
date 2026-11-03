@@ -91,6 +91,8 @@ export default function SpecialDateCard({
     <div
       className="
         soft-card
+        h-full
+        min-w-0
         relative
         overflow-hidden
         rounded-3xl
@@ -121,7 +123,7 @@ export default function SpecialDateCard({
       <div className="relative">
         {/* ICON */}
 
-        <div className="flex items-start justify-between">
+        <div className="flex flex-wrap items-start justify-between gap-2">
           <div
             className={`
               flex
@@ -152,7 +154,7 @@ export default function SpecialDateCard({
               <button
                 type="button"
                 onClick={onEdit}
-                className="
+                className="mobile-round-action
                   soft-button
                   flex
                   h-9
@@ -179,7 +181,7 @@ export default function SpecialDateCard({
               <button
                 type="button"
                 onClick={onDelete}
-                className="
+                className="mobile-round-action
                   soft-button
                   flex
                   h-9

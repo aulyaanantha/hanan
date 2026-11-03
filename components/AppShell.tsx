@@ -9,9 +9,10 @@ export default function AppShell({
 }) {
   return (
     <div className="app-shell">
+      <a href="#main-content" className="skip-link">Skip to content</a>
       <Sidebar />
 
-      <main className="main-content">
+      <main id="main-content" className="main-content" tabIndex={-1}>
         {children}
       </main>
     </div>

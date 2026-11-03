@@ -42,7 +42,7 @@ export default function TodayInfo({ weekNumber }: Props) {
     : "--:--:--";
 
   return (
-    <div className="shrink-0 rounded-2xl px-4 py-3 text-right">
+    <div className="today-info shrink-0 rounded-2xl px-4 py-3 text-right">
       <p className="text-sm font-semibold text-[var(--foreground)]">
         {date}
       </p>

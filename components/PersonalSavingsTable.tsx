@@ -121,7 +121,7 @@ export default function PersonalSavingsTable({
   return (
     <div>
       <div className="overflow-hidden rounded-2xl bg-[var(--surface)]/60 shadow-[inset_2px_2px_5px_rgba(174,184,196,0.2),inset_-2px_-2px_5px_rgba(255,255,255,0.8)]">
-        <div className="overflow-x-auto">
+        <div className="transaction-scroll overflow-x-auto" tabIndex={0} role="region" aria-label="Transactions, scroll horizontally to see all columns">
           <table className="w-full min-w-[920px]">
             <thead>
               <tr className="border-b border-slate-200/70">
@@ -220,7 +220,7 @@ export default function PersonalSavingsTable({
                               disabled={isDeleting}
                               aria-label="Edit transaction"
                               title="Edit transaction"
-                              className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] transition hover:text-[var(--primary)] disabled:opacity-50"
+                              className="mobile-round-action soft-button flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] transition hover:text-[var(--primary)] disabled:opacity-50"
                             >
                               <Pencil
                                 size={15}
@@ -238,7 +238,7 @@ export default function PersonalSavingsTable({
                               disabled={isDeleting}
                               aria-label="Delete transaction"
                               title="Delete transaction"
-                              className="soft-button flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] transition hover:text-rose-400 disabled:opacity-50"
+                              className="mobile-round-action soft-button flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] transition hover:text-rose-400 disabled:opacity-50"
                             >
                               <Trash2
                                 size={15}

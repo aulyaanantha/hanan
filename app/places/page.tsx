@@ -47,7 +47,7 @@ export default async function PlacesPage() {
     <AppShell>
       <div className="mx-auto max-w-7xl">
         {/* PAGE HEADER */}
-        <div className="mb-7 flex items-start justify-between gap-4">
+        <div className="page-heading mb-7 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)] md:text-3xl">
               HANAN Places

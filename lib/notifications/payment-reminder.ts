@@ -83,13 +83,19 @@ export async function sendPaymentReminders() {
     }
 
     try {
-      await sendNotificationToPerson(person, {
+      const delivery = await sendNotificationToPerson(person, {
         title: "💰 HANAN Savings",
         body: `Minggu ke-${currentWeek.week_number} sudah dimulai. Jangan lupa melakukan pembayaran HANAN Savings. 💗`,
         url: "/hanan",
       });
 
-      // Save reminder status after successful notification.
+      // No device or no successful send: leave this reminder eligible for retry.
+      if (!delivery.success || delivery.sent < 1) {
+        console.warn(`Payment reminder not delivered for ${person}; will retry on the next run.`);
+        continue;
+      }
+
+      // Mark reminded only after at least one push service accepted the message.
       const { error: insertError } = await supabase
         .from("payment_reminders")
         .insert({
