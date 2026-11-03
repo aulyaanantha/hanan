@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useMemberName } from "@/components/AccessProvider";
 
 type WeeklyData = {
   id: string;
@@ -41,6 +42,7 @@ export default function AddIncomeModal({
   editingPayment = null,
   onClose,
 }: Props) {
+  const memberName = useMemberName();
   const [isOpen, setIsOpen] = useState(false);
 
   const [person, setPerson] = useState<"Farhan" | "Anantha">("Anantha");
@@ -80,7 +82,8 @@ export default function AddIncomeModal({
   // --------------------------------
 
   function openModal() {
-    const firstPerson = "Anantha";
+    const firstPerson = memberName;
+    if (!firstPerson) return;
 
     setPerson(firstPerson);
     setWeekId(findNextUnpaidWeek(firstPerson));
@@ -175,7 +178,6 @@ export default function AddIncomeModal({
                 paymentDate,
               }
             : {
-                person,
                 weekId,
                 amount: numericAmount,
                 paymentDate,
@@ -234,6 +236,7 @@ export default function AddIncomeModal({
         <button
           type="button"
           onClick={openModal}
+          disabled={!memberName}
           className="soft-button inline-flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold text-[var(--primary)] transition hover:text-[var(--primary-dark)]"
         >
           + Add Income
@@ -286,12 +289,13 @@ export default function AddIncomeModal({
               {/* PERSON */}
 
               <div>
-                <label className="text-xs font-bold tracking-wider text-[var(--muted)]">
+                <label htmlFor="income-person" className="text-xs font-bold tracking-wider text-[var(--muted)]">
                   FROM
                 </label>
 
                 <div className="soft-card-inset mt-2 rounded-2xl px-4">
-                  <select
+                  {isEditMode ? <select
+                    id="income-person"
                     value={person}
                     onChange={(event) =>
                       handlePersonChange(
@@ -303,7 +307,12 @@ export default function AddIncomeModal({
                     <option value="Anantha">Anantha</option>
 
                     <option value="Farhan">Farhan</option>
-                  </select>
+                  </select> : <input
+                    id="income-person"
+                    value={memberName ?? ""}
+                    readOnly
+                    className="w-full bg-transparent py-3 text-sm font-semibold text-[var(--foreground)] outline-none"
+                  />}
                 </div>
               </div>
 

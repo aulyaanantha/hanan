@@ -1,8 +1,10 @@
+import { isAuthenticated } from "@/lib/session/server";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   try {
+    if (!(await isAuthenticated())) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     const body = await request.json();
     const targetAmount = Number(body.targetAmount);
 

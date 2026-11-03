@@ -1,3 +1,6 @@
+import LoginButton from "@/components/LoginButton";
+import { isAuthenticated } from "@/lib/session/server";
+import { redirect } from "next/navigation";
 import { loginAction } from "./actions";
 
 type LoginPageProps = {
@@ -7,6 +10,7 @@ type LoginPageProps = {
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
+  if (await isAuthenticated()) redirect("/");
   const params = await searchParams;
 
   return (
@@ -30,7 +34,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             </h1>
 
             <p className="mx-auto mt-3 max-w-[280px] text-sm leading-6 text-[var(--muted)]">
-              Enter our PIN to continue our savings journey.
+              Sign in with your email and password to continue our savings journey.
             </p>
           </div>
 
@@ -38,15 +42,18 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           <form action={loginAction} className="mt-8">
             <div>
+              <label htmlFor="email" className="text-sm font-semibold text-[var(--foreground)]">Email</label>
+              <input id="email" name="email" type="email" autoComplete="username" required maxLength={254} placeholder="you@example.com" className="mt-2 mb-5 w-full rounded-2xl bg-[var(--surface-raised)] px-4 py-4 text-[var(--foreground)] outline-none" />
+              <label htmlFor="password" className="text-sm font-semibold text-[var(--foreground)]">Password</label>
               <div className="mt-2 rounded-2xl bg-[var(--surface-raised)] px-4 shadow-[inset_3px_3px_7px_var(--shadow-dark),inset_-3px_-3px_7px_var(--shadow-light)]">
                 <input
-                  id="pin"
-                  name="pin"
+                  id="password"
+                  name="password"
                   type="password"
-                  inputMode="numeric"
+                  required
                   autoComplete="current-password"
-                  placeholder="Enter here"
-                  className="w-full bg-transparent py-4 text-center text-lg font-bold tracking-[0.3em] text-[var(--foreground)] outline-none placeholder:text-sm placeholder:font-medium placeholder:tracking-normal placeholder:text-[var(--muted)]"
+                  placeholder="Enter your password"
+                  className="w-full bg-transparent py-4 text-base text-[var(--foreground)] outline-none placeholder:text-sm placeholder:font-medium placeholder:tracking-normal placeholder:text-[var(--muted)]"
                 />
               </div>
             </div>
@@ -54,29 +61,25 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             {/* ERROR */}
 
             {params.error === "invalid" && (
-              <div className="mt-3 rounded-xl bg-[var(--surface-raised)] px-4 py-3 text-center">
+              <div role="alert" className="mt-3 rounded-xl bg-[var(--surface-raised)] px-4 py-3 text-center">
                 <p className="text-xs font-semibold text-[var(--primary)]">
-                  OMG, did you forget our PIN?? Ask your partner!
+                  Email atau password salah. Silakan coba lagi.
                 </p>
               </div>
             )}
 
             {params.error === "empty" && (
-              <div className="mt-3 rounded-xl bg-[var(--surface-raised)] px-4 py-3 text-center">
+              <div role="alert" className="mt-3 rounded-xl bg-[var(--surface-raised)] px-4 py-3 text-center">
                 <p className="text-xs font-semibold text-[var(--primary)]">
-                  Please enter your PIN.
+                  Masukkan email dan password kamu.
                 </p>
               </div>
             )}
 
             {/* BUTTON */}
 
-            <button
-              type="submit"
-              className="mt-5 w-full rounded-2xl bg-[var(--primary)] px-5 py-4 text-sm font-bold text-white shadow-[5px_5px_12px_rgba(--shadow-dark),-3px_-3px_10px_rgba(--shadow-light)] transition hover:bg-[var(--primary-dark)] active:scale-[0.99]"
-            >
-              Login
-            </button>
+            {params.error === "access" && <p role="alert" className="mt-3 text-sm text-[var(--primary)]">Akun ini belum terdaftar sebagai anggota HANAN.</p>}
+            <LoginButton />
           </form>
 
           {/* FOOTER */}

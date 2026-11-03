@@ -1,5 +1,7 @@
 "use client";
 
+import { logoutAction } from "@/app/login/actions";
+import { usePersonalSavingsAccess } from "@/components/AccessProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -14,6 +16,7 @@ import {
   CalendarHeart,
   MapPin,
   Settings,
+  LogOut,
 } from "lucide-react";
 
 const menuItems = [
@@ -55,6 +58,7 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+  const canAccessPersonalSavings = usePersonalSavingsAccess();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
@@ -74,6 +78,12 @@ export default function Sidebar() {
           <div className="brand-subtitle">Savings Tracker</div>
         </div>
 
+
+        <form action={logoutAction} className="logout-mobile-form">
+          <button type="submit" className="settings-mobile-button" aria-label="Logout" title="Logout">
+            <LogOut size={20} strokeWidth={1.8} />
+          </button>
+        </form>
 
         {/* Settings Button: mobile only */}
         <Link
@@ -99,7 +109,7 @@ export default function Sidebar() {
       </div>
 
       <nav className={`sidebar-nav ${isOpen ? "mobile-menu-open" : ""}`}>
-        {menuItems.map((item) => {
+        {menuItems.filter((item) => item.href !== "/personal" || canAccessPersonalSavings).map((item) => {
           const Icon = item.icon;
 
           return (
@@ -132,6 +142,12 @@ export default function Sidebar() {
           <Settings size={19} strokeWidth={1.8} />
           <span>Settings</span>
         </Link>
+        <form action={logoutAction}>
+          <button type="submit" className="sidebar-link w-full text-left">
+            <LogOut size={19} strokeWidth={1.8} />
+            <span>Logout</span>
+          </button>
+        </form>
       </div>
 
       <div className="sidebar-footer">

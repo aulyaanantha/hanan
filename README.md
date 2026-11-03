@@ -34,3 +34,31 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## HANAN authentication
+
+Login uses Supabase Auth email/password and the existing public.hanan_members table.
+Only members named Farhan or Anantha can access the application. Both accounts share the application, but Personal Savings page and transaction API
+are restricted to Anantha. SeaBank aggregate balances remain visible to both accounts.
+
+Required environment variables (locally in .env.local and in deployment settings):
+
+- NEXT_PUBLIC_SUPABASE_URL
+- NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (or NEXT_PUBLIC_SUPABASE_ANON_KEY)
+- SUPABASE_SERVICE_ROLE_KEY (server-side database operations only)
+
+Create both accounts in Supabase Authentication and link their auth.users IDs in
+hanan_members. Enable the Email provider and disable public signup. Membership
+SELECT must be allowed for authenticated users on their own row, as in the setup SQL.
+HANAN_PIN_HASH_B64 is no longer used. Existing PIN sessions must sign in again.
+No additional database migration is needed for this authentication change.
+
+Verification with configured Supabase:
+
+1. Sign in with each member; verify access to the same savings and memories.
+2. Try an incorrect password and a valid Auth user without membership; deny access.
+3. Logout; protected pages must redirect to /login and protected APIs return 401.
+4. A legacy hanan_session=authenticated cookie alone must not grant access.
+5. Confirm sessions refresh after access-token expiry and cron still requires CRON_SECRET.
+
+Run isolated authentication regression tests with npm run test:auth (mocked Supabase; no database writes).

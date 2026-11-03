@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isAuthenticated } from "@/lib/session/server";
+import { getAuthenticatedMember, isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { sendNotificationToPerson } from "@/lib/notifications/send";
 import { checkAndSendTargetNotification } from "@/lib/notifications/target";
@@ -13,9 +13,9 @@ function isValidDate(value: unknown) {
 
 export async function POST(request: Request) {
   try {
-    const authenticated = await isAuthenticated();
+    const member = await getAuthenticatedMember();
 
-    if (!authenticated) {
+    if (!member) {
       return NextResponse.json(
         { error: "Unauthorized." },
         { status: 401 },
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const person = body.person;
+    const person = member.displayName;
     const weekId = body.weekId;
     const amount = Number(body.amount);
     const paymentDate = body.paymentDate;

@@ -651,6 +651,7 @@ body {
   flex-shrink: 0;
 }
 
+.logout-mobile-form,
 .settings-mobile-button {
   display: none;
 }
@@ -661,8 +662,7 @@ body {
   }
 
   .settings-mobile-button {
-    margin-left: 140px;
-    margin-right: -6px;
+    margin: 0;
     width: 42px;
     height: 42px;
     flex-shrink: 0;
@@ -670,6 +670,8 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 14px;
+    border: none;
+    cursor: pointer;
     color: var(--primary);
     background: var(--surface);
     box-shadow: 5px 5px 10px var(--shadow-dark),
@@ -681,5 +683,20 @@ body {
     box-shadow:
       inset 4px 4px 8px var(--shadow-dark),
       inset -4px -4px 8px var(--shadow-light);
+  }
+
+  .logout-mobile-form {
+    display: block;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .sidebar-brand > .mobile-menu-button {
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+
+  .sidebar-brand {
+    gap: 8px;
   }
 }

@@ -1,3 +1,4 @@
+import { isAuthenticated } from "@/lib/session/server";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -28,6 +29,7 @@ function calculateDaysBetween(
 
 export async function GET() {
   try {
+    if (!(await isAuthenticated())) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     const supabase = createSupabaseServerClient();
 
     const { data: records, error } = await supabase
@@ -100,6 +102,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    if (!(await isAuthenticated())) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     const body = await request.json();
     const balance = Number(body.balance);
 

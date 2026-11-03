@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
-import { isAuthenticated } from "@/lib/session/server";
+import { getAuthenticatedMember } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import PersonalTransactionButton from "@/components/PersonalTransactionButton";
 import PersonalSavingsTable from "@/components/PersonalSavingsTable";
@@ -24,11 +24,12 @@ function formatDate(date: Date) {
 }
 
 export default async function PersonalSavingsPage() {
-  const authenticated = await isAuthenticated();
+  const member = await getAuthenticatedMember();
 
-  if (!authenticated) {
+  if (!member) {
     redirect("/login");
   }
+  if (member.displayName !== "Anantha") redirect("/");
 
   const supabase = createSupabaseServerClient();
 

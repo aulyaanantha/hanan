@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isAuthenticated } from "@/lib/session/server";
+import { getAuthenticatedMember } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type TransactionType = "deposit" | "withdrawal";
@@ -29,13 +29,17 @@ function isValidDate(date: unknown) {
 ========================= */
 
 export async function POST(request: Request) {
-  const authenticated = await isAuthenticated();
+  const member = await getAuthenticatedMember();
 
-  if (!authenticated) {
+  if (!member) {
     return NextResponse.json(
       { error: "Unauthorized." },
       { status: 401 }
     );
+  }
+
+  if (member.displayName !== "Anantha") {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 
   try {
@@ -126,13 +130,17 @@ export async function POST(request: Request) {
 ========================= */
 
 export async function PATCH(request: Request) {
-  const authenticated = await isAuthenticated();
+  const member = await getAuthenticatedMember();
 
-  if (!authenticated) {
+  if (!member) {
     return NextResponse.json(
       { error: "Unauthorized." },
       { status: 401 }
     );
+  }
+
+  if (member.displayName !== "Anantha") {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 
   try {
@@ -265,13 +273,17 @@ export async function PATCH(request: Request) {
 ========================= */
 
 export async function DELETE(request: Request) {
-  const authenticated = await isAuthenticated();
+  const member = await getAuthenticatedMember();
 
-  if (!authenticated) {
+  if (!member) {
     return NextResponse.json(
       { error: "Unauthorized." },
       { status: 401 }
     );
+  }
+
+  if (member.displayName !== "Anantha") {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
   }
 
   try {
