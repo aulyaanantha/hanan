@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Pencil } from "lucide-react";
 import AddOutcomeModal from "./AddOutcomeModal";
 
 type Expense = {
@@ -142,23 +143,7 @@ export default function OutcomeTable({
                           }
                           className="mobile-round-action soft-button flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] transition hover:text-[var(--primary)]"
                         >
-                          <svg
-                            className="h-4 w-4"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4.5m2.409-9.409a2.017 2.017 0 0 0-2.852 0l-8.119 8.119L7 17l3.938-.438 8.118-8.118a2.017 2.017 0 0 0 0-2.852Z"
-                            />
-                          </svg>
+                          <Pencil size={15} strokeWidth={2} aria-hidden="true" />
                         </button>
 
                         {/* DELETE */}

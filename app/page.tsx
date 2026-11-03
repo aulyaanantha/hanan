@@ -1,3 +1,7 @@
+import ScrollRevealCard from "@/components/ScrollRevealCard";
+import { AnimatedMoney, SavingsRing, IncomeCoinArrival } from "@/components/DashboardAnimations";
+import TargetMilestone from "@/components/TargetMilestone";
+import ContributionHearts from "@/components/ContributionHearts";
 import { redirect } from "next/navigation";
 import { Wallet, ArrowDownLeft, ArrowUpRight } from "lucide-react";
 import AppShell from "@/components/AppShell";
@@ -236,7 +240,8 @@ export default async function Home() {
 
   return (
     <AppShell>
-      <div className="space-y-8">
+      <div className="dashboard-motion space-y-8">
+        <IncomeCoinArrival />
         {/* ================================
             HEADER
         ================================= */}
@@ -265,14 +270,14 @@ export default async function Home() {
           <div className="dashboard-summary grid grid-cols-2 gap-4 lg:grid-cols-1">
             {/* TOTAL BALANCE */}
 
-            <div className="soft-card col-span-2 flex items-center justify-between p-5 lg:col-span-1 lg:p-4">
+            <div id="dashboard-savings-balance" className="dashboard-card dashboard-interactive dashboard-step-1 soft-card col-span-2 flex items-center justify-between p-5 lg:col-span-1 lg:p-4">
               <div>
                 <p className="text-xs font-bold tracking-wider text-[var(--muted)] lg:text-[10px]">
                   TOTAL BALANCE
                 </p>
 
                 <p className="mt-3 text-2xl font-bold tracking-tight text-[var(--foreground)] lg:mt-2 lg:text-xl">
-                  {formatRupiah(hananBalance)}
+                  <AnimatedMoney value={hananBalance} />
                 </p>
 
                 <p className="mt-1 text-xs text-[var(--muted)] lg:text-[10px]">
@@ -280,7 +285,7 @@ export default async function Home() {
                 </p>
               </div>
 
-              <div className="soft-card-inset flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl lg:h-10 lg:w-10">
+              <div className="wallet-shimmer soft-card-inset flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl lg:h-10 lg:w-10">
                 <Wallet
                   size={21}
                   strokeWidth={1.8}
@@ -291,14 +296,14 @@ export default async function Home() {
 
             {/* MONEY IN */}
 
-            <div className="soft-card flex items-center justify-between p-5 lg:p-4">
+            <div className="dashboard-card dashboard-interactive dashboard-step-2 soft-card flex items-center justify-between p-5 lg:p-4">
               <div>
                 <p className="text-xs font-bold tracking-wider text-[var(--muted)] lg:text-[10px]">
                   MONEY IN
                 </p>
 
                 <p className="mt-3 text-xl font-bold tracking-tight text-emerald-500 lg:mt-2 lg:text-lg">
-                  {formatRupiah(totalIncome)}
+                  <AnimatedMoney value={totalIncome} />
                 </p>
 
                 <p className="mt-1 text-xs text-[var(--muted)] lg:text-[10px]">
@@ -318,14 +323,14 @@ export default async function Home() {
 
             {/* MONEY OUT */}
 
-            <div className="soft-card flex items-center justify-between p-5 lg:p-4">
+            <div className="dashboard-card dashboard-interactive dashboard-step-3 soft-card flex items-center justify-between p-5 lg:p-4">
               <div>
                 <p className="text-xs font-bold tracking-wider text-[var(--muted)] lg:text-[10px]">
                   MONEY OUT
                 </p>
 
                 <p className="mt-3 text-xl font-bold tracking-tight text-rose-400 lg:mt-2 lg:text-lg">
-                  {formatRupiah(totalExpense)}
+                  <AnimatedMoney value={totalExpense} />
                 </p>
 
                 <p className="mt-1 text-xs text-[var(--muted)] lg:text-[10px]">
@@ -346,7 +351,8 @@ export default async function Home() {
 
           {/* HANAN TARGET */}
 
-          <div className="soft-card flex flex-col justify-between p-6 lg:p-5">
+          <div className="dashboard-card dashboard-target dashboard-step-4 soft-card relative flex flex-col justify-between p-6 lg:p-5">
+            <TargetMilestone percentage={progressPercentage} targetAmount={targetAmount} />
             <div>
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -363,16 +369,7 @@ export default async function Home() {
               </div>
 
               <div className="mt-6 flex justify-center lg:mt-4">
-                <div
-                  className="relative h-44 w-44 lg:h-36 lg:w-36"
-                  style={{
-                    background: `conic-gradient(
-  var(--primary) 0% ${progressWidth}%,
-  var(--surface-raised) ${progressWidth}% 100%
-)`,
-                    borderRadius: "50%",
-                  }}
-                >
+                <SavingsRing percentage={progressWidth}>
                   <div
                     className="absolute inset-[12px] flex items-center justify-center rounded-full bg-[var(--surface-raised)] lg:inset-[10px]"
                     style={{
@@ -386,12 +383,12 @@ export default async function Home() {
                       </p>
                     </div>
                   </div>
-                </div>
+                </SavingsRing>
               </div>
             </div>
 
             <div className="mt-5 flex items-center justify-between text-xs text-[var(--muted)] lg:mt-4 lg:text-[10px]">
-              <span>{formatRupiah(hananBalance)}</span>
+              <span><AnimatedMoney value={hananBalance} /></span>
 
               <span>Target {formatRupiah(targetAmount)}</span>
             </div>
@@ -403,9 +400,10 @@ export default async function Home() {
         ================================= */}
 
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <ContributionHearts />
           {/* LAST CONTRIBUTION */}
 
-          <div className="soft-card p-7">
+          <ScrollRevealCard>
             <div>
               <p className="text-xs font-bold tracking-[0.16em] text-[var(--primary)]">
                 LAST CONTRIBUTION
@@ -465,11 +463,11 @@ export default async function Home() {
                 </span>
               </div>
             </div>
-          </div>
+          </ScrollRevealCard>
 
           {/* TOTAL CONTRIBUTION */}
 
-          <div className="soft-card p-7">
+          <ScrollRevealCard>
             <div>
               <p className="text-xs font-bold tracking-[0.16em] text-[var(--primary)]">
                 TOTAL CONTRIBUTION
@@ -499,7 +497,7 @@ export default async function Home() {
                 </div>
 
                 <span className="text-lg font-bold text-[var(--foreground)]">
-                  {formatRupiah(farhanTotal)}
+                  <AnimatedMoney value={farhanTotal} />
                 </span>
               </div>
 
@@ -525,11 +523,11 @@ export default async function Home() {
                 </div>
 
                 <span className="text-lg font-bold text-[var(--foreground)]">
-                  {formatRupiah(ananthaTotal)}
+                  <AnimatedMoney value={ananthaTotal} />
                 </span>
               </div>
             </div>
-          </div>
+          </ScrollRevealCard>
         </section>
       </div>
       <p className="mt-6 text-center text-xs font-medium text-[var(--muted)]">

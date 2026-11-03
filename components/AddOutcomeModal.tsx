@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useMemberName } from "@/components/AccessProvider";
 
 type Expense = {
   id: string;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export default function AddOutcomeModal({ expense = null, onClose }: Props) {
+  const memberName = useMemberName();
   const [isOpen, setIsOpen] = useState(false);
 
   const [expenseDate, setExpenseDate] = useState("");
@@ -106,6 +108,14 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
 
       if (!response.ok) {
         throw new Error(result.error || "Failed to save outcome.");
+      }
+
+      if (!isEditing) {
+        try {
+          sessionStorage.setItem("hanan-transaction-celebration", JSON.stringify({ kind: "outcome", person: memberName, savedAt: Date.now() }));
+        } catch {
+          // Decorative effects must never interrupt a saved expense.
+        }
       }
 
       setIsOpen(false);

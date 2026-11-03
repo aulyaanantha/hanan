@@ -16,15 +16,16 @@ export default function MonthlyRecapCard({
     <button
       type="button"
       onClick={() => router.push("/monthly-recap")}
-      className="group relative w-full overflow-hidden rounded-[28px] text-left transition-all duration-300 hover:-translate-y-1"
+      className="monthly-recap-gradient group relative w-full overflow-hidden rounded-[28px] text-left transition-all duration-300 hover:-translate-y-1"
       style={{
-        background:
-          "linear-gradient(135deg, #f7dff0 0%, #eee4f8 48%, #e5eaff 100%)",
         boxShadow:
           "10px 10px 24px var(--shadow-dark), -10px -10px 24px var(--shadow-light)",
       }}
     >
       {/* Decorative blobs */}
+      <div className="recap-twinkles" aria-hidden="true">
+        <span>✦</span><span>✧</span><span>✦</span><span>✧</span><span>✦</span>
+      </div>
       <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/25 blur-2xl" />
 
       <div className="absolute -bottom-12 -left-8 h-36 w-36 rounded-full bg-pink-300/20 blur-3xl" />

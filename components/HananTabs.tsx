@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import SavingsCoinTransfer from "@/components/SavingsCoinTransfer";
 
 type Props = {
   income: React.ReactNode;
@@ -12,6 +13,7 @@ export default function HananTabs({ income, outcome }: Props) {
 
   return (
     <div>
+      <SavingsCoinTransfer activeTab={activeTab} />
       <div className="income-tabs relative z-10 flex items-end gap-2 px-2">
         <button
           type="button"

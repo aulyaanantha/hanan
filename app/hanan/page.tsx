@@ -178,7 +178,7 @@ export default async function HananPage() {
               <section className="savings-summary shared-summary grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
                 {/* TOTAL INCOME */}
 
-                <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                <div data-savings-card="income" className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
                   <p className="text-[9px] font-bold tracking-wide text-[var(--muted)] sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">INCOME</span>
                     <span className="hidden lg:inline">TOTAL INCOME</span>
@@ -195,7 +195,7 @@ export default async function HananPage() {
 
                 {/* TOTAL OUTCOME */}
 
-                <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                <div data-savings-card="outcome" className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
                   <p className="text-[9px] font-bold tracking-wide text-[var(--muted)] sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">OUTCOME</span>
                     <span className="hidden lg:inline">TOTAL OUTCOME</span>
@@ -250,7 +250,7 @@ export default async function HananPage() {
               <section className="savings-summary shared-summary grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
                 {/* TOTAL INCOME */}
 
-                <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                <div data-savings-card="income" className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
                   <p className="text-[9px] font-bold tracking-wide text-[var(--muted)] sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">INCOME</span>
                     <span className="hidden lg:inline">TOTAL INCOME</span>
@@ -267,7 +267,7 @@ export default async function HananPage() {
 
                 {/* TOTAL OUTCOME */}
 
-                <div className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
+                <div data-savings-card="outcome" className="soft-card !rounded-[20px] p-3 sm:!rounded-2xl sm:p-4 lg:p-5">
                   <p className="text-[9px] font-bold tracking-wide text-[var(--muted)] sm:text-[10px] lg:text-xs lg:tracking-wider">
                     <span className="lg:hidden">OUTCOME</span>
                     <span className="hidden lg:inline">TOTAL OUTCOME</span>

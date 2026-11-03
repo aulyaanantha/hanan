@@ -196,6 +196,15 @@ export default function AddIncomeModal({
         );
       }
 
+      if (!isEditMode) {
+        try {
+          sessionStorage.setItem("hanan-income-celebration", JSON.stringify({ person: memberName, savedAt: Date.now() }));
+          sessionStorage.setItem("hanan-transaction-celebration", JSON.stringify({ kind: "income", person: memberName, savedAt: Date.now() }));
+        } catch {
+          // Animation storage is optional and must never interrupt a saved payment.
+        }
+      }
+
       setIsOpen(false);
 
       if (onClose) {
