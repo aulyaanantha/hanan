@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 type SpecialDateCardProps = {
+  id?: string;
   title: string;
   date: string;
   icon: string;
@@ -72,6 +73,7 @@ const colorMap = {
 };
 
 export default function SpecialDateCard({
+  id,
   title,
   date,
   icon,
@@ -89,7 +91,11 @@ export default function SpecialDateCard({
 
   return (
     <div
+      data-special-date-id={id}
+      data-special-date-icon={icon}
+      data-special-date-today={isToday}
       className="
+        special-date-motion-card
         soft-card
         h-full
         min-w-0
@@ -126,6 +132,7 @@ export default function SpecialDateCard({
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div
             className={`
+              special-date-motion-icon
               flex
               h-14
               w-14
@@ -269,6 +276,7 @@ export default function SpecialDateCard({
         >
           <p
             className={`
+              special-date-countdown
               text-sm
               font-semibold
               ${colors.countdownText}

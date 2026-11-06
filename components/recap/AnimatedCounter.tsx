@@ -1,6 +1,7 @@
-"use client";
+﻿'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { useReducedMotion } from '@/lib/hooks/useReducedMotion';
 
 type AnimatedCounterProps = {
   value: number;
@@ -9,83 +10,28 @@ type AnimatedCounterProps = {
   onComplete?: () => void;
 };
 
-export default function AnimatedCounter({
-  value,
-  duration = 3000,
-  start = true,
-  onComplete,
-}: AnimatedCounterProps) {
+export default function AnimatedCounter({ value, duration = 3000, start = true, onComplete }: AnimatedCounterProps) {
   const [displayValue, setDisplayValue] = useState(0);
-
+  const reducedMotion = useReducedMotion();
   useEffect(() => {
-    if (!start) {
-      setDisplayValue(0);
-      return;
+    if (!start) return;
+    let frame = 0;
+    let completed = false;
+    const startedAt = performance.now();
+    const animationDuration = reducedMotion ? 0 : Math.max(0, duration);
+    function tick(now: number) {
+      const progress = animationDuration === 0 ? 1 : Math.min((now - startedAt) / animationDuration, 1);
+      setDisplayValue(Math.round(value * (1 - Math.pow(1 - progress, 4))));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+      else if (!completed) { completed = true; onComplete?.(); }
     }
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [value, duration, start, onComplete, reducedMotion]);
 
-    let animationFrame: number;
-    let completionTimeout: ReturnType<typeof setTimeout> | undefined;
-    let cancelled = false;
-
-    const startTime = performance.now();
-
-    function animate(currentTime: number) {
-      if (cancelled) return;
-
-      const elapsed = currentTime - startTime;
-
-      const progress = Math.min(
-        elapsed / duration,
-        1,
-      );
-
-      // Smooth ease-out
-      const easedProgress =
-        1 - Math.pow(1 - progress, 4);
-
-      const currentValue = Math.round(
-        value * easedProgress,
-      );
-
-      setDisplayValue(currentValue);
-
-      if (progress < 1) {
-        animationFrame =
-          requestAnimationFrame(animate);
-        return;
-      }
-
-      setDisplayValue(value);
-
-      completionTimeout = setTimeout(() => {
-        if (!cancelled) {
-          onComplete?.();
-        }
-      }, 120);
-    }
-
-    animationFrame =
-      requestAnimationFrame(animate);
-
-    return () => {
-      cancelled = true;
-
-      cancelAnimationFrame(animationFrame);
-
-      if (completionTimeout) {
-        clearTimeout(completionTimeout);
-      }
-    };
-  }, [
-    value,
-    duration,
-    start,
-    onComplete,
-  ]);
-
-  return (
-    <span className="inline-block min-w-[5.5ch] tabular-nums">
-      Rp{displayValue.toLocaleString("id-ID")}
-    </span>
-  );
+  const finalText = `Rp${value.toLocaleString('id-ID')}`;
+  return <span className="inline-block min-w-[5.5ch] tabular-nums">
+    <span className="sr-only">{finalText}</span>
+    <span aria-hidden="true">Rp{(start ? reducedMotion ? value : displayValue : 0).toLocaleString('id-ID')}</span>
+  </span>;
 }

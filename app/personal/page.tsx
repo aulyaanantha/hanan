@@ -1,3 +1,5 @@
+import { AnimatedMoney } from "@/components/DashboardAnimations";
+import SavingsCoinTransfer from "@/components/SavingsCoinTransfer";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import { getAuthenticatedMember } from "@/lib/session/server";
@@ -5,14 +7,6 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import PersonalTransactionButton from "@/components/PersonalTransactionButton";
 import PersonalSavingsTable from "@/components/PersonalSavingsTable";
 import TodayInfo from "@/components/TodayInfo";
-
-function formatRupiah(amount: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-CA", {
@@ -74,7 +68,8 @@ export default async function PersonalSavingsPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-6xl">
+      <div className="personal-savings-motion mx-auto max-w-6xl">
+        <SavingsCoinTransfer scope="personal" />
         {/* PAGE HEADER */}
 
         <div className="page-heading mb-7 flex items-start justify-between gap-4">
@@ -102,7 +97,7 @@ export default async function PersonalSavingsPage() {
             </p>
 
             <p className="mt-2 text-sm font-bold tracking-tight text-[var(--primary)] sm:mt-3 sm:text-2xl">
-              {formatRupiah(currentBalance)}
+              <AnimatedMoney value={currentBalance} />
             </p>
 
             <p className="mt-1 hidden text-[9px] text-[var(--muted)] sm:block sm:text-xs">
@@ -112,13 +107,13 @@ export default async function PersonalSavingsPage() {
 
           {/* DEPOSIT */}
 
-          <div className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">
+          <div data-personal-card="deposit" className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">
             <p className="text-[10px] font-semibold text-[var(--muted)] sm:text-xs">
               Total Deposit
             </p>
 
             <p className="mt-2 text-sm font-bold tracking-tight text-emerald-500 sm:mt-3 sm:text-2xl">
-              {formatRupiah(totalDeposit)}
+              <AnimatedMoney value={totalDeposit} />
             </p>
 
             <p className="mt-1 hidden text-[9px] text-[var(--muted)] sm:block sm:text-xs">
@@ -128,13 +123,13 @@ export default async function PersonalSavingsPage() {
 
           {/* WITHDRAWAL */}
 
-          <div className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">
+          <div data-personal-card="withdrawal" className="soft-card !rounded-[20px] sm:!rounded-2xl p-3 sm:p-5">
             <p className="text-[10px] font-semibold text-[var(--muted)] sm:text-xs">
               Total Withdrawal
             </p>
 
             <p className="mt-2 text-sm font-bold tracking-tight text-rose-400 sm:mt-3 sm:text-2xl">
-              {formatRupiah(totalWithdrawal)}
+              <AnimatedMoney value={totalWithdrawal} />
             </p>
 
             <p className="mt-1 hidden text-[9px] text-[var(--muted)] sm:block sm:text-xs">
@@ -145,7 +140,7 @@ export default async function PersonalSavingsPage() {
 
         {/* TRANSACTIONS */}
 
-        <section className="mt-6 soft-card rounded-2xl p-5">
+        <section className="personal-transactions-panel mt-6 soft-card rounded-2xl p-5">
           <div className="mt-1 flex justify-end">
             <PersonalTransactionButton />
           </div>

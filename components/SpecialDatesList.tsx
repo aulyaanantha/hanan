@@ -80,6 +80,7 @@ export default function SpecialDatesList({
         {dates.map((specialDate) => (
           <SpecialDateCard
             key={specialDate.id}
+            id={specialDate.id}
             title={specialDate.title}
             date={specialDate.date}
             icon={specialDate.icon}

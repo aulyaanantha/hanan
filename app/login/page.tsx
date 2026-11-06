@@ -63,7 +63,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             {params.error === "invalid" && (
               <div role="alert" className="mt-3 rounded-xl bg-[var(--surface-raised)] px-4 py-3 text-center">
                 <p className="text-xs font-semibold text-[var(--primary)]">
-                  Email atau password salah. Silakan coba lagi.
+                  OMG, did you forget our PIN?? Ask your partner!
                 </p>
               </div>
             )}
@@ -71,7 +71,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             {params.error === "empty" && (
               <div role="alert" className="mt-3 rounded-xl bg-[var(--surface-raised)] px-4 py-3 text-center">
                 <p className="text-xs font-semibold text-[var(--primary)]">
-                  Masukkan email dan password kamu.
+                  Enter your email and password.
                 </p>
               </div>
             )}

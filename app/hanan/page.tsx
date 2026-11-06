@@ -1,3 +1,4 @@
+import { AnimatedMoney } from "@/components/DashboardAnimations";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import HananTabs from "@/components/HananTabs";
@@ -8,14 +9,6 @@ import AddIncomeModal from "@/components/AddIncomeModal";
 import OutcomeTable from "@/components/OutcomeTable";
 import AddOutcomeModal from "@/components/AddOutcomeModal";
 import TodayInfo from "@/components/TodayInfo";
-
-function formatRupiah(amount: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
 
 function formatDate(date: Date) {
   return new Intl.DateTimeFormat("en-CA", {
@@ -185,7 +178,7 @@ export default async function HananPage() {
                   </p>
 
                   <p className="mt-1 text-sm font-bold tracking-tight text-emerald-500 sm:text-base lg:mt-3 lg:text-2xl">
-                    {formatRupiah(totalIncome)}
+                    <AnimatedMoney value={totalIncome} />
                   </p>
 
                   <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
@@ -202,7 +195,7 @@ export default async function HananPage() {
                   </p>
 
                   <p className="mt-1 text-sm font-bold tracking-tight text-rose-400 sm:text-base lg:mt-3 lg:text-2xl">
-                    {formatRupiah(totalExpense)}
+                    <AnimatedMoney value={totalExpense} />
                   </p>
 
                   <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
@@ -221,7 +214,7 @@ export default async function HananPage() {
                   </p>
 
                   <p className="mt-1 text-sm font-bold tracking-tight text-[var(--primary)] sm:text-base lg:mt-3 lg:text-2xl">
-                    {formatRupiah(hananBalance)}
+                    <AnimatedMoney value={hananBalance} />
                   </p>
 
                   <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
@@ -257,7 +250,7 @@ export default async function HananPage() {
                   </p>
 
                   <p className="mt-1 text-sm font-bold tracking-tight text-emerald-500 sm:text-base lg:mt-3 lg:text-2xl">
-                    {formatRupiah(totalIncome)}
+                    <AnimatedMoney value={totalIncome} />
                   </p>
 
                   <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
@@ -274,7 +267,7 @@ export default async function HananPage() {
                   </p>
 
                   <p className="mt-1 text-sm font-bold tracking-tight text-rose-400 sm:text-base lg:mt-3 lg:text-2xl">
-                    {formatRupiah(totalExpense)}
+                    <AnimatedMoney value={totalExpense} />
                   </p>
 
                   <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">
@@ -293,7 +286,7 @@ export default async function HananPage() {
                   </p>
 
                   <p className="mt-1 text-sm font-bold tracking-tight text-[var(--primary)] sm:text-base lg:mt-3 lg:text-2xl">
-                    {formatRupiah(hananBalance)}
+                    <AnimatedMoney value={hananBalance} />
                   </p>
 
                   <p className="mt-1 hidden text-xs text-[var(--muted)] sm:block">

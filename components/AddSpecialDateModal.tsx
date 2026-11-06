@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMemberName } from "./AccessProvider";
 
 type RepeatType = "none" | "monthly" | "yearly";
 
@@ -87,6 +88,7 @@ export default function AddSpecialDateModal({
   showAddButton = true,
 }: Props) {
   const router = useRouter();
+  const member = useMemberName();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -176,6 +178,11 @@ export default function AddSpecialDateModal({
         onClose();
       }
 
+      if (!isEditMode && result.data?.id) {
+        try {
+          sessionStorage.setItem("hanan-new-special-date", JSON.stringify({ id: result.data.id, person: member, savedAt: Date.now() }));
+        } catch { /* Optional effect must not interrupt a saved date. */ }
+      }
       router.refresh();
     } catch (error) {
       console.error(error);

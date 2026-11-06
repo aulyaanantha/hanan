@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Camera, RotateCcw, X, Loader2, SwitchCamera } from "lucide-react";
+import { useMemberName } from "@/components/AccessProvider";
 
 type AddMemoryModalProps = {
   onSuccess?: () => void;
@@ -19,6 +20,7 @@ function getTodayJakarta() {
 }
 
 export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
+  const memberName = useMemberName();
   const [isOpen, setIsOpen] = useState(false);
 
   const [cameraMode, setCameraMode] = useState<CameraMode>("camera");
@@ -355,6 +357,12 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
 
       if (!response.ok) {
         throw new Error(result.error || "Failed to save memory.");
+      }
+
+      if (result.id) {
+        try {
+          sessionStorage.setItem("hanan-new-memory", JSON.stringify({ id: result.id, person: memberName, savedAt: Date.now() }));
+        } catch { /* A blocked animation marker must not interrupt a saved memory. */ }
       }
 
       stopCamera();

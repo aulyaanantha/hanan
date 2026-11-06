@@ -3,20 +3,22 @@
 import { useEffect } from 'react';
 import { useMemberName } from '@/components/AccessProvider';
 
-const STORAGE_KEY = 'hanan-transaction-celebration';
-
-export default function SavingsCoinTransfer({ activeTab }: { activeTab: 'income' | 'outcome' }) {
+export default function SavingsCoinTransfer({ activeTab = 'income', scope = 'hanan' }: {
+  activeTab?: 'income' | 'outcome';
+  scope?: 'hanan' | 'personal';
+}) {
   const memberName = useMemberName();
   useEffect(() => {
     if (!memberName) return;
+    const storageKey = scope === 'personal' ? 'hanan-personal-transaction-celebration' : 'hanan-transaction-celebration';
     let pending: { kind?: string; person?: string; savedAt?: number };
     try {
-      const stored = sessionStorage.getItem(STORAGE_KEY);
+      const stored = sessionStorage.getItem(storageKey);
       if (!stored) return;
       pending = JSON.parse(stored);
       if (!pending || !['income', 'outcome'].includes(pending.kind ?? '') || pending.person !== memberName ||
         typeof pending.savedAt !== 'number' || pending.savedAt > Date.now() || Date.now() - pending.savedAt > 600000) {
-        sessionStorage.removeItem(STORAGE_KEY);
+        sessionStorage.removeItem(storageKey);
         return;
       }
     } catch { return; }
@@ -26,10 +28,10 @@ export default function SavingsCoinTransfer({ activeTab }: { activeTab: 'income'
     const animations: Animation[] = [];
     const stop = () => { animations.forEach(animation => animation.cancel()); coin?.remove(); };
     const frame = requestAnimationFrame(() => {
-      const income = document.querySelector<HTMLElement>('[data-savings-card="income"]');
-      const outcome = document.querySelector<HTMLElement>('[data-savings-card="outcome"]');
+      const income = document.querySelector<HTMLElement>(scope === 'personal' ? '[data-personal-card="deposit"]' : '[data-savings-card="income"]');
+      const outcome = document.querySelector<HTMLElement>(scope === 'personal' ? '[data-personal-card="withdrawal"]' : '[data-savings-card="outcome"]');
       if (!income || !outcome) return;
-      try { sessionStorage.removeItem(STORAGE_KEY); } catch { return; }
+      try { sessionStorage.removeItem(storageKey); } catch { return; }
       if (motion.matches || typeof income.animate !== 'function') return;
       const destination = pending.kind === 'outcome' ? outcome : income;
       const to = destination.getBoundingClientRect();
@@ -73,6 +75,6 @@ export default function SavingsCoinTransfer({ activeTab }: { activeTab: 'income'
       window.removeEventListener('resize', stop);
       window.removeEventListener('scroll', stop);
     };
-  }, [memberName, activeTab]);
+  }, [memberName, activeTab, scope]);
   return null;
 }

@@ -38,76 +38,83 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
   const [currentPerson, setCurrentPerson] = useState<Person | null>(null);
 
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [newCommentIds, setNewCommentIds] = useState<Set<string>>(() => new Set());
 
   useEffect(() => {
-    loadComments();
-    loadCurrentPerson();
+    let cancelled = false;
+    const controller = new AbortController();
+    async function loadCurrentPerson() {
+      try {
+        if (!("serviceWorker" in navigator)) {
+          return;
+        }
+
+        const registration = await navigator.serviceWorker.register("/sw.js");
+
+        await navigator.serviceWorker.ready;
+
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (!subscription || cancelled) {
+          return;
+        }
+
+        const response = await fetch("/api/notifications/me", {
+          method: "POST",
+          signal: controller.signal,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            endpoint: subscription.endpoint,
+          }),
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+        if (cancelled) return;
+
+        if (data.person === "Anantha" || data.person === "Farhan") {
+          setCurrentPerson(data.person);
+        }
+      } catch (error) {
+        if (cancelled) return;
+        console.error("Failed to load current person:", error);
+      }
+    }
+
+    async function loadComments() {
+      try {
+
+        const response = await fetch(`/api/memories/${memoryId}/comments`, { signal: controller.signal });
+
+        const data = await response.json();
+        if (cancelled) return;
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to load comments.");
+        }
+
+        setComments(data.comments ?? []);
+      } catch (error) {
+        if (cancelled) return;
+        console.error(error);
+
+        setError(
+          error instanceof Error ? error.message : "Failed to load comments.",
+        );
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    void loadComments();
+    void loadCurrentPerson();
+    return () => { cancelled = true; controller.abort(); };
   }, [memoryId]);
-
-  async function loadCurrentPerson() {
-    try {
-      if (!("serviceWorker" in navigator)) {
-        return;
-      }
-
-      const registration = await navigator.serviceWorker.register("/sw.js");
-
-      await navigator.serviceWorker.ready;
-
-      const subscription = await registration.pushManager.getSubscription();
-
-      if (!subscription) {
-        return;
-      }
-
-      const response = await fetch("/api/notifications/me", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          endpoint: subscription.endpoint,
-        }),
-      });
-
-      if (!response.ok) {
-        return;
-      }
-
-      const data = await response.json();
-
-      if (data.person === "Anantha" || data.person === "Farhan") {
-        setCurrentPerson(data.person);
-      }
-    } catch (error) {
-      console.error("Failed to load current person:", error);
-    }
-  }
-
-  async function loadComments() {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await fetch(`/api/memories/${memoryId}/comments`);
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to load comments.");
-      }
-
-      setComments(data.comments ?? []);
-    } catch (error) {
-      console.error(error);
-
-      setError(
-        error instanceof Error ? error.message : "Failed to load comments.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function getSubscriptionEndpoint() {
     if (!("serviceWorker" in navigator)) {
@@ -167,6 +174,7 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
       }
 
       setComments((current) => [...current, data.comment]);
+      setNewCommentIds(current => new Set(current).add(data.comment.id));
 
       setComment("");
     } catch (error) {
@@ -233,7 +241,8 @@ export default function MemoryComments({ memoryId }: MemoryCommentsProps) {
           comments.map((item) => (
             <div
               key={item.id}
-              className="rounded-xl bg-[var(--surface-raised)] px-3 py-2 shadow-[inset_2px_2px_5px_rgba(--shadow-dark),inset_-2px_-2px_5px_rgba(--shadow-light)]"
+              data-new-comment={newCommentIds.has(item.id)}
+              className="memory-comment-card rounded-xl bg-[var(--surface-raised)] px-3 py-2 shadow-[inset_2px_2px_5px_rgba(--shadow-dark),inset_-2px_-2px_5px_rgba(--shadow-light)]"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex min-w-0 items-center gap-2">

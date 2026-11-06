@@ -1,3 +1,5 @@
+import SeaBankEffects from "@/components/SeaBankEffects";
+import { AnimatedMoney } from "@/components/DashboardAnimations";
 import { redirect } from "next/navigation";
 import { WalletCards, UserRound, Landmark, TrendingUp } from "lucide-react";
 
@@ -6,14 +8,6 @@ import TodayInfo from "@/components/TodayInfo";
 import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { calculateSeaBank } from "@/lib/seabank";
-
-function formatRupiah(value: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
 
 function getTodayJakarta() {
   return new Intl.DateTimeFormat("en-CA", {
@@ -94,7 +88,8 @@ export default async function SeaBankPage() {
 
   return (
     <AppShell>
-      <div className="space-y-8">
+      <div className="seabank-motion space-y-8">
+        <SeaBankEffects balance={seaBankBalance} interest={interestEarned} calculationKey={interestStartDate + ":" + annualRate} />
         {/* HEADER */}
 
         <header className="page-heading flex items-start justify-between gap-6">
@@ -104,7 +99,7 @@ export default async function SeaBankPage() {
             </h1>
 
             <p className="mt-2 text-sm text-[var(--muted)]">
-              Automatically calculated.
+              Automatically calculated estimates.
             </p>
           </div>
 
@@ -116,18 +111,18 @@ export default async function SeaBankPage() {
         <section className="grid grid-cols-2 gap-3 md:gap-4">
           {/* HANAN */}
 
-          <div className="soft-card flex items-center justify-between p-4 md:p-6">
+          <div className="dashboard-card dashboard-interactive dashboard-step-1 soft-card flex items-center justify-between p-4 md:p-6">
             <div>
               <p className="text-xs font-bold tracking-wider text-[var(--muted)]">
                 HANAN SAVINGS
               </p>
 
               <p className="mt-1 text-lg font-bold text-[var(--foreground)] md:text-2xl">
-                {formatRupiah(hananBalance)}
+                <AnimatedMoney value={hananBalance} />
               </p>
             </div>
 
-            <div className="hidden soft-card-inset h-12 w-12 items-center justify-center rounded-2xl md:flex">
+            <div className="wallet-shimmer hidden soft-card-inset h-12 w-12 items-center justify-center rounded-2xl md:flex">
               <WalletCards
                 size={21}
                 strokeWidth={1.8}
@@ -138,18 +133,18 @@ export default async function SeaBankPage() {
 
           {/* PERSONAL */}
 
-          <div className="soft-card flex items-center justify-between p-4 md:p-6">
+          <div className="dashboard-card dashboard-interactive dashboard-step-2 soft-card flex items-center justify-between p-4 md:p-6">
             <div>
               <p className="text-xs font-bold tracking-wider text-[var(--muted)]">
                 PERSONAL SAVINGS
               </p>
 
               <p className="mt-1 text-lg font-bold text-[var(--foreground)] md:text-2xl">
-                {formatRupiah(personalBalance)}
+                <AnimatedMoney value={personalBalance} />
               </p>
             </div>
 
-            <div className="hidden soft-card-inset h-12 w-12 items-center justify-center rounded-2xl md:flex">
+            <div className="wallet-shimmer hidden soft-card-inset h-12 w-12 items-center justify-center rounded-2xl md:flex">
               <UserRound
                 size={21}
                 strokeWidth={1.8}
@@ -161,7 +156,7 @@ export default async function SeaBankPage() {
 
         {/* SEABANK BALANCE */}
 
-        <section className="soft-card p-7">
+        <section data-seabank-total-card className="dashboard-card dashboard-interactive dashboard-step-3 soft-card p-7">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-bold tracking-[0.16em] text-[var(--primary)]">
@@ -173,7 +168,7 @@ export default async function SeaBankPage() {
               </h2>
             </div>
 
-            <div className="soft-card-inset flex h-12 w-12 items-center justify-center rounded-2xl">
+            <div className="wallet-shimmer soft-card-inset flex h-12 w-12 items-center justify-center rounded-2xl">
               <Landmark
                 size={21}
                 strokeWidth={1.8}
@@ -182,13 +177,13 @@ export default async function SeaBankPage() {
             </div>
           </div>
 
-          <p className="mt-4 text-2xl font-bold tracking-tight text-[var(--foreground)] md:mt-7 md:text-4xl">
-            {formatRupiah(seaBankBalance)}
+          <p data-seabank-total-number className="seabank-balance-number mt-4 text-2xl font-bold tracking-tight text-[var(--foreground)] md:mt-7 md:text-4xl">
+            <AnimatedMoney value={seaBankBalance} />
           </p>
 
           {/* BREAKDOWN */}
 
-          <div className="mt-7 grid grid-cols-3 gap-2 md:gap-4">
+          <div data-seabank-breakdown className="mt-7 grid grid-cols-3 gap-2 md:gap-4">
             <div className="soft-card-inset rounded-xl p-3 md:rounded-2xl md:p-5">
               <p className="text-xs font-bold tracking-wider text-[var(--muted)]">
                 HANAN
@@ -197,9 +192,7 @@ export default async function SeaBankPage() {
               <p className="mt-2 font-bold text-[var(--foreground)]">
                 <span className="block text-xs md:inline md:text-lg">Rp</span>
                 <span className="block text-sm md:inline md:text-lg">
-                  {new Intl.NumberFormat("id-ID", {
-                    maximumFractionDigits: 0,
-                  }).format(hananBalance)}
+                  <AnimatedMoney value={hananBalance} numberOnly />
                 </span>
               </p>
             </div>
@@ -212,14 +205,12 @@ export default async function SeaBankPage() {
               <p className="mt-2 font-bold text-[var(--foreground)]">
                 <span className="block text-xs md:inline md:text-lg">Rp</span>
                 <span className="block text-sm md:inline md:text-lg">
-                  {new Intl.NumberFormat("id-ID", {
-                    maximumFractionDigits: 0,
-                  }).format(personalBalance)}
+                  <AnimatedMoney value={personalBalance} numberOnly />
                 </span>
               </p>
             </div>
 
-            <div className="soft-card-inset rounded-xl p-3 md:rounded-2xl md:p-5">
+            <div data-seabank-interest-origin className="soft-card-inset rounded-xl p-3 md:rounded-2xl md:p-5">
               <p className="text-xs font-bold tracking-wider text-[var(--muted)]">
                 INTEREST
               </p>
@@ -227,9 +218,7 @@ export default async function SeaBankPage() {
               <p className="mt-2 font-bold text-emerald-500">
                 <span className="block text-xs md:inline md:text-lg">Rp</span>
                 <span className="block text-sm md:inline md:text-lg">
-                  {new Intl.NumberFormat("id-ID", {
-                    maximumFractionDigits: 0,
-                  }).format(interestEarned)}
+                  <AnimatedMoney value={interestEarned} numberOnly />
                 </span>
               </p>
             </div>
@@ -238,7 +227,7 @@ export default async function SeaBankPage() {
 
         {/* INTEREST */}
 
-        <section className="soft-card p-4 md:p-7">
+        <section className="dashboard-card dashboard-interactive dashboard-step-4 soft-card p-4 md:p-7">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-bold tracking-[0.16em] text-[var(--primary)]">
@@ -250,7 +239,7 @@ export default async function SeaBankPage() {
               </h2>
             </div>
 
-            <div className="soft-card-inset flex h-12 w-12 items-center justify-center rounded-2xl">
+            <div data-seabank-trend className="wallet-shimmer soft-card-inset flex h-12 w-12 items-center justify-center rounded-2xl">
               <TrendingUp
                 size={21}
                 strokeWidth={1.8}
@@ -262,17 +251,17 @@ export default async function SeaBankPage() {
           {/* CURRENT INTEREST */}
 
           <div className="mt-7">
-            <div className="soft-card-inset rounded-2xl p-6">
+            <div data-seabank-interest-card className="soft-card-inset rounded-2xl p-6">
               <p className="text-lg font-bold text-[var(--foreground)] md:text-xl">
                 Interest Earned So Far
               </p>
 
               <p className="mt-4 text-2xl font-bold tracking-tight text-emerald-500 md:mt-7 md:text-4xl">
-                {formatRupiah(interestEarned)}
+                <AnimatedMoney value={interestEarned} />
               </p>
 
               <p className="mt-2 text-xs text-[var(--muted)]">
-                Automatically accumulated for {interestDays}{" "}
+                Estimated over {interestDays}{" "}
                 {interestDays === 1 ? "day" : "days"}.
               </p>
             </div>
@@ -287,7 +276,7 @@ export default async function SeaBankPage() {
               </p>
 
               <p className="mt-1 text-sm font-bold text-[var(--foreground)] md:mt-2 md:text-lg">
-                {formatRupiah(estimatedDailyInterest)}
+                <AnimatedMoney value={estimatedDailyInterest} />
               </p>
             </div>
 
@@ -297,7 +286,7 @@ export default async function SeaBankPage() {
               </p>
 
               <p className="mt-1 text-sm font-bold text-[var(--foreground)] md:mt-2 md:text-lg">
-                {formatRupiah(estimated30DayInterest)}
+                <AnimatedMoney value={estimated30DayInterest} />
               </p>
             </div>
           </div>

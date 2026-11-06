@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import type { CSSProperties } from "react";
 import { ArrowLeft, ArrowRight, X, CalendarDays } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ContributionHearts from "@/components/ContributionHearts";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import AnimatedCounter from "@/components/recap/AnimatedCounter";
 
 type RecapMemory = {
@@ -12,7 +14,6 @@ type RecapMemory = {
   note: string;
   memoryDate: string;
 };
-
 
 type RecapSpecialDate = {
   id: string;
@@ -24,7 +25,6 @@ type RecapSpecialDate = {
   type: string | null;
   isFeatured: boolean;
 };
-
 
 type MonthlyRecapData = {
   monthLabel: string;
@@ -52,13 +52,14 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
   const router = useRouter();
 
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isEntering, setIsEntering] = useState(true);
+  const isEntering = true;
+  const reducedMotion = useReducedMotion();
+  const [direction, setDirection] = useState<"next" | "previous">("next");
+  const [memoryCycle, setMemoryCycle] = useState(0);
+  const pointerStart = useRef<{ x: number; y: number; at: number; scroll: number } | null>(null);
   const [counterComplete, setCounterComplete] = useState(false);
   const [spentCounterComplete, setSpentCounterComplete] = useState(false);
   const [graphProgress, setGraphProgress] = useState(0);
-
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const [touchEndX, setTouchEndX] = useState<number | null>(null);
 
   const [memoryIndex, setMemoryIndex] = useState(0);
   const [memorySpinning, setMemorySpinning] = useState(false);
@@ -117,161 +118,58 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
   const totalSlides = slides.length;
   const currentSlideKey = slides[currentSlide];
 
-  const changeSlide = useCallback(
-    (nextIndex: number) => {
-      if (nextIndex < 0 || nextIndex >= totalSlides) {
-        return;
-      }
-
-      setIsEntering(false);
-      setCounterComplete(false);
-      setSpentCounterComplete(false);
-      setGraphProgress(0);
-
-      setTimeout(() => {
-        setCurrentSlide(nextIndex);
-        setIsEntering(true);
-      }, 100);
-    },
-    [totalSlides],
-  );
-
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((current) => {
-      if (current >= totalSlides - 1) {
-        return current;
-      }
-
-      return current + 1;
-    });
-
-    setIsEntering(false);
+  const changeSlide = useCallback((nextIndex: number) => {
+    if (nextIndex < 0 || nextIndex >= totalSlides || nextIndex === currentSlide) return;
+    setDirection(nextIndex > currentSlide ? "next" : "previous");
     setCounterComplete(false);
     setSpentCounterComplete(false);
     setGraphProgress(0);
+    setMemoryRevealed(false);
+    setMemorySpinning(false);
+    setCurrentSlide(nextIndex);
+  }, [currentSlide, totalSlides]);
+  const nextSlide = useCallback(() => changeSlide(currentSlide + 1), [changeSlide, currentSlide]);
+  const previousSlide = useCallback(() => changeSlide(currentSlide - 1), [changeSlide, currentSlide]);
 
-    setTimeout(() => {
-      setIsEntering(true);
-    }, 100);
-  }, [totalSlides]);
-
-  const previousSlide = useCallback(() => {
-    setCurrentSlide((current) => {
-      if (current <= 0) {
-        return current;
-      }
-
-      return current - 1;
-    });
-
-    setIsEntering(false);
-    setCounterComplete(false);
-    setSpentCounterComplete(false);
-    setGraphProgress(0);
-
-    setTimeout(() => {
-      setIsEntering(true);
-    }, 100);
-  }, []);
-
-  const handleTouchStart = useCallback(
-    (event: React.TouchEvent<HTMLElement>) => {
-      setTouchStartX(event.touches[0].clientX);
-      setTouchEndX(null);
-    },
-    [],
-  );
-
-  const handleTouchMove = useCallback(
-    (event: React.TouchEvent<HTMLElement>) => {
-      setTouchEndX(event.touches[0].clientX);
-    },
-    [],
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    if (touchStartX === null || touchEndX === null) {
-      return;
-    }
-
-    const distance = touchStartX - touchEndX;
-    const minimumSwipeDistance = 50;
-
-    if (Math.abs(distance) < minimumSwipeDistance) {
-      return;
-    }
-
-    if (distance > 0) {
-      nextSlide();
-    } else {
-      previousSlide();
-    }
-
-    setTouchStartX(null);
-    setTouchEndX(null);
-  }, [touchStartX, touchEndX, nextSlide, previousSlide]);
+  function handlePointerDown(event: React.PointerEvent<HTMLElement>) {
+    if (!event.isPrimary || (event.target as HTMLElement).closest('button, a, input, textarea, select, [data-recap-no-navigation]')) { pointerStart.current = null; return; }
+    pointerStart.current = { x: event.clientX, y: event.clientY, at: performance.now(), scroll: document.querySelector('.recap-stage')?.scrollTop ?? 0 };
+  }
+  function handlePointerUp(event: React.PointerEvent<HTMLElement>) {
+    const start = pointerStart.current;
+    pointerStart.current = null;
+    if (!start || (event.target as HTMLElement).closest('button, a, input, textarea, select, [data-recap-no-navigation]')) return;
+    const dx = event.clientX - start.x, dy = event.clientY - start.y;
+    if (Math.abs((document.querySelector('.recap-stage')?.scrollTop ?? 0) - start.scroll) > 5 || Math.abs(dy) > 30) return;
+    if (Math.abs(dx) > 50 && event.pointerType === 'touch') { if (dx < 0) nextSlide(); else previousSlide(); return; }
+    if (!window.matchMedia('(max-width: 767px)').matches || Math.abs(dx) > 12 || Math.abs(dy) > 12 || performance.now() - start.at > 450) return;
+    if (event.clientX < window.innerWidth / 2) previousSlide(); else nextSlide();
+  }
 
   useEffect(() => {
-    if (currentSlideKey !== "memory" || !isEntering) {
-      return;
-    }
-
-    if (recap.memories.length === 0) {
-      return;
-    }
-
-    setMemoryRevealed(false);
-
-    if (recap.memories.length === 1) {
-      setMemoryIndex(0);
-
-      const timeout = setTimeout(() => {
-        setMemoryRevealed(true);
-      }, 700);
-
-      return () => clearTimeout(timeout);
-    }
-
-    setMemorySpinning(true);
-
-    let spinCount = 0;
-    let currentIndex = 0;
-    let timeout: ReturnType<typeof setTimeout>;
-
-    function spin() {
-      currentIndex = (currentIndex + 1) % recap.memories.length;
-
-      setMemoryIndex(currentIndex);
-
-      spinCount++;
-
-      if (spinCount < 18) {
-        const progress = spinCount / 18;
-
-        const delay = 70 + Math.pow(progress, 2) * 240;
-
-        timeout = setTimeout(spin, delay);
-      } else {
-        const finalIndex = Math.floor(Math.random() * recap.memories.length);
-
-        setMemoryIndex(finalIndex);
-        setMemorySpinning(false);
-
-        timeout = setTimeout(() => {
-          setMemoryRevealed(true);
-        }, 500);
+    if (currentSlideKey !== 'memory' || !recap.memories.length) return;
+    const selectedIndex = memoryCycle % recap.memories.length;
+    let timer: ReturnType<typeof setTimeout>;
+    let turns = 0;
+    const reveal = () => { setMemoryIndex(selectedIndex); setMemorySpinning(false); setMemoryRevealed(true); };
+    timer = setTimeout(() => {
+      if (reducedMotion) { reveal(); return; }
+      setMemoryRevealed(false);
+      setMemorySpinning(true);
+      function spin() {
+        turns++;
+        if (turns >= 5 || recap.memories.length === 1) { reveal(); return; }
+        setMemoryIndex((selectedIndex + turns) % recap.memories.length);
+        timer = setTimeout(spin, 100 + turns * 25);
       }
-    }
-
-    timeout = setTimeout(spin, 80);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [currentSlideKey, isEntering, recap.memories.length]);
+      timer = setTimeout(spin, 100);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [currentSlideKey, recap.memories.length, memoryCycle, reducedMotion]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
+      if ((event.target as HTMLElement).closest("button, a, input, textarea, select")) return;
       if (event.key === "ArrowRight" || event.key === "ArrowDown") {
         nextSlide();
       }
@@ -294,19 +192,18 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
   useEffect(() => {
     if (currentSlideKey !== "growing" || !isEntering) {
-      setGraphProgress(0);
       return;
     }
 
     let animationFrame: number;
     const startTime = performance.now();
 
-    const duration = 1800;
+    const duration = reducedMotion ? 0 : 1800;
 
     function animate(currentTime: number) {
       const elapsed = currentTime - startTime;
 
-      const progress = Math.min(elapsed / duration, 1);
+      const progress = duration === 0 ? 1 : Math.min(elapsed / duration, 1);
 
       // Ease-out:
       // cepat di awal → melambat ketika mendekati tujuan
@@ -327,7 +224,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
     return () => {
       cancelAnimationFrame(animationFrame);
     };
-  }, [currentSlideKey, isEntering]);
+  }, [currentSlideKey, isEntering, reducedMotion]);
 
   const maxGraphValue = Math.max(recap.previousSaved, recap.saved, 1);
 
@@ -342,10 +239,12 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
   return (
     <main
-      className="fixed inset-0 z-50 overflow-hidden bg-[#e8edf3]"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      className="monthly-recap-view fixed inset-0 z-50 overflow-hidden bg-[#e8edf3]"
+      data-direction={direction}
+      data-chapter={currentSlideKey}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={() => { pointerStart.current = null; }}
     >
       {/* Progress */}
       <div className="absolute left-1/2 top-5 z-50 flex -translate-x-1/2 gap-1.5">
@@ -368,22 +267,11 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
         <X size={19} />
       </button>
 
-      {/* Slides */}
-      <div
-        className="flex h-full w-full transition-transform duration-700 ease-in-out"
-        style={{
-          transform: `translateX(-${currentSlide * 100}%)`,
-        }}
-      >
-        <div
-          className="flex h-full w-full transition-transform duration-700 ease-in-out"
-          style={{
-            transform: `translateX(-${currentSlide * 100}%)`,
-            touchAction: "pan-y",
-          }}
-        ></div>
+      <p className="recap-tap-hint" aria-hidden="true">Tap left to go back &middot; Tap right to continue</p>
+      <p className="sr-only" role="status">Slide {currentSlide + 1} of {totalSlides}: {currentSlideKey}</p>
+      <div key={currentSlideKey} className="recap-stage">
         {/* Slide 1 */}
-        <section className="relative flex h-full min-w-full items-center justify-center overflow-hidden px-6">
+        {currentSlideKey === "opening" && (<section className="recap-scene relative flex h-full min-w-full items-center justify-center overflow-hidden px-6">
           {/* =========================================
       BACKGROUND
   ========================================= */}
@@ -565,7 +453,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               <button
                 type="button"
                 onClick={nextSlide}
-                className="soft-button mt-10 inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-slate-600 transition-all duration-300 hover:-translate-y-1 hover:scale-105"
+                className="recap-start-button soft-button mt-10 inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-slate-600 transition-all duration-300 hover:-translate-y-1 hover:scale-105"
               >
                 Let&apos;s go
                 <ArrowRight size={17} strokeWidth={2} />
@@ -582,10 +470,10 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               swipe or tap to explore your month
             </p>
           </div>
-        </section>
+        </section>)}
 
         {/* Slide 2 — YOU SAVED */}
-        <section className="relative flex h-full min-w-full items-center justify-center overflow-hidden px-6">
+        {currentSlideKey === "saved" && (<section className="recap-scene relative flex h-full min-w-full items-center justify-center overflow-hidden px-6">
           {/* =========================================
       BACKGROUND
   ========================================= */}
@@ -782,7 +670,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
                 <h2 className="relative text-6xl font-bold tracking-tight text-slate-700 sm:text-8xl">
                   <AnimatedCounter
                     value={recap.saved}
-                    duration={3000}
+                    duration={1800}
                     start={isEntering}
                     onComplete={handleCounterComplete}
                   />
@@ -810,15 +698,12 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               every little bit counts
             </p>
           </div>
-        </section>
+        </section>)}
 
         {/* Slide 3 */}
-        <section
-          className="relative flex h-full min-w-full items-center justify-center overflow-hidden px-6"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 35%, rgba(251, 207, 232, 0.5), transparent 38%), linear-gradient(135deg, #fff8fb 0%, #f7f1ff 50%, #eef4ff 100%)",
-          }}
+        {currentSlideKey === "spent" && (<section
+          className="recap-scene relative flex h-full min-w-full items-center justify-center overflow-hidden px-6"
+
         >
           {/* Decorative blobs */}
           <div className="pointer-events-none absolute -left-24 top-16 h-64 w-64 rounded-full bg-rose-200/30 blur-3xl" />
@@ -858,7 +743,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               <h2 className="text-6xl font-bold tracking-tight text-slate-700 sm:text-8xl">
                 <AnimatedCounter
                   value={recap.spent}
-                  duration={2600}
+                  duration={1600}
                   start={isEntering}
                   onComplete={handleSpentCounterComplete}
                 />
@@ -936,15 +821,12 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               every little choice adds up ✨
             </p>
           </div>
-        </section>
+        </section>)}
 
         {/* Slide 4 */}
-        <section
-          className="relative flex h-full min-w-full items-center justify-center overflow-hidden px-6"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 35%, rgba(221, 214, 254, 0.45), transparent 38%), linear-gradient(135deg, #faf8ff 0%, #f5f1ff 48%, #f0f7ff 100%)",
-          }}
+        {currentSlideKey === "growing" && (<section
+          className="recap-scene relative flex h-full min-w-full items-center justify-center overflow-hidden px-6"
+
         >
           {/* Decorative background */}
           <div className="pointer-events-none absolute -left-28 top-10 h-72 w-72 rounded-full bg-violet-200/30 blur-3xl" />
@@ -969,7 +851,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
           >
             {/* Label */}
             <p className="recap-fade-up text-sm font-bold tracking-[0.28em] text-violet-400">
-              YOU'RE GROWING
+              YOU&apos;RE GROWING
             </p>
 
             <div className="mx-auto mt-4 flex items-center justify-center gap-3">
@@ -1164,16 +1046,13 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               small steps become something bigger ✨
             </p>
           </div>
-        </section>
+        </section>)}
 
         {/* Slide 5 */}
-        {recap.memories.length > 0 && (
+        {currentSlideKey === "memory" && recap.memories.length > 0 && (
           <section
-            className="relative flex h-full min-w-full items-center justify-center overflow-hidden px-6"
-            style={{
-              background:
-                "radial-gradient(circle at 50% 35%, rgba(251, 207, 232, 0.45), transparent 38%), linear-gradient(135deg, #fff9fc 0%, #f8f1ff 50%, #f0f7ff 100%)",
-            }}
+            className="recap-scene relative flex h-full min-w-full items-center justify-center overflow-hidden px-6"
+
           >
             {/* Background blobs */}
             <div className="pointer-events-none absolute -left-24 top-12 h-72 w-72 rounded-full bg-pink-200/30 blur-3xl" />
@@ -1219,7 +1098,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               </div>
 
               {/* Memory roulette area */}
-              <div className="relative mx-auto mt-8 h-[390px] w-full max-w-[350px]">
+              <div className="recap-polaroid-stage relative mx-auto mt-8 h-[390px] w-full max-w-[350px]">
                 {/* Soft glow */}
                 <div
                   className={`absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-200/30 blur-3xl transition-all duration-700 ${memoryRevealed
@@ -1230,7 +1109,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
 
                 {/* Polaroid */}
                 <div
-                  className={`absolute left-1/2 top-1/2 w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-[10px] bg-white p-3 pb-5 shadow-[0_25px_70px_rgba(148,163,184,0.22)] transition-all ${memorySpinning
+                  className={`recap-polaroid absolute left-1/2 top-1/2 w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-[10px] bg-white p-3 pb-5 shadow-[0_25px_70px_rgba(148,163,184,0.22)] transition-all ${memorySpinning
                       ? "scale-[0.96] rotate-[-4deg] duration-100"
                       : memoryRevealed
                         ? "scale-100 rotate-[-2deg] duration-700"
@@ -1269,6 +1148,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
                 )}
               </div>
 
+              {recap.memories.length > 1 && <button type="button" disabled={memorySpinning} onClick={() => setMemoryCycle(cycle => cycle + 1)} className="soft-button mt-3 rounded-2xl px-5 py-3 text-sm font-semibold text-slate-600 disabled:opacity-50">Reveal another</button>}
               {/* Reveal caption */}
               <p
                 className={`mt-2 text-sm text-slate-400 transition-all duration-700 ${memoryRevealed
@@ -1282,15 +1162,10 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
           </section>
         )}
 
-
-
         {/* Slide Special Dates */}
-        <section
-          className="relative flex h-full min-w-full items-center justify-center overflow-hidden px-5 py-10 sm:px-8"
-          style={{
-            background:
-              "radial-gradient(circle at 15% 20%, rgba(251,207,232,0.38), transparent 34%), radial-gradient(circle at 90% 85%, rgba(221,214,254,0.4), transparent 36%), linear-gradient(135deg, #fff8fc 0%, #f8f4ff 55%, #f2f7ff 100%)",
-          }}
+        {currentSlideKey === "special-dates" && (<section
+          className="recap-scene relative flex h-full min-w-full items-center justify-center overflow-hidden px-5 py-10 sm:px-8"
+
         >
           {/* Background decorations */}
           <div className="pointer-events-none absolute -left-24 top-10 h-64 w-64 rounded-full bg-pink-200/30 blur-3xl" />
@@ -1357,7 +1232,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
             </div>
 
             {/* Special dates list */}
-            <div className="mx-auto mt-4 max-h-[30vh] max-w-md space-y-3 overflow-y-auto px-1 pb-1">
+            <div className="mx-auto mt-4 max-w-md space-y-3 px-1 pb-1">
               {recap.specialDates.length > 0 ? (
                 recap.specialDates.map((specialDate) => {
                   const formattedDate = new Date(
@@ -1382,7 +1257,6 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
                           aria-hidden="true"
                         />
                       </div>
-
 
                       {/* Date information */}
                       <div className="min-w-0 flex-1">
@@ -1428,16 +1302,12 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               some dates become memories forever ✨
             </p>
           </div>
-        </section>
-
+        </section>)}
 
         {/* Slide 6 */}
-        <section
-          className="relative flex h-full min-w-full items-center justify-center overflow-hidden px-6"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 30%, rgba(221, 214, 254, 0.45), transparent 38%), linear-gradient(135deg, #faf8ff 0%, #f7f1ff 50%, #fff8fb 100%)",
-          }}
+        {currentSlideKey === "summary" && (<section
+          className="recap-scene relative flex h-full min-w-full items-center justify-center overflow-hidden px-6"
+
         >
           {/* Background blobs */}
           <div className="pointer-events-none absolute -left-28 top-10 h-72 w-72 rounded-full bg-violet-200/30 blur-3xl" />
@@ -1575,6 +1445,8 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               </p>
             </div>
 
+            <div className="recap-closing-hearts mt-6"><ContributionHearts /></div>
+            <div className="recap-finale-confetti" aria-hidden="true">{Array.from({ length: 18 }, (_, index) => <span key={index} style={{ '--confetti-x': (5 + (index * 19) % 90) + '%', '--confetti-delay': (index % 6) * .12 + 's', '--confetti-turn': (index % 2 ? 160 : -160) + 'deg' } as CSSProperties}>{index % 3 === 0 ? '\u2665' : '\u2726'}</span>)}</div>
             {/* Back button */}
             <div
               className="recap-fade-up mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row"
@@ -1599,7 +1471,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
               </button>
             </div>
           </div>
-        </section>
+        </section>)}
       </div>
 
       {/* Navigation */}
@@ -1607,7 +1479,7 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
         <button
           type="button"
           onClick={previousSlide}
-          className="absolute bottom-7 left-5 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-white/40 text-slate-500 backdrop-blur-sm transition hover:bg-white/70"
+          className="recap-desktop-navigation absolute bottom-7 left-5 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-white/40 text-slate-500 backdrop-blur-sm transition hover:bg-white/70"
           aria-label="Previous slide"
         >
           <ArrowLeft size={18} />
@@ -1618,23 +1490,13 @@ export default function MonthlyRecap({ recap }: MonthlyRecapProps) {
         <button
           type="button"
           onClick={nextSlide}
-          className="absolute bottom-7 right-5 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-white/40 text-slate-500 backdrop-blur-sm transition hover:bg-white/70"
+          className="recap-desktop-navigation absolute bottom-7 right-5 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-white/40 text-slate-500 backdrop-blur-sm transition hover:bg-white/70"
           aria-label="Next slide"
         >
           <ArrowRight size={18} />
         </button>
       )}
     </main>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-3xl bg-white/40 p-5 backdrop-blur-sm">
-      <p className="text-xs font-medium text-slate-400">{label}</p>
-
-      <p className="mt-2 text-lg font-bold text-slate-700">{value}</p>
-    </div>
   );
 }
 

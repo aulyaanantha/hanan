@@ -12,11 +12,13 @@ export default function HananTabs({ income, outcome }: Props) {
   const [activeTab, setActiveTab] = useState<"income" | "outcome">("income");
 
   return (
-    <div>
+    <div className="hanan-savings-motion" data-active-tab={activeTab}>
       <SavingsCoinTransfer activeTab={activeTab} />
-      <div className="income-tabs relative z-10 flex items-end gap-2 px-2">
+      <div className="income-tabs relative z-10 flex items-end gap-2 px-2" aria-label="Transaction type">
         <button
           type="button"
+          aria-pressed={activeTab === "income"}
+          aria-controls="hanan-transactions-panel"
           onClick={() => setActiveTab("income")}
           className={`rounded-t-2xl px-7 py-3 text-sm font-semibold transition ${
             activeTab === "income"
@@ -29,6 +31,8 @@ export default function HananTabs({ income, outcome }: Props) {
 
         <button
           type="button"
+          aria-pressed={activeTab === "outcome"}
+          aria-controls="hanan-transactions-panel"
           onClick={() => setActiveTab("outcome")}
           className={`rounded-t-2xl px-7 py-3 text-sm font-semibold transition ${
             activeTab === "outcome"
@@ -40,7 +44,7 @@ export default function HananTabs({ income, outcome }: Props) {
         </button>
       </div>
 
-      <div>{activeTab === "income" ? income : outcome}</div>
+      <div key={activeTab} id="hanan-transactions-panel" className="savings-tab-panel" role="region" aria-label={`${activeTab === "income" ? "Income" : "Outcome"} transactions`}>{activeTab === "income" ? income : outcome}</div>
     </div>
   );
 }

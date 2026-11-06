@@ -53,7 +53,8 @@ export default function OnThisDay({
         {memories.map((memory) => (
           <article
             key={memory.id}
-            className="soft-card overflow-hidden rounded-2xl"
+            data-memory-card={memory.id}
+            className="memory-gallery-card soft-card overflow-hidden rounded-2xl"
           >
             <div className="relative aspect-[4/3] overflow-hidden">
               <img

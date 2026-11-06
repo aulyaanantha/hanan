@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { CalendarDays, MessageCircle, Pencil, Trash2, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { CalendarDays, MessageCircle, Pencil, Trash2, X, ChevronLeft, ChevronRight } from "lucide-react";
 import EditMemoryModal from "@/components/EditMemoryModal";
 import MemoryComments from "@/components/MemoryComments";
+import MemoryGalleryEffects from "@/components/MemoryGalleryEffects";
+import { getAdjacentMemory, getMemorySwipeDirection } from "@/lib/memory-navigation";
 
 type Memory = {
   id: string;
@@ -64,10 +66,50 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
   const [editingMemory, setEditingMemory] = useState<Memory | null>(null);
 
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [previousMemories, setPreviousMemories] = useState(initialMemories);
+  const panel = useRef<HTMLDivElement>(null);
+  const swipeStart = useRef<{ x: number; y: number } | null>(null);
+  const [swipeDirection, setSwipeDirection] = useState<'next' | 'previous'>('next');
+  const isDetailOpen = selectedMemory !== null;
+
+  if (previousMemories !== initialMemories) {
+    setPreviousMemories(initialMemories);
+    setMemories(initialMemories);
+  }
+
+  const moveSelection = useCallback((direction: -1 | 1) => {
+    setSwipeDirection(direction === 1 ? 'next' : 'previous');
+    setSelectedMemory(current => current ? getAdjacentMemory(memories, current.id, direction) ?? current : null);
+  }, [memories]);
 
   useEffect(() => {
-    setMemories(initialMemories);
-  }, [initialMemories]);
+    if (!isDetailOpen) return;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    panel.current?.querySelector<HTMLButtonElement>('[aria-label="Close memory"]')?.focus();
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') { setSelectedMemory(null); return; }
+      if (event.key === 'Tab') {
+        const controls = panel.current?.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), a[href], [tabindex="0"]');
+        if (!controls?.length) return;
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        return;
+      }
+      if ((event.target as HTMLElement).closest('input, textarea, select, [contenteditable="true"]')) return;
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault(); moveSelection(event.key === 'ArrowRight' ? 1 : -1);
+      }
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+      if (previousFocus?.isConnected) previousFocus.focus();
+    };
+  }, [isDetailOpen, moveSelection]);
 
   // ==========================================
   // CLOSE DETAIL
@@ -141,6 +183,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
 
   return (
     <>
+      <MemoryGalleryEffects memoryIds={memories.map(memory => memory.id).join(',')} />
       {/* ==========================================
     MEMORY GRID
 ========================================== */}
@@ -167,11 +210,17 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
               {/* MEMORY CARDS */}
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-5">
-                {monthMemories.map((memory) => (
+                {monthMemories.map((memory, index) => (
                   <article
                     key={memory.id}
+                    data-memory-card={memory.id}
+                    data-memory-order={index % 4}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Open memory: ${memory.note || formatMemoryDate(memory.memory_date)}`}
+                    onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelectedMemory(memory); } }}
                     onClick={() => setSelectedMemory(memory)}
-                    className="group cursor-pointer overflow-hidden rounded-2xl bg-slate-100 shadow-[6px_6px_14px_rgba(--shadow-dark),-6px_-6px_14px_rgba(--shadow-light)] transition duration-300 hover:-translate-y-1 hover:shadow-[8px_8px_18px_rgba(--shadow-dark),-8px_-8px_18px_rgba(--shadow-light)]"
+                    className="memory-gallery-card group cursor-pointer overflow-hidden rounded-2xl bg-slate-100 shadow-[6px_6px_14px_rgba(--shadow-dark),-6px_-6px_14px_rgba(--shadow-light)] transition duration-300 hover:-translate-y-1 hover:shadow-[8px_8px_18px_rgba(--shadow-dark),-8px_-8px_18px_rgba(--shadow-light)]"
                   >
                     {/* IMAGE */}
 
@@ -206,11 +255,16 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
 
       {selectedMemory && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--surface)]/60 px-3 py-4 backdrop-blur-md sm:px-4 sm:py-6"
+          className="memory-detail-overlay fixed inset-0 z-[100] flex items-center justify-center bg-[var(--surface)]/60 px-3 py-4 backdrop-blur-md sm:px-4 sm:py-6"
           onClick={closeDetail}
         >
           <div
-            className="relative flex max-h-[90vh] w-[94vw] max-w-5xl flex-col overflow-hidden rounded-3xl bg-[var(--surface-raised)] shadow-2xl lg:flex-row"
+            ref={panel}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Memory details"
+            data-direction={swipeDirection}
+            className="memory-detail-panel relative flex max-h-[90vh] w-[94vw] max-w-5xl flex-col overflow-hidden rounded-3xl bg-[var(--surface-raised)] shadow-2xl lg:flex-row"
             onClick={(event) => event.stopPropagation()}
           >
             {/* CLOSE */}
@@ -226,12 +280,27 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
 
             {/* IMAGE */}
 
-            <div className="flex min-h-0 flex-1 items-center justify-center bg-slate-900">
+            <div className="memory-detail-photo relative flex min-h-0 flex-1 items-center justify-center bg-slate-900"
+              onPointerDown={(event) => {
+                if (!event.isPrimary || (event.target as HTMLElement).closest('button')) { swipeStart.current = null; return; }
+                swipeStart.current = { x: event.clientX, y: event.clientY };
+              }}
+              onPointerUp={(event) => {
+                const start = swipeStart.current; swipeStart.current = null;
+                if (!start || (event.target as HTMLElement).closest('button')) return;
+                const direction = getMemorySwipeDirection(event.clientX - start.x, event.clientY - start.y);
+                if (direction) moveSelection(direction);
+              }}
+              onPointerCancel={() => { swipeStart.current = null; }}>
               <img
+                key={selectedMemory.id}
+                draggable={false}
                 src={selectedMemory.image_url}
                 alt={selectedMemory.note || "HANAN Memory"}
-                className="max-h-[28vh] w-full object-contain sm:max-h-[45vh] lg:max-h-[92vh]"
+                className="memory-detail-image max-h-[28vh] w-full object-contain sm:max-h-[45vh] lg:max-h-[92vh]"
               />
+              <button type="button" className="memory-photo-previous" disabled={!getAdjacentMemory(memories, selectedMemory.id, -1)} aria-label="Previous memory" onClick={() => moveSelection(-1)}><ChevronLeft size={20} /></button>
+              <button type="button" className="memory-photo-next" disabled={!getAdjacentMemory(memories, selectedMemory.id, 1)} aria-label="Next memory" onClick={() => moveSelection(1)}><ChevronRight size={20} /></button>
             </div>
 
             {/* INFO */}
@@ -301,7 +370,7 @@ export default function MemoryGrid({ initialMemories }: MemoryGridProps) {
                   </h3>
 
                   <div className="mt-2 h-[180px] overflow-y-auto pr-1 sm:h-[220px]">
-                    <MemoryComments memoryId={selectedMemory.id} />
+                    <MemoryComments key={selectedMemory.id} memoryId={selectedMemory.id} />
                   </div>
                 </div>
               </div>

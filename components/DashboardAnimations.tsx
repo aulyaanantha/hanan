@@ -74,7 +74,10 @@ export function IncomeCoinArrival() {
   return null;
 }
 
-export function AnimatedMoney({ value }: { value: number }) {
+const plainNumber = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 });
+
+export function AnimatedMoney({ value, numberOnly = false }: { value: number; numberOnly?: boolean }) {
+  const formatter = numberOnly ? plainNumber : rupiah;
   const number = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     const element = number.current;
@@ -83,14 +86,14 @@ export function AnimatedMoney({ value }: { value: number }) {
     let frame = 0;
     const finish = () => {
       cancelAnimationFrame(frame);
-      element.textContent = rupiah.format(value);
+      element.textContent = formatter.format(value);
     };
     if (motion.matches) { finish(); return; }
     const start = performance.now();
     function tick(now: number) {
       const progress = Math.min((now - start) / 1400, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      element!.textContent = rupiah.format(Math.round(value * eased));
+      element!.textContent = formatter.format(Math.round(value * eased));
       if (progress < 1) frame = requestAnimationFrame(tick);
       else finish();
     }
@@ -98,8 +101,8 @@ export function AnimatedMoney({ value }: { value: number }) {
     const onMotionChange = () => { if (motion.matches) finish(); };
     motion.addEventListener('change', onMotionChange);
     return () => { cancelAnimationFrame(frame); motion.removeEventListener('change', onMotionChange); };
-  }, [value]);
-  return <span className="dashboard-money"><span className="sr-only">{rupiah.format(value)}</span><span ref={number} aria-hidden="true">{rupiah.format(value)}</span></span>;
+  }, [value, formatter]);
+  return <span className="dashboard-money"><span className="sr-only">{formatter.format(value)}</span><span ref={number} aria-hidden="true">{formatter.format(value)}</span></span>;
 }
 
 export function SavingsRing({ percentage, children }: { percentage: number; children: ReactNode }) {

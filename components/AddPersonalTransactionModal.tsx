@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import { useMemberName } from "@/components/AccessProvider";
 
 type TransactionType = "deposit" | "withdrawal";
 
@@ -22,6 +23,7 @@ export default function AddPersonalTransactionModal({
   onClose,
   editingTransaction = null,
 }: Props) {
+  const memberName = useMemberName();
   const isEditing = Boolean(editingTransaction);
 
   const [type, setType] = useState<TransactionType>(
@@ -107,6 +109,17 @@ export default function AddPersonalTransactionModal({
         );
       }
 
+      if (!isEditing) {
+        try {
+          sessionStorage.setItem("hanan-personal-transaction-celebration", JSON.stringify({
+            kind: type === "deposit" ? "income" : "outcome",
+            person: memberName,
+            savedAt: Date.now(),
+          }));
+        } catch {
+          // Optional decoration must not interrupt a successfully saved transaction.
+        }
+      }
       window.location.href = "/personal";
     } catch (error) {
       console.error(error);

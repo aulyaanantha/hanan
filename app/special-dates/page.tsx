@@ -5,6 +5,8 @@ import TodayInfo from "@/components/TodayInfo";
 import SpecialDateCard from "@/components/SpecialDateCard";
 import AddSpecialDateModal from "@/components/AddSpecialDateModal";
 import SpecialDatesList from "@/components/SpecialDatesList";
+import SpecialDatesExperience from "@/components/SpecialDatesExperience";
+import { getBirthdayPerson } from "@/lib/special-dates/birthday";
 import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { CalendarDays } from "lucide-react";
@@ -131,6 +133,8 @@ export default async function SpecialDatesPage() {
 
     return {
       id: specialDate.id,
+      anniversary: isAnniversary || specialDate.title === "Our Anniversary" ? { startDate: specialDate.date } : undefined,
+      birthday: getBirthdayPerson(specialDate.title) ? { name: getBirthdayPerson(specialDate.title)!, birthDate: specialDate.date } : undefined,
       title: specialDate.title,
       date: formatSpecialDate(specialDate.date),
       icon: specialDate.icon ?? "heart",
@@ -144,6 +148,15 @@ export default async function SpecialDatesPage() {
           : specialDate.title === "Anantha's Birthday"
             ? "pink"
             : "indigo") as SpecialDateColor,
+    };
+  });
+
+  const customCards = visibleCustomDates.map(specialDate => {
+    const dateInfo = getDateInfo(specialDate.date, specialDate.repeat_type, today);
+    return {
+      id: specialDate.id, title: specialDate.title, date: specialDate.date,
+      icon: specialDate.icon ?? "calendar", description: specialDate.description,
+      repeat_type: specialDate.repeat_type, countdown: dateInfo.label, isToday: dateInfo.isToday,
     };
   });
 
@@ -182,6 +195,7 @@ export default async function SpecialDatesPage() {
                 className={`min-w-0 ${index === 0 ? "col-span-2 md:col-span-1" : ""}`}
               >
                 <SpecialDateCard
+                  id={card.id}
                   title={card.title}
                   date={card.date}
                   icon={card.icon}
@@ -194,6 +208,8 @@ export default async function SpecialDatesPage() {
             ))}
           </div>
         </section>
+
+        <SpecialDatesExperience today={today} dates={[...cards, ...customCards]} />
 
         {/* =========================================
     OTHER SPECIAL DATES
@@ -216,24 +232,7 @@ export default async function SpecialDatesPage() {
 
           {visibleCustomDates.length > 0 ? (
             <SpecialDatesList
-              dates={visibleCustomDates.map((specialDate) => {
-                const dateInfo = getDateInfo(
-                  specialDate.date,
-                  specialDate.repeat_type,
-                  today,
-                );
-
-                return {
-                  id: specialDate.id,
-                  title: specialDate.title,
-                  date: specialDate.date,
-                  icon: specialDate.icon ?? "calendar",
-                  description: specialDate.description,
-                  repeat_type: specialDate.repeat_type,
-                  countdown: dateInfo.label,
-                  isToday: dateInfo.isToday,
-                };
-              })}
+              dates={customCards}
             />
           ) : (
             <div className="soft-card rounded-3xl p-8 text-center">
