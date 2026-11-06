@@ -1742,3 +1742,137 @@ button:disabled { cursor: not-allowed; }
   .special-date-motion-card[data-motion-ready="true"] { opacity: 1; transform: none; }
   .special-date-confetti { display: none; }
 }
+
+/* Places: mobile sheets, independent forms, and map exploration. */
+.places-panel { margin: auto; padding: 0; border: 1px solid var(--border); border-radius: 26px; width: min(600px, calc(100% - 32px)); max-height: calc(100dvh - 48px); color: var(--foreground); background: var(--surface); box-shadow: 12px 18px 48px #00000030, inset 2px 2px 6px var(--shadow-light); overflow: hidden; }
+.places-panel[open] { display: flex; flex-direction: column; animation: places-sheet-in .25s ease both; }
+.places-panel::backdrop { background: #080a145e; backdrop-filter: blur(4px); }
+.places-panel-header { flex: 0 0 auto; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border-bottom: 1px solid var(--border); }
+.places-panel-header h2 { font-size: 15px; font-weight: 700; }
+.places-panel-close, .places-panel-expand { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; color: var(--primary); background: var(--surface-raised); cursor: pointer; }
+.places-panel-content { padding: 20px; overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
+.places-panel-content :where(input:not([type=file]), select, textarea) { min-height: 44px; font-size: 16px; }
+.places-panel-content button { min-height: 44px; }
+.places-panel button:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.places-panel-full { width: calc(100% - 24px); max-width: 1400px; height: calc(100dvh - 24px); max-height: calc(100dvh - 24px); }
+.places-panel-full > .places-panel-content { flex: 1; padding: 0; overflow: hidden; }
+.places-map-shell { position: relative; overflow: hidden; border-radius: 24px; border: 1px solid var(--border); background: var(--surface); }
+.places-map-canvas { height: clamp(270px, 46dvh, 400px); width: 100%; }
+.places-map-canvas-expanded { height: 100%; }
+.places-panel-full .places-map-shell { height: 100%; border: 0; border-radius: 0; }
+.places-map-expand { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 7px; min-height: 44px; padding: 10px 13px; font-size: 12px; font-weight: 600; color: var(--primary); }
+.places-saved-search { display: flex; align-items: center; gap: 10px; min-height: 48px; border-radius: 15px; padding: 0 14px; background: var(--surface); color: var(--muted); box-shadow: inset 3px 3px 7px var(--shadow-dark), inset -3px -3px 7px var(--shadow-light); }
+.places-saved-search input { min-width: 0; width: 100%; padding: 12px 0; background: transparent; outline: none; color: var(--foreground); font-size: 16px; }
+.places-saved-search:focus-within { outline: 2px solid var(--primary); outline-offset: 2px; }
+.places-category-filters { display: flex; gap: 8px; overflow-x: auto; padding: 5px 2px 12px; scrollbar-width: thin; }
+.places-category-filters button { flex-shrink: 0; min-height: 44px; padding: 9px 15px; border-radius: 30px; color: var(--muted); background: var(--surface-raised); font-size: 12px; font-weight: 600; border: 1px solid var(--border); }
+.places-category-filters button[aria-pressed=true] { color: var(--foreground); border-color: var(--primary); background: color-mix(in srgb, var(--primary) 18%, var(--surface)); }
+.places-upload-preview { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; background: var(--surface-raised); }
+.places-upload-preview img { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+.places-upload-preview > div { min-width: 0; }
+.places-upload-preview p { overflow-wrap: anywhere; font-size: 13px; font-weight: 600; }
+.places-upload-preview span { color: var(--muted); font-size: 11px; }
+.places-feedback { padding: 12px; margin-bottom: 12px; border-radius: 12px; color: var(--foreground); background: color-mix(in srgb, var(--primary) 12%, var(--surface)); font-size: 13px; overflow-wrap: anywhere; }
+@media (min-width: 768px) {
+  .places-panel-inline[open] { position: static; display: block; width: 100%; max-height: none; margin: 0; animation: none; }
+  .places-panel-inline > .places-panel-content { overflow: visible; }
+  .places-map-canvas:not(.places-map-canvas-expanded) { height: 560px; }
+}
+@media (max-width: 767px) {
+  .places-panel { position: fixed; inset: auto 0 0; width: 100%; max-height: 85dvh; margin: 0; border-radius: 26px 26px 0 0; }
+  .places-panel-inline { height: 65dvh; }
+  .places-panel-expanded { height: 90dvh; max-height: 90dvh; }
+  .places-panel-header { padding: 12px 16px; }
+  .places-panel-header::before { content: ''; position: absolute; top: 5px; left: calc(50% - 18px); width: 36px; height: 4px; border-radius: 4px; background: var(--border); }
+  .places-panel-content { padding: 16px 16px max(24px, env(safe-area-inset-bottom)); }
+  .places-panel-full { height: 100dvh; max-height: 100dvh; border-radius: 0; }
+  .places-panel-full > .places-panel-header { padding-top: max(12px, env(safe-area-inset-top)); }
+  .places-panel-full > .places-panel-content { padding: 0 0 env(safe-area-inset-bottom); }
+  .places-saved-card { box-shadow: 5px 5px 12px var(--shadow-dark), -5px -5px 12px var(--shadow-light); }
+}
+@keyframes places-sheet-in { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+.places-panel-centered { position: fixed; inset: 0; margin: auto; height: fit-content; width: min(600px, calc(100% - 24px)); max-height: min(85dvh, calc(100dvh - 48px)); border-radius: 26px; }
+.places-panel-centered > .places-panel-header::before { display: none; }
+@media (prefers-reduced-motion: reduce) { .places-panel[open] { animation: none; } }
+
+/* Login: a little universe around an unchanged sign-in form. */
+.login-scene { position: relative; isolation: isolate; min-height: 100svh; }
+.login-atmosphere { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
+.login-aura { position: absolute; width: min(68vw, 660px); aspect-ratio: 1; border-radius: 50%; filter: blur(55px); opacity: .7; background: radial-gradient(circle, color-mix(in srgb, var(--primary) 17%, transparent), transparent 68%); }
+.login-aura-one { left: -13%; top: -19%; animation: login-aura-drift 18s ease-in-out 3 alternate; }
+.login-aura-two { right: -16%; bottom: -24%; background: radial-gradient(circle, color-mix(in srgb, var(--primary) 12%, var(--surface-raised)), transparent 68%); animation: login-aura-drift 21s ease-in-out 3 alternate-reverse; }
+.login-journey-ring { position: absolute; left: 50%; top: 50%; width: min(110vw, 760px); aspect-ratio: 1; border: 1px solid color-mix(in srgb, var(--primary) 9%, transparent); border-radius: 50%; transform: translate(-50%,-50%) rotate(-22deg) scaleX(.84); }
+.login-journey-ring-two { width: min(145vw, 1020px); transform: translate(-50%,-50%) rotate(24deg) scaleX(.85); border-style: dashed; border-color: color-mix(in srgb, var(--primary) 7%, transparent); }
+.login-floating-symbol { position: absolute; color: color-mix(in srgb, var(--primary) 44%, var(--surface)); stroke-width: 1.3; animation: login-symbol-float 6s ease-in-out 5; }
+.login-symbol-one { top: 22%; left: max(7%, calc(50% - 330px)); rotate: -18deg; }
+.login-symbol-two { top: 18%; right: max(8%, calc(50% - 350px)); animation-delay: -2s; }
+.login-symbol-three { bottom: 20%; right: max(10%, calc(50% - 310px)); rotate: 18deg; animation-delay: -4s; }
+.login-symbol-four { bottom: 22%; left: max(8%, calc(50% - 350px)); animation-delay: -1s; }
+.login-light-dot { position: absolute; width: 5px; height: 5px; background: var(--primary); opacity: .25; border-radius: 50%; box-shadow: 0 0 13px color-mix(in srgb, var(--primary) 35%, transparent); animation: login-dot-twinkle 4s ease-in-out 6; }
+.login-dot-one { top: 12%; left: 39%; }
+.login-dot-two { bottom: 14%; left: 29%; animation-delay: -2s; }
+.login-dot-three { top: 44%; right: 12%; animation-delay: -1s; }
+.login-content { position: relative; }
+.login-card { position: relative; animation: login-card-arrive .85s cubic-bezier(.16,1,.3,1) both; transition: box-shadow .4s ease; }
+.login-card:focus-within { box-shadow: 12px 12px 30px var(--shadow-dark), -12px -12px 30px var(--shadow-light), 0 0 32px color-mix(in srgb, var(--primary) 9%, transparent); }
+.login-logo-orbit { position: relative; width: 130px; height: 130px; margin: -8px auto 8px; display: grid; place-items: center; }
+.login-logo-orbit::before { content: ''; position: absolute; inset: 3px; border: 1px solid color-mix(in srgb, var(--primary) 16%, transparent); border-radius: 50%; }
+.login-logo { position: relative; overflow: hidden; }
+.login-logo::after { content: ''; position: absolute; inset: -15%; pointer-events: none; background: linear-gradient(110deg, transparent 30%, #ffffff50 49%, transparent 66%); transform: translateX(-120%); animation: login-logo-shine 1.8s .8s ease both; }
+.login-heart-orbit { position: absolute; inset: 3px; pointer-events: none; animation: login-orbit 14s linear 2; }
+.login-heart-orbit > span { position: absolute; left: calc(50% - 13px); top: -12px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; color: var(--primary); background: var(--surface); box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light); }
+.login-heart-orbit svg { fill: color-mix(in srgb, var(--primary) 12%, transparent); animation: login-counter-orbit 14s linear 2; }
+.login-logo-spark { position: absolute; bottom: 5px; right: 7px; color: var(--primary); animation: login-dot-twinkle 3s .8s ease-in-out 5; }
+.login-welcome, .login-brand > p { animation: login-copy-arrive .7s .15s ease both; }
+.login-brand > p { animation-delay: .25s; }
+.login-form { animation: login-copy-arrive .75s .35s ease both; }
+.login-field { transition: box-shadow .25s, background .25s, outline-color .25s; outline: 2px solid transparent; outline-offset: 3px; }
+.login-field:focus, .login-password-field:focus-within { outline-color: color-mix(in srgb, var(--primary) 65%, transparent); background: var(--surface-raised); box-shadow: inset 3px 3px 7px var(--shadow-dark), inset -3px -3px 7px var(--shadow-light), 0 0 15px color-mix(in srgb, var(--primary) 10%, transparent); }
+.login-submit { position: relative; isolation: isolate; overflow: hidden; box-shadow: 0 5px 16px color-mix(in srgb, var(--primary) 23%, transparent); }
+.login-submit::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 20%, #ffffff28 48%, transparent 75%); transform: translateX(-120%); }
+.login-submit-arrow { transition: transform .25s ease; }
+.login-submit:active:not(:disabled) { transform: scale(.98); }
+.login-submit-spinner { animation: login-orbit 1s linear infinite; }
+.login-footer { animation: login-copy-arrive .7s .5s ease both; }
+@media (hover: hover) and (pointer: fine) {
+  .login-submit:hover:not(:disabled)::after { animation: login-button-sheen .75s ease both; }
+  .login-submit:hover .login-submit-arrow { transform: translateX(4px); }
+}
+@media (max-width: 480px) {
+  .login-aura { width: 115vw; filter: blur(35px); }
+  .login-symbol-one { top: 5%; left: 8%; }
+  .login-symbol-two { top: 8%; right: 8%; }
+  .login-symbol-three { bottom: 5%; right: 9%; }
+  .login-symbol-four { bottom: 7%; left: 9%; }
+}
+@keyframes login-card-arrive { from { opacity: 0; transform: translateY(24px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes login-copy-arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes login-aura-drift { from { transform: translate(0,0) scale(1); } to { transform: translate(8%,7%) scale(1.1); } }
+@keyframes login-symbol-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-13px); } }
+@keyframes login-dot-twinkle { 0%,100% { opacity: .25; } 50% { opacity: .8; } }
+@keyframes login-orbit { to { transform: rotate(360deg); } }
+@keyframes login-counter-orbit { to { transform: rotate(-360deg); } }
+@keyframes login-logo-shine { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
+@keyframes login-button-sheen { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
+@media (prefers-reduced-motion: reduce) {
+  .login-scene *, .login-scene *::before, .login-scene *::after { animation: none !important; transition: none !important; }
+}
+
+/* The companion reacts to focus alone; input values stay with the sign-in form. */
+.login-time-greeting { display: flex; align-items: center; justify-content: center; gap: 7px; margin: 14px auto 0; color: var(--primary); font-size: 11px; font-weight: 600; line-height: 1.6; animation: login-copy-arrive .65s .25s ease both; }
+.login-time-greeting svg { flex-shrink: 0; }
+.login-password-field { position: relative; }
+.login-password-field > input { padding-right: 44px; }
+.login-mascot { position: absolute; top: 50%; right: 12px; transform: translateY(-50%); width: 44px; height: 33px; pointer-events: none; }
+.login-mascot-drawing { display: block; width: 44px; height: 33px; overflow: visible; filter: drop-shadow(1px 2px 2px color-mix(in srgb, var(--shadow-dark) 40%, transparent)); }
+.login-buddy-fur { fill: color-mix(in srgb, var(--primary) 16%, var(--surface-raised)); stroke: color-mix(in srgb, var(--primary) 28%, var(--surface)); stroke-width: 1; }
+.login-buddy-soft { fill: color-mix(in srgb, var(--primary) 30%, var(--surface)); }
+.login-buddy-paw-fill { fill: color-mix(in srgb, var(--primary) 22%, var(--surface-raised)); stroke: color-mix(in srgb, var(--primary) 35%, var(--surface)); stroke-width: 1; }
+.login-buddy-eyes { transform-box: fill-box; transform-origin: center; animation: login-buddy-blink 5s 1.5s ease 6; transition: translate .25s; }
+.login-buddy-paw { transition: transform .5s cubic-bezier(.2,.8,.3,1); }
+.login-card:has(#email:focus) .login-buddy-eyes { translate: -2px 2px; }
+.login-card:has(#password:focus) .login-buddy-paw-left { transform: translate(6px,-42px) rotate(-5deg); transform-origin: 51px 99px; }
+.login-card:has(#password:focus) .login-buddy-paw-right { transform: translate(-6px,-42px) rotate(5deg); transform-origin: 109px 99px; }
+.login-card:has(#password:focus) .login-buddy-eyes { animation: none; scale: 1 .12; }
+@keyframes login-buddy-blink { 0%,42%,46%,100% { scale: 1 1; } 44% { scale: 1 .08; } }
+@media (prefers-reduced-motion: reduce) { .login-buddy-eyes, .login-buddy-paw, .login-time-greeting { animation: none !important; transition: none !important; } }

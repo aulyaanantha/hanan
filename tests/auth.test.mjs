@@ -79,11 +79,13 @@ function actions(client) {
 }
 function form(email, password) { return new Map([['email', email], ['password', password]]); }
 test('login rejects empty credentials', async () => {
-  await assert.rejects(actions(null).loginAction(form('', '')), /redirect:\/login\?error=empty/);
+  assert.equal((await actions(null).loginAction({}, form('', ''))).error, 'empty');
 });
 test('login rejects an incorrect password', async () => {
   const client = { auth: { signInWithPassword: async () => ({ data: {}, error: {} }) } };
-  await assert.rejects(actions(client).loginAction(form('test@example.com', 'wrong')), /redirect:\/login\?error=invalid/);
+  const result = await actions(client).loginAction({}, form('test@example.com', 'wrong'));
+  assert.equal(result.error, 'invalid');
+  assert.equal(JSON.stringify(result), '{"error":"invalid"}');
 });
 for (const name of ['Farhan', 'Anantha', null]) {
   test(`login membership: ${name ?? 'non-member'}`, async () => {
@@ -91,8 +93,11 @@ for (const name of ['Farhan', 'Anantha', null]) {
     const client = authClient({ user: { id: 'id' }, member: name ? { display_name: name } : null });
     client.auth.signInWithPassword = async () => ({ data: { user: { id: 'id' } }, error: null });
     client.auth.signOut = async () => { signedOut = true; return { error: null }; };
-    await assert.rejects(actions(client).loginAction(form('test@example.com', 'password')),
-      name ? /^Error: redirect:\/$/ : /redirect:\/login\?error=access/);
+    if (name) {
+      await assert.rejects(actions(client).loginAction({}, form('test@example.com', 'password')), /^Error: redirect:\/$/);
+    } else {
+      assert.equal((await actions(client).loginAction({}, form('test@example.com', 'password'))).error, 'access');
+    }
     assert.equal(signedOut, !name);
   });
 }

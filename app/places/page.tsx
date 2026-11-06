@@ -62,7 +62,7 @@ export default async function PlacesPage() {
         </div>
 
         {/* MEMORY MAP */}
-        <section className="soft-card rounded-3xl p-4 transition-colors duration-300 md:p-6">
+        <section className="soft-card rounded-3xl p-3 transition-colors duration-300 sm:p-4 md:p-6">
           <MemoryMap />
 
           <p className="mt-4 text-center text-xs text-[var(--muted)]">

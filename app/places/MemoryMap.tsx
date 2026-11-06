@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   APIProvider,
   Map,
@@ -16,7 +16,13 @@ import {
   LoaderCircle,
   RefreshCw,
   ImagePlus,
+  Maximize2,
+  Search,
 } from "lucide-react";
+
+import { filterSavedPlaces } from "@/lib/places/filter";
+import PlacesPanel from "@/components/PlacesPanel";
+import PlaceUploadPreview from "@/components/PlaceUploadPreview";
 
 type SelectedPlace = {
   id: string;
@@ -123,8 +129,12 @@ const MAP_PALETTES: Record<
   },
 };
 
-function getMapStyles(accent: AccentColor) {
-  const colors = MAP_PALETTES[accent];
+function getMapStyles(accent: AccentColor, dark: boolean) {
+  const colors = dark ? {
+    land: "#20232c", road: "#353946", roadBorder: "#414756",
+    water: { pink: "#392535", purple: "#2e2946", blue: "#1d3046", sage: "#223a32" }[accent],
+    park: "#2a3a32", label: "#c6cbd8", labelOutline: "#20232c", border: "#454b5a",
+  } : MAP_PALETTES[accent];
 
   return [
     {
@@ -269,6 +279,7 @@ function PlaceSearch({
     const autocomplete = new places.PlaceAutocompleteElement({});
 
     autocomplete.placeholder = "Find a place to remember...";
+    const applySearchTheme = () => {
     autocomplete.style.width = "100%";
     autocomplete.style.boxSizing = "border-box";
     autocomplete.style.backgroundColor =
@@ -292,6 +303,10 @@ function PlaceSearch({
         ? "dark"
         : "light";
 
+    };
+    applySearchTheme();
+    const themeObserver = new MutationObserver(applySearchTheme);
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-accent"] });
     autocomplete.locationBias = {
       center: DEFAULT_CENTER,
       radius: 25000,
@@ -311,6 +326,7 @@ function PlaceSearch({
     autocomplete.addEventListener("gmp-error", handleError);
 
     return () => {
+      themeObserver.disconnect();
       autocomplete.removeEventListener("gmp-select", handleSelect);
       autocomplete.removeEventListener("gmp-error", handleError);
       searchElement.replaceChildren();
@@ -322,10 +338,10 @@ function PlaceSearch({
     <div className="space-y-2">
       <div
         ref={setSearchElement}
-        className="relative z-30 min-w-0 rounded-xl border border-pink-100 bg-white shadow-sm [&_gmp-place-autocomplete]:w-full"
+        className="relative z-30 min-w-0 rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-sm [&_gmp-place-autocomplete]:w-full"
       />
       {error && (
-        <p role="alert" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-800">
+        <p role="alert" className="places-feedback">
           {error}
         </p>
       )}
@@ -337,10 +353,12 @@ function SavedPlaceMarkers({
   places,
   onSelect,
   focusedPlaceId,
+  accent,
 }: {
   places: SavedPlace[];
   onSelect: (place: SavedPlace) => void;
   focusedPlaceId: string | null;
+  accent: AccentColor;
 }) {
   const map = useMap();
 
@@ -394,7 +412,7 @@ function SavedPlaceMarkers({
     return () => {
       markers.forEach((marker) => marker.setMap(null));
     };
-  }, [map, places, onSelect, focusedPlaceId]);
+  }, [map, places, onSelect, focusedPlaceId, accent]);
 
   useEffect(() => {
     if (!map || !focusedPlaceId) return;
@@ -420,6 +438,11 @@ function SavedPlaceMarkers({
 function MemoryMapContent() {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
+  const [darkMap, setDarkMap] = useState(false);
+  const [mapExpanded, setMapExpanded] = useState(false);
+  const [mapCamera, setMapCamera] = useState({ center: DEFAULT_CENTER, zoom: 12 });
+  const [savedQuery, setSavedQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [accentColor, setAccentColor] =
     useState<AccentColor>("pink");
 
@@ -428,6 +451,7 @@ function MemoryMapContent() {
 
     const updateAccent = () => {
       const accent = root.dataset.accent;
+      setDarkMap(root.dataset.theme === "dark");
 
       if (
         accent === "pink" ||
@@ -447,13 +471,13 @@ function MemoryMapContent() {
 
     observer.observe(root, {
       attributes: true,
-      attributeFilter: ["data-accent"],
+      attributeFilter: ["data-accent", "data-theme"],
     });
 
     return () => observer.disconnect();
   }, []);
 
-  const mapStyles = getMapStyles(accentColor);
+  const mapStyles = useMemo(() => getMapStyles(accentColor, darkMap), [accentColor, darkMap]);
 
 
   const [selectedPlace, setSelectedPlace] =
@@ -526,16 +550,51 @@ function MemoryMapContent() {
     }
   }, []);
 
+  const loadPhotos = useCallback(async (visitId: string) => {
+    setLoadingPhotos((current) => ({
+      ...current,
+      [visitId]: true,
+    }));
+
+    try {
+      const response = await fetch(
+        `/api/places/${selectedPlace?.savedPlaceId}/visits/${visitId}/photos`,
+        { cache: "no-store" }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to load photos.");
+      }
+
+      setPhotosByVisit((current) => ({
+        ...current,
+        [visitId]: result.photos ?? [],
+      }));
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to load photos."
+      );
+    } finally {
+      setLoadingPhotos((current) => ({
+        ...current,
+        [visitId]: false,
+      }));
+    }
+  }, [selectedPlace]);
+
   useEffect(() => {
-    void loadPlaces();
+    const timer = window.setTimeout(() => void loadPlaces(), 0);
+    return () => clearTimeout(timer);
   }, [loadPlaces]);
 
   useEffect(() => {
     const placeId = selectedPlace?.savedPlaceId;
 
     if (!placeId) {
-      setVisits([]);
-      setShowVisitForm(false);
       return;
     }
 
@@ -583,14 +642,16 @@ function MemoryMapContent() {
       }
     }
 
-    void loadVisits();
+    const timer = window.setTimeout(() => void loadVisits(), 0);
 
     return () => {
+      clearTimeout(timer);
       cancelled = true;
     };
-  }, [selectedPlace?.savedPlaceId]);
+  }, [selectedPlace?.savedPlaceId, loadPhotos]);
 
   const handleSelect = useCallback((place: SelectedPlace) => {
+    setShowVisitForm(false); setPhotoVisitId(null); setPhotoFile(null); setVisits([]); setLoadingVisits(Boolean(place.savedPlaceId));
     setSelectedPlace(place);
     setCategory("other");
     setMessage("");
@@ -601,6 +662,7 @@ function MemoryMapContent() {
 
   const handleSavedPlaceClick = useCallback(
     (place: SavedPlace) => {
+      setShowVisitForm(false); setPhotoVisitId(null); setPhotoFile(null); setVisits([]); setLoadingVisits(true);
       setSelectedPlace({
         id: place.google_place_id,
         name: place.custom_name || place.place_name,
@@ -723,43 +785,6 @@ function MemoryMapContent() {
   }
 
 
-  async function loadPhotos(visitId: string) {
-    setLoadingPhotos((current) => ({
-      ...current,
-      [visitId]: true,
-    }));
-
-    try {
-      const response = await fetch(
-        `/api/places/${selectedPlace?.savedPlaceId}/visits/${visitId}/photos`,
-        { cache: "no-store" }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to load photos.");
-      }
-
-      setPhotosByVisit((current) => ({
-        ...current,
-        [visitId]: result.photos ?? [],
-      }));
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to load photos."
-      );
-    } finally {
-      setLoadingPhotos((current) => ({
-        ...current,
-        [visitId]: false,
-      }));
-    }
-  }
-
-
   async function handleUploadPhoto(visitId: string) {
     if (!selectedPlace?.savedPlaceId || !photoFile) {
       setError("Please select a photo first.");
@@ -866,11 +891,47 @@ function MemoryMapContent() {
   }
   if (!apiKey) {
     return (
-      <p className="rounded-xl bg-pink-50 p-4 text-sm text-pink-800">
-        API key not found. Check the .env.local file.
+      <p className="places-feedback">
+        The map is currently unavailable. Please try again later.
       </p>
     );
   }
+
+  const filteredPlaces = filterSavedPlaces(savedPlaces, savedQuery, categoryFilter);
+  const mapView = (
+      <section className="places-map-shell">
+        <div className={`places-map-canvas ${mapExpanded ? "places-map-canvas-expanded" : ""}`}>
+
+
+          <Map
+            defaultCenter={mapCamera.center}
+            defaultZoom={mapCamera.zoom}
+            onCameraChanged={event => {
+              const { center, zoom } = event.detail;
+              setMapCamera(current => current.zoom === zoom && current.center.lat === center.lat && current.center.lng === center.lng ? current : { center, zoom });
+            }}
+            gestureHandling={mapExpanded ? "greedy" : "cooperative"}
+            styles={mapStyles}
+            clickableIcons={false}
+            mapTypeControl={false}
+            streetViewControl={false}
+            fullscreenControl={false}
+            style={{ width: "100%", height: "100%" }}
+          >
+            <SavedPlaceMarkers
+              places={savedPlaces}
+              onSelect={handleSavedPlaceClick}
+              focusedPlaceId={focusedPlaceId}
+              accent={accentColor}
+            />
+          </Map>
+
+
+        </div>
+        {!mapExpanded && <button type="button" className="places-map-expand soft-button" onClick={() => setMapExpanded(true)}><Maximize2 size={16} /> Expand map</button>}
+      </section>
+
+  );
 
   return (
     <div className="space-y-5">
@@ -878,7 +939,9 @@ function MemoryMapContent() {
 
 
       {selectedPlace && (
-        <section className="rounded-2xl border border-[var(--border)] bg-[var(--surface-raised)] p-4 transition-colors duration-300 sm:p-5">
+        <PlacesPanel title="Place details" centered onClose={() => setSelectedPlace(null)}><section className="places-detail-body">
+          {error && <p role="alert" className="places-feedback">{error}</p>}
+          {message && <p role="status" className="places-feedback">{message}</p>}
           <div className="flex items-start gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--surface)] text-[var(--primary)] shadow-sm">
               <MapPin size={21} />
@@ -894,14 +957,7 @@ function MemoryMapContent() {
 
             </div>
 
-            <button
-              type="button"
-              aria-label="Close place details"
-              onClick={() => setSelectedPlace(null)}
-              className="rounded-full p-2 text-[var(--primary)] transition hover:bg-[var(--surface)]"
-            >
-              <X size={17} />
-            </button>
+
           </div>
 
           <div className="mt-4 space-y-3">
@@ -976,7 +1032,7 @@ function MemoryMapContent() {
               </div>
 
               {showVisitForm && (
-                <form
+                <PlacesPanel title="Add a memory" centered onClose={() => setShowVisitForm(false)}>{error && <p role="alert" className="places-feedback">{error}</p>}<form
                   className="mt-4 space-y-3"
                   onSubmit={(event) => {
                     event.preventDefault();
@@ -1057,7 +1113,7 @@ function MemoryMapContent() {
                   >
                     {savingVisit ? "Saving memory..." : "Save Memory"}
                   </button>
-                </form>
+                </form></PlacesPanel>
               )}
 
               <div className="mt-4 space-y-3">
@@ -1125,6 +1181,7 @@ function MemoryMapContent() {
                               setPhotoVisitId((current) =>
                                 current === visit.id ? null : visit.id
                               );
+                              setPhotoFile(null); setPhotoCaption(""); setPhotoDate("");
                               setError("");
                               setMessage("");
                             }}
@@ -1139,7 +1196,7 @@ function MemoryMapContent() {
                         </div>
 
                         {photoVisitId === visit.id && (
-                          <form
+                          <PlacesPanel title="Add a photo" centered onClose={() => setPhotoVisitId(null)}>{error && <p role="alert" className="places-feedback">{error}</p>}<form
                             className="mt-3 space-y-3"
                             onSubmit={(event) => {
                               event.preventDefault();
@@ -1205,6 +1262,7 @@ function MemoryMapContent() {
                               </label>
                             </div>
 
+                            <PlaceUploadPreview key={photoFile?.name ?? "empty"} file={photoFile} />
                             <div>
                               <label className="mb-1 block text-sm font-medium">
                                 Caption (Optional)
@@ -1252,7 +1310,7 @@ function MemoryMapContent() {
                             >
                               {uploadingPhoto ? "Uploading photo..." : "Save Photo"}
                             </button>
-                          </form>
+                          </form></PlacesPanel>
                         )}
 
                         <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -1326,13 +1384,13 @@ function MemoryMapContent() {
             </section>
           )}
 
-        </section>
+        </section></PlacesPanel>
       )}
 
       {message && (
         <p
           role="status"
-          className="rounded-xl border border-green-200 bg-green-50 p-3 text-sm text-green-800"
+          className="places-feedback"
         >
           {message}
         </p>
@@ -1341,46 +1399,22 @@ function MemoryMapContent() {
       {error && (
         <p
           role="alert"
-          className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+          className="places-feedback"
         >
           {error}
         </p>
       )}
 
-      <section className="overflow-hidden rounded-3xl border border-pink-100 bg-white shadow-sm">
-        <div className="h-[360px] w-full sm:h-[460px] md:h-[560px]">
-
-
-          <Map
-            defaultCenter={DEFAULT_CENTER}
-            defaultZoom={12}
-            gestureHandling="greedy"
-            styles={mapStyles}
-            clickableIcons={false}
-            mapTypeControl={false}
-            streetViewControl={false}
-            fullscreenControl={false}
-            style={{ width: "100%", height: "100%" }}
-          >
-            <SavedPlaceMarkers
-              places={savedPlaces}
-              onSelect={handleSavedPlaceClick}
-              focusedPlaceId={focusedPlaceId}
-            />
-          </Map>
-
-
-        </div>
-      </section>
+      {mapExpanded ? <PlacesPanel title="Explore our places" full onClose={() => setMapExpanded(false)}>{mapView}</PlacesPanel> : mapView}
 
       <section className="space-y-3">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">
+            <h3 className="text-lg font-semibold text-[var(--foreground)]">
               Place of Memories
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              {savedPlaces.length} stored place
+            <p className="mt-1 text-sm text-[var(--muted)]">
+              {savedQuery.trim() || categoryFilter !== "all" ? `${filteredPlaces.length} of ` : ""}{savedPlaces.length} saved {savedPlaces.length === 1 ? "place" : "places"}
             </p>
           </div>
 
@@ -1392,7 +1426,7 @@ function MemoryMapContent() {
             className="rounded-full border border-[var(--border)] bg-[var(--surface)] p-2.5 text-[var(--primary)] transition hover:opacity-80 disabled:opacity-50"
 
           >
-            {loadingPlaces ? (
+        {loadingPlaces ? (
               <LoaderCircle size={18} className="animate-spin" />
             ) : (
               <RefreshCw size={18} />
@@ -1401,6 +1435,10 @@ function MemoryMapContent() {
         </div>
 
 
+        <label className="places-saved-search"><Search size={18} aria-hidden="true" /><input type="search" value={savedQuery} onChange={event => setSavedQuery(event.target.value)} placeholder="Search your saved places..." aria-label="Search saved places" /></label>
+        <div className="places-category-filters" aria-label="Filter saved places">
+          {[{ value: "all", label: "All" }, ...CATEGORIES].map(item => <button key={item.value} type="button" aria-pressed={categoryFilter === item.value} onClick={() => setCategoryFilter(item.value)}>{item.label}</button>)}
+        </div>
         {loadingPlaces ? (
           <div className="soft-card-inset flex items-center justify-center gap-2 rounded-2xl p-6 text-sm text-[var(--muted)]">
             <LoaderCircle
@@ -1423,12 +1461,14 @@ function MemoryMapContent() {
             </p>
 
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Find places you've visited and save them here.
+              Find places you&apos;ve visited and save them here.
             </p>
           </div>
+        ) : filteredPlaces.length === 0 ? (
+          <div className="soft-card-inset rounded-2xl p-6 text-center text-sm text-[var(--muted)]"><p>No saved places match your search.</p><button type="button" className="mt-3 font-semibold text-[var(--primary)]" onClick={() => { setSavedQuery(""); setCategoryFilter("all"); }}>Clear filters</button></div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {savedPlaces.map((place) => (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {filteredPlaces.map((place) => (
               <article
                 key={place.id}
                 onClick={() => handleSavedPlaceClick(place)}
@@ -1441,7 +1481,7 @@ function MemoryMapContent() {
                 role="button"
                 tabIndex={0}
                 aria-label={`Lihat lokasi ${place.custom_name || place.place_name}`}
-                className="soft-card flex cursor-pointer items-start gap-3 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+                className="soft-card places-saved-card flex cursor-pointer items-start gap-3 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
               >
                 <div className="soft-card-inset flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl">
                   <MapPin
@@ -1472,38 +1512,10 @@ function MemoryMapContent() {
         )}
 
       </section>
-      {previewPhoto?.url && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-md"
-          onClick={() => setPreviewPhoto(null)}
-        >
-          <button
-            type="button"
-            onClick={() => setPreviewPhoto(null)}
-            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25"
-            aria-label="Close photo preview"
-          >
-            <X size={22} />
-          </button>
-
-          <div
-            className="flex max-h-[90vh] max-w-5xl flex-col items-center gap-3"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <img
-              src={previewPhoto.url}
-              alt={previewPhoto.caption || "Memory photo"}
-              className="max-h-[78vh] max-w-full rounded-2xl object-contain shadow-2xl"
-            />
-
-            {previewPhoto.caption && (
-              <p className="max-w-2xl text-center text-sm text-white">
-                {previewPhoto.caption}
-              </p>
-            )}
-          </div>
-        </div>
-      )}
+      {previewPhoto?.url && <PlacesPanel title="Memory photo" onClose={() => setPreviewPhoto(null)}>
+        <img src={previewPhoto.url} alt={previewPhoto.caption || "Memory photo"} className="max-h-[72dvh] w-full rounded-2xl object-contain" />
+        {previewPhoto.caption && <p className="mt-3 break-words text-center text-sm text-[var(--foreground)]">{previewPhoto.caption}</p>}
+      </PlacesPanel>}
     </div>
   );
 }
@@ -1513,8 +1525,8 @@ export default function MemoryMap() {
 
   if (!apiKey) {
     return (
-      <p className="rounded-xl bg-pink-50 p-4 text-sm text-pink-800">
-        API key not found. Check the .env.local file.
+      <p className="places-feedback">
+        The map is currently unavailable. Please try again later.
       </p>
     );
   }
