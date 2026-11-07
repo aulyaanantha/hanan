@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AccessProvider } from "@/components/AccessProvider";
 import { getAuthenticatedMember } from "@/lib/session/server";
+import { Suspense } from "react";
+import GlobalSpecialDates from "@/components/GlobalSpecialDates";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +34,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <AccessProvider canAccessPersonalSavings={member?.displayName === "Anantha"} memberName={member?.displayName ?? null}>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            {children}
+            {member && <Suspense fallback={null}><GlobalSpecialDates /></Suspense>}
+          </ThemeProvider>
         </AccessProvider>
       </body>
     </html>

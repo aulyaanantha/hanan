@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isAuthenticated } from "@/lib/session/server";
 import { sendNotificationToPerson } from "@/lib/notifications/send";
+export const maxDuration = 60;
 
 type RouteContext = {
   params: Promise<{
@@ -192,20 +193,18 @@ export async function POST(
 
     const memoryOwner = memory.person as Person | null;
 
-    if (memoryOwner && memoryOwner !== person) {
-    try {
+    after(async () => {
+      if (!memoryOwner || memoryOwner === person) return;
+      try {
         await sendNotificationToPerson(memoryOwner, {
-        title: "💬 HANAN Memory",
-        body: `${person} mengomentari memory kamu: "${comment}"`,
-        url: "/hanan-memory",
+          title: "💬 HANAN Memory",
+          body: `${person} mengomentari memory kamu: "${comment}"`,
+          url: "/hanan-memory",
         });
-    } catch (notificationError) {
-        console.error(
-        "Comment saved, but notification failed:",
-        notificationError,
-        );
-    }
-    }
+      } catch (notificationError) {
+        console.error("Comment saved, but notification failed:", notificationError);
+      }
+    });
 
     return NextResponse.json(
       {

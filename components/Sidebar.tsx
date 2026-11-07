@@ -3,6 +3,7 @@
 import { logoutAction } from "@/app/login/actions";
 import { usePersonalSavingsAccess } from "@/components/AccessProvider";
 import Link from "next/link";
+import NavigationFeedback from "./NavigationFeedback";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
@@ -141,6 +142,7 @@ export default function Sidebar() {
             >
               <Icon size={19} strokeWidth={1.8} />
               <span>{item.label}</span>
+              <NavigationFeedback />
             </Link>
           );
         })}
@@ -155,6 +157,7 @@ export default function Sidebar() {
         >
           <Settings size={19} strokeWidth={1.8} />
           <span>Settings</span>
+          <NavigationFeedback />
         </Link>
         <form action={logoutAction}>
           <button type="submit" className="sidebar-link w-full text-left">
@@ -175,8 +178,8 @@ export default function Sidebar() {
           <button className="mobile-more-backdrop" type="button" aria-label="Close more menus" onClick={() => setIsOpen(false)} />
           <section className="mobile-more-panel" id="mobile-more-menu" aria-label="More menus" onKeyDown={(event) => { if (event.key === "Escape") setIsOpen(false); }}>
             <div className="mobile-more-heading"><span>Explore HANAN</span><button type="button" aria-label="Close more menus" onClick={() => setIsOpen(false)}><X size={18} /></button></div>
-            {moreItems.map(({ href, label, icon: Icon }) => <Link key={href} href={href} className="mobile-more-link" aria-current={isActive(href) ? "page" : undefined} onClick={() => setIsOpen(false)}><Icon size={20} strokeWidth={1.8} /><span>{label}</span></Link>)}
-            <Link href="/settings" className="mobile-more-link" aria-current={pathname === "/settings" ? "page" : undefined} onClick={() => setIsOpen(false)}><Settings size={20} strokeWidth={1.8} /><span>Settings</span></Link>
+            {moreItems.map(({ href, label, icon: Icon }) => <Link key={href} href={href} className="mobile-more-link" aria-current={isActive(href) ? "page" : undefined} onClick={() => setIsOpen(false)}><Icon size={20} strokeWidth={1.8} /><span>{label}</span><NavigationFeedback /></Link>)}
+            <Link href="/settings" className="mobile-more-link" aria-current={pathname === "/settings" ? "page" : undefined} onClick={() => setIsOpen(false)}><Settings size={20} strokeWidth={1.8} /><span>Settings</span><NavigationFeedback /></Link>
           </section>
         </>}
         <nav ref={indicator} className={`mobile-bottom-dock ${canAccessPersonalSavings ? "" : "mobile-bottom-dock-four"}`} aria-label="Mobile navigation" style={{ '--dock-position': position } as CSSProperties}>
@@ -184,6 +187,7 @@ export default function Sidebar() {
           {dockItems.map(({ href, label, icon: Icon }, index) => <Link key={href} href={href} className="mobile-dock-item" data-selected={activeIndex === index} aria-label={label} aria-current={isActive(href) ? "page" : undefined} onClick={() => setIsOpen(false)}>
             <span className="mobile-dock-icon"><Icon size={21} strokeWidth={1.6} /></span>
             <span className="mobile-dock-label" aria-hidden="true">{href === "/" ? "Dashboard" : href === "/hanan" ? "Savings" : href === "/personal" ? "Personal" : "SeaBank"}</span>
+            <NavigationFeedback />
           </Link>)}
           <button type="button" className="mobile-dock-item" data-selected={activeIndex === dockItems.length} aria-label="More menus" aria-expanded={isOpen} aria-controls="mobile-more-menu" onClick={() => setIsOpen(!isOpen)}><span className="mobile-dock-icon"><Ellipsis size={22} strokeWidth={1.8} /></span><span className="mobile-dock-label" aria-hidden="true">More</span></button>
         </nav>

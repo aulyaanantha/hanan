@@ -164,6 +164,7 @@ export default async function HananPage() {
         {/* TABS */}
 
         <HananTabs
+          revision={`${payments.length}:${expenses.length}:${totalIncome}:${totalExpense}`}
           income={
             <div className="soft-card-inset rounded-2xl p-4 sm:p-5">
               {/* SUMMARY CARDS */}

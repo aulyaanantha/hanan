@@ -6,6 +6,7 @@ export async function createSupabaseAuthClient() {
   const store = await cookies();
   const { url, key } = getSupabaseAuthConfig();
   return createServerClient(url, key, {
+    auth: { experimental: { passkey: true } },
     cookieOptions: { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/' },
     cookies: {
       getAll: () => store.getAll(),

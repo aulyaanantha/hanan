@@ -22,11 +22,12 @@ export async function GET(request: Request) {
       );
     }
 
-    await sendPaymentReminders();
+    const result = await sendPaymentReminders();
 
     return NextResponse.json({
-      success: true,
-    });
+      success: result.pending === 0,
+      result,
+    }, { status: result.pending === 0 ? 200 : 503 });
   } catch (error) {
     console.error("Payment reminder failed:", error);
 

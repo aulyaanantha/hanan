@@ -36,12 +36,25 @@ export default async function SpecialDatesPage() {
   // GET CURRENT HANAN WEEK
   // =========================================
 
-  const { data: weeks } = await supabase
-    .from("weeks")
-    .select("week_number, target_date")
-    .order("week_number", {
+  const [{ data: weeks }, { data: featuredDates, error }, { data: customDates, error: customDatesError }] = await Promise.all([
+    supabase
+      .from("weeks")
+      .select("week_number, target_date")
+      .order("week_number", {
       ascending: true,
-    });
+    }),
+    supabase
+      .from("special_dates")
+      .select("*")
+      .eq("is_featured", true),
+    supabase
+      .from("special_dates")
+      .select("*")
+      .eq("is_featured", false)
+      .order("date", {
+      ascending: true,
+    }),
+  ]);
 
   const currentWeek =
     weeks?.filter((week) => week.target_date <= today).at(-1)?.week_number ??
@@ -51,18 +64,7 @@ export default async function SpecialDatesPage() {
   // GET FEATURED SPECIAL DATES
   // =========================================
 
-  const { data: featuredDates, error } = await supabase
-    .from("special_dates")
-    .select("*")
-    .eq("is_featured", true);
 
-  const { data: customDates, error: customDatesError } = await supabase
-    .from("special_dates")
-    .select("*")
-    .eq("is_featured", false)
-    .order("date", {
-      ascending: true,
-    });
 
   if (customDatesError) {
     console.error("Failed to fetch custom special dates:", customDatesError);
@@ -209,7 +211,7 @@ export default async function SpecialDatesPage() {
           </div>
         </section>
 
-        <SpecialDatesExperience today={today} dates={[...cards, ...customCards]} />
+        <SpecialDatesExperience today={today} dates={[...cards, ...customCards]} mode="cards" />
 
         {/* =========================================
     OTHER SPECIAL DATES

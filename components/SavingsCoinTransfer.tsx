@@ -3,9 +3,10 @@
 import { useEffect } from 'react';
 import { useMemberName } from '@/components/AccessProvider';
 
-export default function SavingsCoinTransfer({ activeTab = 'income', scope = 'hanan' }: {
+export default function SavingsCoinTransfer({ activeTab = 'income', scope = 'hanan', revision }: {
   activeTab?: 'income' | 'outcome';
   scope?: 'hanan' | 'personal';
+  revision?: string;
 }) {
   const memberName = useMemberName();
   useEffect(() => {
@@ -75,6 +76,6 @@ export default function SavingsCoinTransfer({ activeTab = 'income', scope = 'han
       window.removeEventListener('resize', stop);
       window.removeEventListener('scroll', stop);
     };
-  }, [memberName, activeTab, scope]);
+  }, [memberName, activeTab, scope, revision]);
   return null;
 }

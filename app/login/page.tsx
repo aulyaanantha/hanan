@@ -1,4 +1,5 @@
 import LoginForm from "@/components/LoginForm";
+import PasskeyLogin from "@/components/PasskeyLogin";
 import { isAuthenticated } from "@/lib/session/server";
 import { redirect } from "next/navigation";
 import { Heart, Sparkles, LockKeyhole } from "lucide-react";
@@ -49,24 +50,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             </h1>
 
             <LoginGreeting initialGreeting={getJakartaGreeting(new Date())} />
-
-            <p className="mx-auto mt-3 max-w-[280px] text-sm leading-6 text-[var(--muted)]">
-              Sign in with your email and password to continue our savings journey.
-            </p>
           </div>
 
           {/* FORM */}
 
           <LoginForm initialError={params.error} />
-
-          {/* FOOTER */}
-
-          <div className="login-footer mt-7 text-center">
-            <p className="flex items-center justify-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
-              <LockKeyhole size={12} aria-hidden="true" />
-              Private savings space
-            </p>
-          </div>
+          <PasskeyLogin />
         </div>
 
         {/* SMALL BRAND TEXT */}

@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { useState } from "react";
 import { useMemberName } from "@/components/AccessProvider";
 
 type WeeklyData = {
@@ -43,6 +45,7 @@ export default function AddIncomeModal({
   onClose,
 }: Props) {
   const memberName = useMemberName();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const [person, setPerson] = useState<"Farhan" | "Anantha">("Anantha");
@@ -96,7 +99,9 @@ export default function AddIncomeModal({
   // OPEN EDIT MODAL
   // --------------------------------
 
-  useEffect(() => {
+  const [previousEditing, setPreviousEditing] = useState<EditingPayment | null>(null);
+  if (editingPayment !== previousEditing) {
+    setPreviousEditing(editingPayment);
     if (editingPayment) {
       setPerson(editingPayment.person);
       setWeekId(editingPayment.weekId);
@@ -104,7 +109,7 @@ export default function AddIncomeModal({
       setAmount(String(editingPayment.amount));
       setIsOpen(true);
     }
-  }, [editingPayment]);
+  }
 
   // --------------------------------
   // CLOSE MODAL
@@ -211,7 +216,7 @@ export default function AddIncomeModal({
         onClose();
       }
 
-      window.location.href = "/hanan";
+      router.refresh();
     } catch (error) {
       console.error(error);
 

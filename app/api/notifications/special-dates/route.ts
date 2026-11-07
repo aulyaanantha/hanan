@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { isAuthenticated } from "@/lib/session/server";
 import { sendSpecialDateNotifications } from "@/lib/notifications/special-date";
+export const maxDuration = 60;
 
 export async function GET() {
   try {
@@ -19,13 +20,14 @@ export async function GET() {
       );
     }
 
-    await sendSpecialDateNotifications();
+    const result = await sendSpecialDateNotifications();
 
     return NextResponse.json({
-      success: true,
+      success: result.pending === 0,
+      result,
       message:
         "Special date notifications checked successfully.",
-    });
+    }, { status: result.pending === 0 ? 200 : 503 });
   } catch (error) {
     console.error(
       "Special date notification error:",

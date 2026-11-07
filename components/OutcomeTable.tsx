@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 import { Pencil } from "lucide-react";
 import AddOutcomeModal from "./AddOutcomeModal";
@@ -33,6 +35,7 @@ export default function OutcomeTable({
 }: {
   expenses: Expense[];
 }) {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [editingExpense, setEditingExpense] =
     useState<Expense | null>(null);
@@ -72,7 +75,8 @@ export default function OutcomeTable({
         return;
       }
 
-      window.location.href = "/hanan";
+      setCurrentPage(1);
+      router.refresh();
     } catch (error) {
       console.error(error);
       alert("Something went wrong.");

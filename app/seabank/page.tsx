@@ -43,13 +43,16 @@ export default async function SeaBankPage() {
   // CURRENT WEEK
   // ==========================================
 
-  const { data: currentWeek, error: weekError } = await supabase
-    .from("weeks")
-    .select("week_number")
-    .lte("target_date", today)
-    .order("target_date", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  const [{ data: currentWeek, error: weekError }, seaBank] = await Promise.all([
+    supabase
+      .from("weeks")
+      .select("week_number")
+      .lte("target_date", today)
+      .order("target_date", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    calculateSeaBank(),
+  ]);
 
   if (weekError) {
     throw new Error(weekError.message);
@@ -59,7 +62,7 @@ export default async function SeaBankPage() {
   // AUTOMATIC SEABANK CALCULATION
   // ==========================================
 
-  const seaBank = await calculateSeaBank();
+
 
   const {
     hananBalance,

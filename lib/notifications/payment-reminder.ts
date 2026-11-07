@@ -5,6 +5,7 @@ type Person = "Anantha" | "Farhan";
 
 export async function sendPaymentReminders() {
   const supabase = createSupabaseServerClient();
+  const summary = { completed: 0, pending: 0 };
 
   const today = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Jakarta",
@@ -27,12 +28,12 @@ export async function sendPaymentReminders() {
       "Could not find current HANAN week:",
       weekError,
     );
-    return;
+    throw new Error("Could not load current week");
   }
 
   if (!currentWeek) {
     console.log("No current HANAN week found.");
-    return;
+    return summary;
   }
 
   const people: Person[] = ["Anantha", "Farhan"];
@@ -52,6 +53,7 @@ export async function sendPaymentReminders() {
         `Could not check payment for ${person}:`,
         paymentError,
       );
+      summary.pending++;
       continue;
     }
 
@@ -74,6 +76,7 @@ export async function sendPaymentReminders() {
         `Could not check reminder for ${person}:`,
         reminderError,
       );
+      summary.pending++;
       continue;
     }
 
@@ -87,10 +90,12 @@ export async function sendPaymentReminders() {
         title: "💰 HANAN Savings",
         body: `Minggu ke-${currentWeek.week_number} sudah dimulai. Jangan lupa melakukan pembayaran HANAN Savings. 💗`,
         url: "/hanan",
+        tag: `payment-reminder:${currentWeek.id}:${person}`,
       });
 
       // No device or no successful send: leave this reminder eligible for retry.
-      if (!delivery.success || delivery.sent < 1) {
+      if (!delivery.success || delivery.sent < 1 || delivery.failed > 0) {
+        summary.pending++;
         console.warn(`Payment reminder not delivered for ${person}; will retry on the next run.`);
         continue;
       }
@@ -104,16 +109,20 @@ export async function sendPaymentReminders() {
         });
 
       if (insertError) {
+        summary.pending++;
         console.error(
           `Reminder sent but could not be saved for ${person}:`,
           insertError,
         );
       }
+      if (!insertError) summary.completed++;
     } catch (notificationError) {
+      summary.pending++;
       console.error(
         `Could not send payment reminder to ${person}:`,
         notificationError,
       );
     }
   }
+  return summary;
 }

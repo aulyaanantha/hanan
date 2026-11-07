@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useEffect, useRef, useState } from "react";
 import { Camera, RotateCcw, X, Loader2, SwitchCamera } from "lucide-react";
 import { useMemberName } from "@/components/AccessProvider";
@@ -21,6 +23,7 @@ function getTodayJakarta() {
 
 export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
   const memberName = useMemberName();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const [cameraMode, setCameraMode] = useState<CameraMode>("camera");
@@ -382,7 +385,7 @@ export default function AddMemoryModal({ onSuccess }: AddMemoryModalProps) {
       if (onSuccess) {
         onSuccess();
       } else {
-        window.location.reload();
+        router.refresh();
       }
     } catch (error) {
       console.error(error);

@@ -130,8 +130,9 @@ for (const name of ['Farhan', 'Anantha']) {
   test(`new income belongs to signed-in ${name}, ignoring forged person`, async () => {
     let saved;
     let recipient;
+    const afterTasks = [];
     const route = load('app/api/payments/route.ts', {
-      'next/server': { NextResponse: { json: (body, options) => ({ body, ...options }) } },
+      'next/server': { after: task => afterTasks.push(task), NextResponse: { json: (body, options) => ({ body, ...options }) } },
       '@/lib/session/server': { getAuthenticatedMember: async () => ({ userId: 'id', displayName: name }) },
       '@/lib/supabase/server': { createSupabaseServerClient: () => ({ from(table) {
         if (table === 'weeks') return { select: () => ({ eq: () => ({ single: async () => ({ data: { id: 'w', week_number: 1 } }) }) }) };
@@ -147,6 +148,9 @@ for (const name of ['Farhan', 'Anantha']) {
     const result = await route.POST({ json: async () => ({ person: other, weekId: 'w', amount: 25000, paymentDate: '2026-11-03' }) });
     assert.equal(result.body.success, true);
     assert.equal(saved.person, name);
+    assert.equal(recipient, undefined, 'push must not block the saved payment response');
+    assert.equal(afterTasks.length, 1);
+    await afterTasks[0]();
     assert.equal(recipient, other);
   });
 }

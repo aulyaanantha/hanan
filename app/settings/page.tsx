@@ -2,6 +2,7 @@
 "use client";
 
 import AppShell from "@/components/AppShell";
+import PasskeySettings from "@/components/PasskeySettings";
 import { useTheme, type AccentColor, type ThemeMode } from "@/components/ThemeProvider";
 import { Check, Monitor, Moon, Palette, Sun } from "lucide-react";
 
@@ -139,7 +140,7 @@ export default function SettingsPage() {
             <div>
               <h2 className="text-lg font-semibold">Accent Color</h2>
               <p className="mt-1 text-sm" style={{ color: "var(--muted)" }}>
-                Choose an accent color for HANAN's display identity.
+                Choose an accent color for HANAN&apos;s display identity.
               </p>
             </div>
           </div>
@@ -177,6 +178,8 @@ export default function SettingsPage() {
             })}
           </div>
         </section>
+
+        <PasskeySettings />
 
         <p
           className="mt-6 text-center text-xs"

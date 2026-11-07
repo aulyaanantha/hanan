@@ -6,14 +6,15 @@ import SavingsCoinTransfer from "@/components/SavingsCoinTransfer";
 type Props = {
   income: React.ReactNode;
   outcome: React.ReactNode;
+  revision?: string;
 };
 
-export default function HananTabs({ income, outcome }: Props) {
+export default function HananTabs({ income, outcome, revision }: Props) {
   const [activeTab, setActiveTab] = useState<"income" | "outcome">("income");
 
   return (
     <div className="hanan-savings-motion" data-active-tab={activeTab}>
-      <SavingsCoinTransfer activeTab={activeTab} />
+      <SavingsCoinTransfer activeTab={activeTab} revision={revision} />
       <div className="income-tabs relative z-10 flex items-end gap-2 px-2" aria-label="Transaction type">
         <button
           type="button"

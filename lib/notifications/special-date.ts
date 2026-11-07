@@ -140,15 +140,16 @@ export async function sendSpecialDateNotifications() {
       error,
     );
 
-    return;
+    throw new Error("Could not load special dates");
   }
 
+  const summary = { checked: specialDates?.length ?? 0, completed: 0, pending: 0, skipped: 0 };
   if (!specialDates || specialDates.length === 0) {
     console.log(
       "No special dates found.",
     );
 
-    return;
+    return summary;
   }
 
   // ==========================================
@@ -177,12 +178,7 @@ export async function sendSpecialDateNotifications() {
     // ========================================
 
     if (today === dayBefore) {
-      await processNotification(
-        supabase,
-        specialDate,
-        occurrenceDateString,
-        "day_before",
-      );
+      summary[await processNotification(supabase, specialDate, occurrenceDateString, "day_before")]++;
     }
 
     // ========================================
@@ -190,15 +186,11 @@ export async function sendSpecialDateNotifications() {
     // ========================================
 
     if (today === occurrenceDateString) {
-      await processNotification(
-        supabase,
-        specialDate,
-        occurrenceDateString,
-        "same_day",
-      );
+      summary[await processNotification(supabase, specialDate, occurrenceDateString, "same_day")]++;
     }
 
   }
+  return summary;
 }
 
 // ==========================================
@@ -212,7 +204,7 @@ async function processNotification(
   specialDate: SpecialDate,
   occurrenceDate: string,
   notificationType: NotificationType,
-) {
+): Promise<"completed" | "pending" | "skipped"> {
   // ========================================
   // CHECK DUPLICATE
   // ========================================
@@ -241,7 +233,7 @@ async function processNotification(
       error,
     );
 
-    return;
+    return "pending";
   }
 
   if (existingNotification) {
@@ -249,7 +241,7 @@ async function processNotification(
       `Notification already sent: ${specialDate.title} - ${notificationType}`,
     );
 
-    return;
+    return "skipped";
   }
 
   // ========================================
@@ -268,65 +260,22 @@ async function processNotification(
     "Farhan",
   ];
 
-  let sentSuccessfully = false;
-
-  // ========================================
-  // SEND TO BOTH PEOPLE
-  // ========================================
-
-  for (const person of people) {
-    try {
-      const result =
-        await sendNotificationToPerson(
-          person,
-          {
-            title: notification.title,
-            body: notification.body,
-            url: "/special-dates",
-          },
-        );
-
-      if (result.sent > 0) {
-        sentSuccessfully = true;
-      }
-    } catch (error) {
-      console.error(
-        `Could not send special date notification to ${person}:`,
-        error,
-      );
-    }
+  const results = await Promise.allSettled(people.map(person => sendNotificationToPerson(person, {
+    ...notification, url: "/special-dates", tag: `special-date:${specialDate.id}:${occurrenceDate}:${notificationType}`,
+  })));
+  const deliveredToEveryone = results.every(result => result.status === "fulfilled" && result.value.success && result.value.sent > 0 && result.value.failed === 0);
+  if (!deliveredToEveryone) {
+    console.warn("Special date delivery incomplete", { specialDateId: specialDate.id, occurrenceDate, notificationType,
+      recipients: people.map((person, i) => ({ person, result: results[i].status === "fulfilled" ? results[i].value : "send_error" })) });
+    return "pending";
   }
-
-  // ========================================
-  // SAVE NOTIFICATION LOG
-  // ========================================
-
-  if (sentSuccessfully) {
-    const { error: insertError } =
-      await supabase
-        .from("special_date_notifications")
-        .insert({
-          special_date_id:
-            specialDate.id,
-          occurrence_date:
-            occurrenceDate,
-          notification_type:
-            notificationType,
-        });
-
-    if (insertError) {
-      console.error(
-        `Notification sent but could not save log for ${specialDate.title}:`,
-        insertError,
-      );
-    } else {
-      console.log(
-        `Special date notification sent: ${specialDate.title} - ${notificationType}`,
-      );
-    }
-  } else {
-    console.log(
-      `No notification device available for ${specialDate.title}.`,
-    );
+  const { error: insertError } = await supabase.from("special_date_notifications").insert({
+    special_date_id: specialDate.id, occurrence_date: occurrenceDate, notification_type: notificationType,
+  });
+  if (insertError) {
+    if (insertError.code === "23505") return "skipped";
+    console.error("Special date log could not be saved", { specialDateId: specialDate.id, code: insertError.code });
+    return "pending";
   }
+  return "completed";
 }

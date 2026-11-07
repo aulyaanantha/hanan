@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { sendNotificationToPerson } from "@/lib/notifications/send";
+export const maxDuration = 60;
 
 const BUCKET_NAME = "memory-images";
 
@@ -159,18 +160,17 @@ export async function POST(request: NextRequest) {
     const recipient: "Anantha" | "Farhan" =
       person === "Anantha" ? "Farhan" : "Anantha";
 
-    try {
-      await sendNotificationToPerson(recipient, {
-        title: "📸 Hanan Memory",
-        body: `${person} menambahkan memory baru 💗`,
-        url: "/hanan-memory",
-      });
-    } catch (notificationError) {
-      console.error(
-        "Failed to send memory notification:",
-        notificationError,
-      );
-    }
+    after(async () => {
+      try {
+        await sendNotificationToPerson(recipient, {
+          title: "📸 Hanan Memory",
+          body: `${person} menambahkan memory baru 💗`,
+          url: "/hanan-memory",
+        });
+      } catch (notificationError) {
+        console.error("Failed to send memory notification:", notificationError);
+      }
+    });
 
     const {
       data: { publicUrl },

@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { useState } from "react";
 import { useMemberName } from "@/components/AccessProvider";
 
 type Expense = {
@@ -17,6 +19,7 @@ type Props = {
 
 export default function AddOutcomeModal({ expense = null, onClose }: Props) {
   const memberName = useMemberName();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const [expenseDate, setExpenseDate] = useState("");
@@ -31,14 +34,16 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
   // OPEN MODAL FOR EDIT
   // --------------------------------
 
-  useEffect(() => {
+  const [previousEditing, setPreviousEditing] = useState<Expense | null>(null);
+  if (expense !== previousEditing) {
+    setPreviousEditing(expense);
     if (expense) {
       setExpenseDate(expense.expense_date);
       setReason(expense.reason);
       setAmount(String(expense.amount));
       setIsOpen(true);
     }
-  }, [expense]);
+  }
 
   // --------------------------------
   // OPEN MODAL
@@ -122,7 +127,7 @@ export default function AddOutcomeModal({ expense = null, onClose }: Props) {
 
       onClose?.();
 
-      window.location.href = "/hanan";
+      router.refresh();
     } catch (error) {
       console.error(error);
 

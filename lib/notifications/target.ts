@@ -16,7 +16,7 @@ export async function checkAndSendTargetNotification() {
       "Could not get app settings for target notification:",
       settingsError,
     );
-    return;
+    throw new Error("Could not load target settings");
   }
 
   // If notification was already sent for this target,
@@ -35,7 +35,7 @@ export async function checkAndSendTargetNotification() {
       "Could not get payments for target notification:",
       paymentsError,
     );
-    return;
+    throw new Error("Could not load target payments");
   }
 
   const { data: expenses, error: expensesError } = await supabase
@@ -47,7 +47,7 @@ export async function checkAndSendTargetNotification() {
       "Could not get expenses for target notification:",
       expensesError,
     );
-    return;
+    throw new Error("Could not load target expenses");
   }
 
   const totalIncome =
@@ -83,15 +83,17 @@ export async function checkAndSendTargetNotification() {
   ];
 
   try {
-    await Promise.all(
+    const deliveries = await Promise.all(
       recipients.map((person) =>
         sendNotificationToPerson(person, {
           title: "🎯 Target HANAN Tercapai!",
           body: `Tabungan HANAN sudah mencapai ${formattedTarget}. Selamat! 💗`,
           url: "/",
+          tag: `target:${settings.id}:${targetAmount}`,
         }),
       ),
     );
+    if (deliveries.some(delivery => !delivery.success || delivery.sent < 1 || delivery.failed > 0)) return { pending: 1 };
   } catch (notificationError) {
     console.error(
       "Target reached, but notification failed:",
@@ -99,7 +101,7 @@ export async function checkAndSendTargetNotification() {
     );
 
     // Do not mark as sent if notification failed.
-    return;
+    return { pending: 1 };
   }
 
   // Mark notification as sent so it won't be sent again.
@@ -116,4 +118,5 @@ export async function checkAndSendTargetNotification() {
       updateError,
     );
   }
+  return { pending: updateError ? 1 : 0 };
 }

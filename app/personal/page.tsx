@@ -27,15 +27,23 @@ export default async function PersonalSavingsPage() {
 
   const supabase = createSupabaseServerClient();
 
-  const { data: transactions, error } = await supabase
-    .from("personal_savings")
-    .select("*")
-    .order("transaction_date", {
+  const [{ data: transactions, error }, { data: weeks }] = await Promise.all([
+    supabase
+      .from("personal_savings")
+      .select("*")
+      .order("transaction_date", {
       ascending: false,
     })
-    .order("created_at", {
+      .order("created_at", {
       ascending: false,
-    });
+    }),
+    supabase
+      .from("weeks")
+      .select("week_number, target_date")
+      .order("target_date", {
+      ascending: true,
+    }),
+  ]);
 
   if (error) {
     console.error("Personal savings error:", error);
@@ -52,12 +60,7 @@ export default async function PersonalSavingsPage() {
     .reduce((sum, transaction) => sum + Number(transaction.amount ?? 0), 0);
 
   const currentBalance = totalDeposit - totalWithdrawal;
-  const { data: weeks } = await supabase
-    .from("weeks")
-    .select("week_number, target_date")
-    .order("target_date", {
-      ascending: true,
-    });
+
 
   const now = new Date();
   const today = formatDate(now);
@@ -69,7 +72,7 @@ export default async function PersonalSavingsPage() {
   return (
     <AppShell>
       <div className="personal-savings-motion mx-auto max-w-6xl">
-        <SavingsCoinTransfer scope="personal" />
+        <SavingsCoinTransfer scope="personal" revision={`${personalTransactions.length}:${totalDeposit}:${totalWithdrawal}`} />
         {/* PAGE HEADER */}
 
         <div className="page-heading mb-7 flex items-start justify-between gap-4">

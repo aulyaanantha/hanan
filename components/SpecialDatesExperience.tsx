@@ -9,12 +9,11 @@ import { getTodayJakarta } from "@/lib/special-dates/date-utils";
 import { readDateEffects, shouldShowDateCelebration } from "@/lib/special-dates/effects";
 import BirthdayGift from "./BirthdayGift";
 import AnniversaryBook from "./AnniversaryBook";
-import type { BirthdayPerson } from "@/lib/special-dates/birthday";
+import type { DateEffect } from "@/lib/special-dates/experience";
 
-type DateEffect = { id: string; title: string; icon: string; countdown: string; isToday: boolean; birthday?: { name: BirthdayPerson; birthDate: string }; anniversary?: { startDate: string } };
 const icons = { cake: Cake, heart: Heart, calendar: CalendarDays, flower: Flower2, gem: Gem, party: PartyPopper };
 
-export default function SpecialDatesExperience({ today, dates }: { today: string; dates: DateEffect[] }) {
+export default function SpecialDatesExperience({ today, dates, mode = "all" }: { today: string; dates: DateEffect[]; mode?: "all" | "cards" | "popup" }) {
   const member = useMemberName();
   const reduced = useReducedMotion();
   const router = useRouter();
@@ -35,9 +34,8 @@ export default function SpecialDatesExperience({ today, dates }: { today: string
   };
 
   useEffect(() => {
-    if (!member) return;
+    if (!member || mode === "popup") return;
     const key = `hanan-special-dates:${member}`;
-    const popupKey = `${key}:popup`;
     let raw: string | null = null;
     try { raw = localStorage.getItem(key); } catch { /* Optional storage. */ }
     const previous = readDateEffects(raw, today);
@@ -89,6 +87,16 @@ export default function SpecialDatesExperience({ today, dates }: { today: string
       });
       persist();
     }, 0);
+    return () => {
+      clearTimeout(setup);
+      observer?.disconnect(); particles.forEach(particle => particle.remove());
+      cards.forEach(card => { delete card.dataset.motionReady; });
+    };
+  }, [dates, today, member, reduced, mode]);
+
+  useEffect(() => {
+    if (!member || mode === "cards") return;
+    const popupKey = `hanan-special-dates:${member}:popup`;
     const popup = window.setTimeout(() => {
       let lastShown: string | null = null;
       try { lastShown = localStorage.getItem(popupKey); } catch { /* Still show without storage. */ }
@@ -102,12 +110,10 @@ export default function SpecialDatesExperience({ today, dates }: { today: string
     const midnight = window.setInterval(checkDay, 60000);
     document.addEventListener("visibilitychange", checkDay);
     return () => {
-      clearTimeout(setup); clearTimeout(popup); clearInterval(midnight);
+      clearTimeout(popup); clearInterval(midnight);
       document.removeEventListener("visibilitychange", checkDay);
-      observer?.disconnect(); particles.forEach(particle => particle.remove());
-      cards.forEach(card => { delete card.dataset.motionReady; });
     };
-  }, [dates, today, member, reduced, router]);
+  }, [dates, today, member, router, mode]);
 
   useEffect(() => {
     const element = dialog.current;
@@ -118,6 +124,7 @@ export default function SpecialDatesExperience({ today, dates }: { today: string
     return () => { element.close(); document.body.style.overflow = previousOverflow; };
   }, [open]);
 
+  if (mode === "cards") return null;
   return <dialog ref={dialog} className={`special-date-dialog ${anniversary ? "anniversary-dialog" : ""}`} aria-labelledby="special-date-celebration-title"
     onCancel={closeCelebration} onClick={event => { if (event.target === event.currentTarget) {
       const box = event.currentTarget.getBoundingClientRect();

@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 import { X } from "lucide-react";
 import { useMemberName } from "@/components/AccessProvider";
@@ -26,6 +28,7 @@ export default function AddPersonalTransactionModal({
   const memberName = useMemberName();
   const isEditing = Boolean(editingTransaction);
 
+  const router = useRouter();
   const [type, setType] = useState<TransactionType>(
     editingTransaction?.type ?? "deposit",
   );
@@ -120,7 +123,8 @@ export default function AddPersonalTransactionModal({
           // Optional decoration must not interrupt a successfully saved transaction.
         }
       }
-      window.location.href = "/personal";
+      onClose();
+      router.refresh();
     } catch (error) {
       console.error(error);
 

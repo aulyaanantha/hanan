@@ -11,6 +11,8 @@ self.addEventListener("push", (event) => {
     body: data.body || "Ada pemberitahuan baru dari HANAN.",
     icon: "/icons/hanan-notification.png",
     badge: "/icons/hanan-badge.png",
+    tag: data.tag,
+    renotify: false,
     data: {
       url: data.url || "/",
     },

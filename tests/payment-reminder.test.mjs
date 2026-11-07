@@ -46,7 +46,7 @@ for (const [name, delivery, recorded] of [
   ['device query failure', { success: false, sent: 0, failed: 0 }, false],
   ['all pushes failed', { success: false, sent: 0, failed: 2 }, false],
   ['successful push', { success: true, sent: 1, failed: 0 }, true],
-  ['one success and one failed device', { success: true, sent: 1, failed: 1 }, true],
+  ['one success and one failed device', { success: true, sent: 1, failed: 1 }, false],
 ]) {
   test(`payment reminder: ${name}`, async () => {
     const s = scenario({ delivery });

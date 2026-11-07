@@ -18,20 +18,23 @@ export default async function HananMemoryPage() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const { data: weeks } = await supabase
-    .from("weeks")
-    .select("week_number, target_date")
-    .order("week_number", { ascending: true });
+  const [{ data: weeks }, { data: memories, error }] = await Promise.all([
+    supabase
+      .from("weeks")
+      .select("week_number, target_date")
+      .order("week_number", { ascending: true }),
+    supabase
+      .from("memories")
+      .select("*")
+      .order("memory_date", { ascending: false })
+      .order("created_at", { ascending: false }),
+  ]);
 
   const currentWeek =
     weeks?.filter((week) => week.target_date <= today).at(-1)?.week_number ??
     null;
 
-  const { data: memories, error } = await supabase
-    .from("memories")
-    .select("*")
-    .order("memory_date", { ascending: false })
-    .order("created_at", { ascending: false });
+
 
   if (error) {
     console.error("Failed to fetch memories:", error);

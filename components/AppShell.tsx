@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import Sidebar from './Sidebar'
+import NotificationCatchUp from './notifications/NotificationCatchUp'
 
 export default function AppShell({
   children,
@@ -9,6 +10,7 @@ export default function AppShell({
 }) {
   return (
     <div className="app-shell">
+      <NotificationCatchUp />
       <a href="#main-content" className="skip-link">Skip to content</a>
       <Sidebar />
 

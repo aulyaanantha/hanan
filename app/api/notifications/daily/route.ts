@@ -1,81 +1,14 @@
 import { NextResponse } from "next/server";
-
-import { sendPaymentReminders } from "@/lib/notifications/payment-reminder";
-import { sendSpecialDateNotifications } from "@/lib/notifications/special-date";
-
+import { runDailyNotifications } from "@/lib/notifications/daily";
+export const maxDuration = 60;
 export async function GET(request: Request) {
+  const secret = process.env.CRON_SECRET;
+  if (!secret) return NextResponse.json({ success: false, error: "Server configuration error." }, { status: 500 });
+  if (request.headers.get("authorization") !== `Bearer ${secret}`) return NextResponse.json({ success: false, error: "Unauthorized." }, { status: 401 });
   try {
-    const authHeader =
-      request.headers.get("authorization");
-
-    const cronSecret =
-      process.env.CRON_SECRET;
-
-    if (!cronSecret) {
-      console.error(
-        "CRON_SECRET is not configured.",
-      );
-
-      return NextResponse.json(
-        {
-          error:
-            "Server configuration error.",
-        },
-        {
-          status: 500,
-        },
-      );
-    }
-
-    if (
-      authHeader !==
-      `Bearer ${cronSecret}`
-    ) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized.",
-        },
-        {
-          status: 401,
-        },
-      );
-    }
-
-    console.log(
-      "Starting daily notifications...",
-    );
-
-    await sendPaymentReminders();
-
-    console.log(
-      "Payment reminders completed.",
-    );
-
-    await sendSpecialDateNotifications();
-
-    console.log(
-      "Special date notifications completed.",
-    );
-
-    return NextResponse.json({
-      success: true,
-      message:
-        "Daily notifications processed successfully.",
-    });
-  } catch (error) {
-    console.error(
-      "Daily notification failed:",
-      error,
-    );
-
-    return NextResponse.json(
-      {
-        error:
-          "Could not process daily notifications.",
-      },
-      {
-        status: 500,
-      },
-    );
+    const result = await runDailyNotifications();
+    return NextResponse.json(result, { status: result.success ? 200 : 503 });
+  } catch {
+    return NextResponse.json({ success: false, error: "Notification processing failed." }, { status: 503 });
   }
 }

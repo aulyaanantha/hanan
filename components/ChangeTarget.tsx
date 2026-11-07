@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 
 type Props = {
@@ -7,6 +9,7 @@ type Props = {
 };
 
 export default function ChangeTarget({ currentTarget }: Props) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [target, setTarget] = useState(currentTarget.toString());
   const [isSaving, setIsSaving] = useState(false);
@@ -51,7 +54,7 @@ export default function ChangeTarget({ currentTarget }: Props) {
 
       setIsOpen(false);
 
-      window.location.reload();
+      router.refresh();
     } catch (error) {
       console.error(error);
 

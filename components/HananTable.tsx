@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useEffect, useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import AddIncomeModal from "@/components/AddIncomeModal";
@@ -38,6 +40,7 @@ export default function HananTable({
 }: {
   weeklyData: WeeklyData[];
 }) {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
 
   const [editingPayment, setEditingPayment] = useState<EditingPayment | null>(
@@ -144,7 +147,8 @@ export default function HananTable({
         throw new Error(result.error || "Failed to delete contribution.");
       }
 
-      window.location.href = "/hanan";
+      setCurrentPage(1);
+      router.refresh();
     } catch (error) {
       console.error(error);
 

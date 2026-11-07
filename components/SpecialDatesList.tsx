@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 
 import AddSpecialDateModal from "@/components/AddSpecialDateModal";
@@ -25,6 +27,7 @@ type Props = {
 export default function SpecialDatesList({
   dates,
 }: Props) {
+  const router = useRouter();
   const [editingDate, setEditingDate] =
     useState<SpecialDate | null>(null);
 
@@ -62,7 +65,7 @@ export default function SpecialDatesList({
         );
       }
 
-      window.location.reload();
+      router.refresh();
     } catch (error) {
       console.error(error);
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import AddPersonalTransactionModal from "@/components/AddPersonalTransactionModal";
@@ -36,6 +38,7 @@ function formatDate(date: string) {
 export default function PersonalSavingsTable({
   transactions,
 }: Props) {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
 
   const [editingTransaction, setEditingTransaction] =
@@ -104,7 +107,8 @@ export default function PersonalSavingsTable({
         );
       }
 
-      window.location.href = "/personal";
+      setCurrentPage(1);
+      router.refresh();
     } catch (error) {
       console.error(error);
 

@@ -3,8 +3,13 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { getSupabaseAuthConfig } from '@/lib/supabase/auth-config';
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  // Scheduled tasks use CRON_SECRET instead of a user session.
-  if (path === '/api/notifications/daily' || path === '/api/notifications/payment-reminder') return NextResponse.next();
+  // Route handlers verify their own session and can refresh cookies themselves.
+  // Avoid a second Auth round trip before every API save/read.
+  if (path.startsWith('/api/')) {
+    const apiResponse = NextResponse.next();
+    apiResponse.headers.set('Cache-Control', 'private, no-store');
+    return apiResponse;
+  }
   let response = NextResponse.next({ request });
   const { url, key } = getSupabaseAuthConfig();
   const supabase = createServerClient(url, key, {

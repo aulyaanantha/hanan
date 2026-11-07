@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { getAuthenticatedMember, isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { sendNotificationToPerson } from "@/lib/notifications/send";
 import { checkAndSendTargetNotification } from "@/lib/notifications/target";
+export const maxDuration = 60;
 
 function isValidDate(value: unknown) {
   return (
@@ -142,36 +143,19 @@ export async function POST(request: Request) {
       },
     ).format(amount);
 
-    try {
-      await sendNotificationToPerson(
-        recipient,
-        {
+    after(async () => {
+      const results = await Promise.allSettled([
+        sendNotificationToPerson(recipient, {
           title: "💰 HANAN Savings",
           body: `${person} baru saja melakukan pembayaran ${formattedAmount} untuk Minggu ke-${week.week_number}.`,
           url: "/hanan",
-        },
-      );
-    } catch (notificationError) {
-      // Notification failure must NOT make the payment fail.
-      console.error(
-        "Payment saved, but notification failed:",
-        notificationError,
-      );
-    }
-
-    // ==========================================
-    // CHECK HANAN TARGET
-    // ==========================================
-
-    try {
-      await checkAndSendTargetNotification();
-    } catch (targetNotificationError) {
-      // Target notification failure must NOT make the payment fail.
-      console.error(
-        "Payment saved, but target notification failed:",
-        targetNotificationError,
-      );
-    }
+        }),
+        checkAndSendTargetNotification(),
+      ]);
+      results.forEach((result, index) => {
+        if (result.status === "rejected") console.error("Post-save notification failed", { job: index === 0 ? "payment" : "target" });
+      });
+    });
 
     // ==========================================
     // RESPONSE

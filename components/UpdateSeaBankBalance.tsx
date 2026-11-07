@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
 import { Pencil, X, Check } from "lucide-react";
 
@@ -8,6 +10,7 @@ export default function UpdateSeaBankBalance({
 }: {
   currentBalance: number;
 }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [balance, setBalance] = useState(
     currentBalance.toString(),
@@ -48,7 +51,9 @@ export default function UpdateSeaBankBalance({
         throw new Error(result.error || "Failed to update balance.");
       }
 
-      window.location.reload();
+      setOpen(false);
+      setLoading(false);
+      router.refresh();
     } catch (error) {
       setError(
         error instanceof Error

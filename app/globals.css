@@ -1876,3 +1876,22 @@ button:disabled { cursor: not-allowed; }
 .login-card:has(#password:focus) .login-buddy-eyes { animation: none; scale: 1 .12; }
 @keyframes login-buddy-blink { 0%,42%,46%,100% { scale: 1 1; } 44% { scale: 1 .08; } }
 @media (prefers-reduced-motion: reduce) { .login-buddy-eyes, .login-buddy-paw, .login-time-greeting { animation: none !important; transition: none !important; } }
+
+/* Immediate navigation feedback while fresh server data streams in. */
+.sidebar-link, .mobile-more-link, .mobile-dock-item { position: relative; }
+.navigation-feedback { position: absolute; right: 6px; top: 6px; width: 10px; height: 10px; pointer-events: none; opacity: 0; }
+.navigation-feedback[data-pending=true] { opacity: 1; }
+.navigation-feedback-dot { display: block; width: 10px; height: 10px; border: 2px solid color-mix(in srgb, var(--primary) 25%, transparent); border-top-color: var(--primary); border-radius: 50%; animation: navigation-spin .7s linear infinite; }
+.navigation-feedback:not([data-pending=true]) .navigation-feedback-dot { animation-play-state: paused; }
+.route-loading-title, .route-loading-subtitle, .route-loading-card > div, .route-loading-panel > div { position: relative; overflow: hidden; border-radius: 8px; background: var(--surface-raised); }
+.route-loading-title { width: 48%; max-width: 260px; height: 30px; }
+.route-loading-subtitle { margin-top: 14px; width: 65%; max-width: 340px; height: 14px; }
+.route-loading-card { min-height: 126px; }
+.route-loading-card > div:first-child { width: 60%; height: 11px; }
+.route-loading-card > div:last-child { margin-top: 20px; width: 85%; height: 25px; }
+.route-loading-panel { min-height: 230px; display: grid; gap: 22px; align-content: start; }
+.route-loading-panel > div { height: 30px; }
+.route-loading-title::after, .route-loading-card > div::after, .route-loading-panel > div::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, color-mix(in srgb, var(--primary) 8%, transparent), transparent 80%); animation: route-loading-shine 1.5s ease infinite; }
+@keyframes navigation-spin { to { transform: rotate(360deg); } }
+@keyframes route-loading-shine { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .navigation-feedback-dot, .route-loading *::after { animation: none !important; } }
