@@ -85,7 +85,7 @@ export default async function HananMemoryPage() {
               HANAN Memory
             </h1>
 
-            <p className="mt-2 text-sm text-[var(--muted)]">
+            <p className="mt-2 text-sm text-[var(--primary)]">
               Little moments from our journey.
             </p>
           </div>

@@ -252,7 +252,7 @@ export default async function Home() {
               Dashboard
             </h1>
 
-            <p className="mt-2 text-sm text-[var(--muted)]">
+            <p className="mt-2 text-sm text-[var(--primary)]">
               Track shared savings, contributions, and expenses.
             </p>
           </div>

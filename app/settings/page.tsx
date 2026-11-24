@@ -58,7 +58,7 @@ export default function SettingsPage() {
             Settings
           </h1>
 
-          <p className="mt-2 text-sm" style={{ color: "var(--muted)" }}>
+          <p className="mt-2 text-sm" style={{ color: "var(--primary)" }}>
             Personalize your space.
           </p>
         </header>

@@ -101,7 +101,7 @@ export default async function SeaBankPage() {
               SeaBank Balance
             </h1>
 
-            <p className="mt-2 text-sm text-[var(--muted)]">
+            <p className="mt-2 text-sm text-[var(--primary)]">
               Automatically calculated estimates.
             </p>
           </div>

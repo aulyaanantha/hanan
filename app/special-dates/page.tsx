@@ -178,7 +178,7 @@ export default async function SpecialDatesPage() {
               Special Dates
             </h1>
 
-            <p className="mt-2 text-sm text-[var(--muted)]">
+            <p className="mt-2 text-sm text-[var(--primary)]">
               The little dates that mean a lot to us.
             </p>
           </div>
@@ -261,7 +261,7 @@ export default async function SpecialDatesPage() {
 
       {/* FOOTER */}
 
-      <p className="mt-6 text-center text-xs font-medium text-[var(--primary)]">
+      <p className="mt-6 text-center text-xs font-medium text-[var(--muted)]">
         © 2026 · Made by Anantha
       </p>
     </AppShell>

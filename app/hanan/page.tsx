@@ -153,7 +153,7 @@ export default async function HananPage() {
               HANAN Savings
             </h1>
 
-            <p className="mt-2 text-sm text-[var(--muted)]">
+            <p className="mt-2 text-sm text-[var(--primary)]">
               Record our income and expenses.
             </p>
           </div>

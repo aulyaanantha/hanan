@@ -53,7 +53,7 @@ export default async function PlacesPage() {
               HANAN Places
             </h1>
 
-            <p className="mt-2 text-sm text-[var(--muted)]">
+            <p className="mt-2 text-sm text-[var(--primary)]">
               Every place has a story.
             </p>
           </div>

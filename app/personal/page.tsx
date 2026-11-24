@@ -81,7 +81,7 @@ export default async function PersonalSavingsPage() {
               Personal Savings
             </h1>
 
-            <p className="mt-2 text-sm text-[var(--muted)]">
+            <p className="mt-2 text-sm text-[var(--primary)]">
               Manage your personal savings and transactions.
             </p>
           </div>
