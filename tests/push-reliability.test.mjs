@@ -85,6 +85,7 @@ test('both recipients must succeed before saving a special-date log', async () =
 test('one failed notification job does not block the other jobs', async () => {
   let payments = false, target = false;
   const daily = load('lib/notifications/daily.ts', {
+    './celebration': { sendCelebrationNotifications: async () => ({ pending: 0 }) },
     './special-date': { sendSpecialDateNotifications: async () => { throw Error('database unavailable'); } },
     './payment-reminder': { sendPaymentReminders: async () => { payments = true; return { pending: 0 }; } },
     './target': { checkAndSendTargetNotification: async () => { target = true; } },
@@ -94,6 +95,7 @@ test('one failed notification job does not block the other jobs', async () => {
 });
 test('pending deliveries make the job result fail visibly', async () => {
   const daily = load('lib/notifications/daily.ts', {
+    './celebration': { sendCelebrationNotifications: async () => ({ pending: 0 }) },
     './special-date': { sendSpecialDateNotifications: async () => ({ pending: 1 }) },
     './payment-reminder': { sendPaymentReminders: async () => ({ pending: 0 }) },
     './target': { checkAndSendTargetNotification: async () => ({ pending: 0 }) },

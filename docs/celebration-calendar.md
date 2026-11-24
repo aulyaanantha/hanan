@@ -1,0 +1,10 @@
+# Celebration Calendar setup
+
+1. Check whether `public.special_days` or `public.celebration_notification_log` already exist. Review and run `supabase/migrations/20261124000000_celebration_calendar.sql` in the Supabase SQL editor. Do not run it over an incompatible existing table. RLS denies browser access; the existing server-only service role is used after HANAN authentication.
+2. Deploy the application and the updated `vercel.json`. The existing `CRON_SECRET`, Supabase URL, service role and web-push settings are required. No new key is used.
+3. Run the first sync by making an authenticated GET request to `/api/celebrations/sync` with `Authorization: Bearer <CRON_SECRET>` from a trusted environment. Keep the secret out of browser code and shared logs. Check the response for both years, then inspect `special_days` and compare dates with the official SKB. The regular Vercel cron runs weekly on Sunday at 22:00 UTC (Monday 05:00 WIB); verify it is registered in Vercel.
+4. Test each member's existing push subscription and open Special Dates to verify the calendar and all themes. Notifications are included in the existing daily, retry and catch-up jobs.
+
+The external API (https://api-harilibur.pages.dev/) is independently maintained and is not an official government feed. Dates can be incomplete or inaccurate; verify against the current government decree. The fixed observances Kartini Day, Valentine's Day, International Women's Day and Earth Day are curated fixed dates, not API records. Only the first date is kept if the provider repeats exactly the same name within a year. Source failures leave previously stored dates intact. Weekly sync updates dates and deactivates records removed by the provider; it does not delete them.
+
+Notification claims are recorded before delivery, separately per person, to prevent concurrent runs from sending twice. This is an at-most-once tradeoff: if delivery fails or the process crashes after the claim, that person's notification is not retried, and a log message is emitted. Push acceptance is not proof of display. Expiry is limited to the end of the WIB day, subject to push-service behaviour.

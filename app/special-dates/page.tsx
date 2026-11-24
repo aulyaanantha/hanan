@@ -6,6 +6,7 @@ import SpecialDateCard from "@/components/SpecialDateCard";
 import AddSpecialDateModal from "@/components/AddSpecialDateModal";
 import SpecialDatesList from "@/components/SpecialDatesList";
 import SpecialDatesExperience from "@/components/SpecialDatesExperience";
+import CelebrationCalendar from "@/components/CelebrationCalendar";
 import { getBirthdayPerson } from "@/lib/special-dates/birthday";
 import { isAuthenticated } from "@/lib/session/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -31,6 +32,8 @@ export default async function SpecialDatesPage() {
   // =========================================
 
   const today = getTodayJakarta();
+  const { data: celebrations, error: celebrationsError } = await supabase.from("special_days")
+    .select("id,name,date,category,description,source").eq("active", true).gte("date", today).order("date", { ascending: true }).order("name", { ascending: true }).limit(100);
 
   // =========================================
   // GET CURRENT HANAN WEEK
@@ -190,6 +193,7 @@ export default async function SpecialDatesPage() {
 ========================================= */}
 
         <section>
+          <h2 className="mb-5 text-lg font-bold text-[var(--foreground)]">Our Special Dates</h2>
           <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
             {cards.map((card, index) => (
               <div
@@ -252,6 +256,7 @@ export default async function SpecialDatesPage() {
             </div>
           )}
         </section>
+        <CelebrationCalendar days={celebrations ?? []} today={today} unavailable={!!celebrationsError} />
       </div>
 
       {/* FOOTER */}

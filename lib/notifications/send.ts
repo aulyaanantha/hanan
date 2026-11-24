@@ -3,7 +3,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { webpush } from "@/lib/notifications/web-push";
 
-type NotificationPayload = { title: string; body: string; url?: string; tag?: string };
+type NotificationPayload = { title: string; body: string; url?: string; tag?: string; ttl?: number };
 type Person = "Anantha" | "Farhan";
 type DeliveryResult = { success: boolean; sent: number; failed: number; expired: number; reason?: string };
 
@@ -15,13 +15,14 @@ export async function sendNotificationToPerson(person: Person, notification: Not
     console.warn("Push not sent", { person, reason: error ? "device_query_failed" : "no_devices" });
     return { success: false, sent: 0, failed: 0, expired: 0, reason: error ? "device_query_failed" : "no_devices" };
   }
-  const payload = JSON.stringify({ ...notification, url: notification.url || "/" });
+  const { ttl, ...content } = notification;
+  const payload = JSON.stringify({ ...content, url: notification.url || "/" });
   const topic = createHash("sha256").update(notification.tag || randomUUID()).digest("base64url").slice(0, 32);
   const outcomes = await Promise.all(devices.map(async device => {
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
         await webpush.sendNotification({ endpoint: device.endpoint, keys: { p256dh: device.p256dh, auth: device.auth } }, payload,
-          { TTL: 86400, urgency: "high", timeout: 5000, topic });
+          { TTL: ttl ?? 86400, urgency: "high", timeout: 5000, topic });
         return "sent";
       } catch (caught: unknown) {
         const status = typeof caught === "object" && caught !== null && "statusCode" in caught ? Number(caught.statusCode) : 0;

@@ -1,10 +1,12 @@
 import { sendPaymentReminders } from "./payment-reminder";
 import { sendSpecialDateNotifications } from "./special-date";
 import { checkAndSendTargetNotification } from "./target";
+import { sendCelebrationNotifications } from "./celebration";
 
 export async function runDailyNotifications() {
   const jobs = [
     { name: "specialDates", run: sendSpecialDateNotifications },
+    { name: "celebrations", run: sendCelebrationNotifications },
     { name: "paymentReminders", run: sendPaymentReminders },
     { name: "target", run: checkAndSendTargetNotification },
   ];
